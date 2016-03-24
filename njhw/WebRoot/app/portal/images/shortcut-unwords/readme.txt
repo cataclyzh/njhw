@@ -1,0 +1,1 @@
+将css文件main.css中.main_img span（第642行）的display属性由none改为block就可以显示快速链接的文字信息了。

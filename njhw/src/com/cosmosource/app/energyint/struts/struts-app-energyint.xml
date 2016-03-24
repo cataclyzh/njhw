@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.obj/dtds/struts-2.1.dtd">
+<struts>
+   
+   <package name="/app/energyint" extends="default" namespace="/app/energyint">
+		<!--能耗管理首页     sqs -->
+		<action name="initEnergy" class="energyManageAction" method="initEnergy">
+			<result name="success">/app/energyint/energyManagement.jsp</result>
+		</action>
+		<!--加载三维数据     zh		2013-4-21 -->
+		<action name="loadSWData" class="energyManageAction" method="loadSWData"></action>
+		
+		<!--能耗分析     zh		2013-4-21 -->
+		<action name="energyAnalysis" class="energyManageAction" method="energyAnalysis">
+			<result name="success">/app/energyint/energyAnalysis.jsp</result>
+		</action>
+		
+		<!-- 节能贡献  -->
+		<action name="energyContribution" class="energyManageAction" method="energyContribution">
+			<result name="success">/app/integrateservice/energyContribution/energyContribution.jsp</result>
+		</action>
+		
+		<action name="buildingEnergyHistory" class="energyManageAction" method="buildingEnergyHistory">
+			<result name="success">/app/energyint/buildingEnergyHistory.jsp</result>
+		</action>
+		
+		<action name="queryOilEnergyInput" class="energyManageAction" method="queryOilEnergyInput">
+			<result name="success">/app/energyint/oilEnergyInput.jsp</result>
+		</action>
+		
+		<action name="queryOilEnergyInputSave" class="energyManageAction" method="queryOilEnergyInputSave"></action>
+		
+		<action name="bureauEnergyHistory" class="energyManageAction" method="bureauEnergyHistory">
+			<result name="success">/app/energyint/bureauEnergyHistory.jsp</result>
+		</action>
+		
+		<action name="energyContributionJson" class="energyManageAction" method="energyContributionJson"></action>
+		<action name="currentRoomEnergyJson" class="energyManageAction" method="currentRoomEnergyJson"></action>
+		<action name="buildingEnergyHistoryJson" class="energyManageAction" method="buildingEnergyHistoryJson"></action>
+		<action name="bureauEnergyHistoryJson" class="energyManageAction" method="bureauEnergyHistoryJson"></action>
+		<action name="energyMonitorColumnJson" class="energyManageAction" method="energyMonitorColumnJson"></action>
+		<action name="energyMonitorJson" class="energyManageAction" method="energyMonitorJson"></action>
+ 	</package> 
+ 	
+</struts>

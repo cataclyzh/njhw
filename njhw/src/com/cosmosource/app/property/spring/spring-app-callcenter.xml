@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-lazy-init="true">
+
+	<!-- 必须置于最前，因为bean不统一 -->
+	<bean id="parkingTotalNum" class="com.cosmosource.app.property.service.ParkingTotalNum">
+		<property name="totalnum">
+			<value>600</value>
+		</property>
+	</bean>
+
+	<!-- added by tangtq 2013-7-3 13:40:23 start -->
+	<!-- 物业管理首页 2013-7-16 19:59:59 -->
+	<bean id="propertyIndexAction" class="com.cosmosource.app.property.action.PropertyAction"
+		scope="prototype">
+		<!-- <property name="conferenceManager" ref="conferenceManager" /> -->
+		<property name="repairManager" ref="repairManager" />
+		<property name="conferenceManager" ref="conferenceManager" />
+		<property name="lostFoundManager" ref="lostFoundManager" />
+		<property name="msgBoardManager" ref="msgBoardManager" />
+	</bean>
+
+	<!-- 物业呼叫中心-->
+	<bean id="callCenter" class="com.cosmosource.app.property.action.CallCenterAction"
+		scope="prototype">
+		<property name="callCenterManager" ref="callCenterManager" />
+	</bean>
+	<bean id="callCenterManager" class="com.cosmosource.app.property.service.CallCenterManager"
+		parent="manager">
+	</bean>
+
+
+	<!-- 资产报修 cjw  2013-3-20-->
+	<!--
+		<bean id="repairAction"
+		class="com.cosmosource.app.property.action.RepairAction"
+		scope="prototype"> <property name="repairManager"
+		ref="repairManager"/> </bean> <bean id="repairManager"
+		class="com.cosmosource.app.property.service.RepairManager"
+		parent="manager"> </bean>
+	-->
+
+	<!-- 会议套餐 chengyun  2013-07-09-->
+	<bean id="conferencePackageAction" class="com.cosmosource.app.property.action.ConferencePackageAction" 
+			scope="prototype">
+		<property name="conferencePackageManager" ref="conferencePackageManager" />
+	</bean>
+	<bean id="conferencePackageManager" class="com.cosmosource.app.property.service.ConferencePackageManager"
+		 parent="manager"></bean>
+	
+	<!-- 会议服务 chengyun  2013-07-09-->
+	<bean id="conferenceAction" class="com.cosmosource.app.property.action.ConferenceAction"
+		scope="prototype">
+		<property name="conferenceManager" ref="conferenceManager" />
+		<property name="conferencePackageManager" ref="conferencePackageManager" />
+	</bean>
+	<bean id="conferenceManager" class="com.cosmosource.app.property.service.ConferenceManager"
+		parent="manager">
+	</bean>
+
+	<!-- 车辆进出服务 chengyun  2013-07-09-->
+	<bean id="parkingInfoAction" class="com.cosmosource.app.property.action.ParkingInfoAction"
+		scope="prototype">
+		<property name="parkingInfoManager" ref="parkingInfoManager" />
+	</bean>
+	<bean id="parkingInfoManager" class="com.cosmosource.app.property.service.ParkingInfoManager"
+		parent="manager">
+	</bean>
+
+	<!-- 失物招领服务 chengyun  2013-07-09-->
+	<bean id="lostFoundAction" class="com.cosmosource.app.property.action.LostFoundAction"
+		scope="prototype">
+		<property name="lostFoundManager" ref="lostFoundManager" />
+	</bean>
+	<bean id="lostFoundManager" class="com.cosmosource.app.property.service.LostFoundManager"
+		parent="manager">
+	</bean>
+
+	<!-- 投诉处理服务 chengyun  2013-07-09-->
+	<bean id="complaintsAction" class="com.cosmosource.app.property.action.ComplaintsAction"
+		scope="prototype">
+		<property name="complaintsManager" ref="complaintsManager" />
+	</bean>
+	<bean id="complaintsManager" class="com.cosmosource.app.property.service.ComplaintsManager"
+		parent="manager">
+	</bean>
+
+	<!-- 考勤管理服务 chengyun  2013-07-09-->
+	<bean id="attendanceAction" class="com.cosmosource.app.property.action.AttendanceAction"
+		scope="prototype">
+		<property name="attendanceManager" ref="attendanceManager" />
+	</bean>
+	<bean id="attendanceManager" class="com.cosmosource.app.property.service.AttendanceManager"
+		parent="manager">
+	</bean>
+
+	<!-- 考勤排班 chengyun  2013-07-09-->
+	<bean id="attendanceScheduleAction"
+		class="com.cosmosource.app.property.action.AttendanceScheduleAction"
+		scope="prototype">
+		<property name="attendanceScheduleManager" ref="attendanceScheduleManager" />
+	</bean>
+	<bean id="attendanceScheduleManager"
+		class="com.cosmosource.app.property.service.AttendanceScheduleManager"
+		parent="manager">
+	</bean>
+
+	<!-- added by tangtq 2013-7-3 13:40:23 start -->
+	<!-- 库存管理 2013-7-3 13:41:04 -->
+	<!-- 设备类型 2013-7-3 13:41:33 -->
+	<bean id="deviceTypeAction" class="com.cosmosource.app.property.action.DeviceTypeAction"
+		scope="prototype">
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+		<property name="deviceManager" ref="deviceManager" />
+	</bean>
+	<bean id="deviceTypeManager" class="com.cosmosource.app.property.service.DeviceTypeManager"
+		parent="manager">
+	</bean>
+	<!-- 设备信息 2013-7-3 13:57:33 -->
+	<bean id="deviceAction" class="com.cosmosource.app.property.action.DeviceAction"
+		scope="prototype">
+		<property name="deviceManager" ref="deviceManager" />
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+	</bean>
+	<bean id="deviceManager" class="com.cosmosource.app.property.service.DeviceManager"
+		parent="manager">
+		<property name="storageManager" ref="storageManager" />
+	</bean>
+	<!-- 库存信息 2013-7-3 15:07:29 -->
+	<bean id="storageAction" class="com.cosmosource.app.property.action.StorageAction"
+		scope="prototype">
+		<property name="deviceManager" ref="deviceManager" />
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+		<property name="inOutStorageManager" ref="inOutStorageManager" />
+		<property name="storageManager" ref="storageManager" />
+	</bean>
+	<bean id="storageManager" class="com.cosmosource.app.property.service.StorageManager"
+		parent="manager">
+	</bean>
+	<!-- 出入库信息 2013-7-3 16:31:33 -->
+	<bean id="inOutStorageAction" class="com.cosmosource.app.property.action.InOutStorageAction"
+		scope="prototype">
+		<property name="repairManager" ref="repairManager" />
+		<property name="deviceManager" ref="deviceManager" />
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+		<property name="inOutStorageManager" ref="inOutStorageManager" />
+	</bean>
+	<bean id="inOutStorageManager"
+		class="com.cosmosource.app.property.service.InOutStorageManager"
+		parent="manager">
+	</bean>
+	<!-- 库存管理 2013-7-3 13:41:04 -->
+	<!-- 维修管理 2013-7-8 10:21:41 -->
+	<!-- 维修记录信息 2013-7-3 17:11:20 -->
+	<bean id="repairAction" class="com.cosmosource.app.property.action.RepairAction"
+		scope="prototype">
+		<property name="repairManager" ref="repairManager" />
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+		<property name="deviceManager" ref="deviceManager" />
+		<property name="repairCostManager" ref="repairCostManager" />
+	</bean>
+	<bean id="repairManager" class="com.cosmosource.app.property.service.RepairManager"
+		parent="manager">
+	</bean>
+	<!-- 维修耗材记录信息 2013-7-3 17:13:42 -->
+	<bean id="repairCostAction" class="com.cosmosource.app.property.action.RepairCostAction"
+		scope="prototype">
+		<property name="repairManager" ref="repairManager" />
+		<property name="deviceManager" ref="deviceManager" />
+		<property name="deviceTypeManager" ref="deviceTypeManager" />
+		<property name="repairCostManager" ref="repairCostManager" />
+	</bean>
+	<bean id="repairCostManager" class="com.cosmosource.app.property.service.RepairCostManager"
+		parent="manager">
+	</bean>
+	<!-- 维修管理 2013-7-8 10:21:55 -->
+	<!-- 巡查管理 2013-7-8 10:22:17 -->
+	<!-- 巡查路线制定 2013-7-8 10:22:54 -->
+	<bean id="patrolLineAction" class="com.cosmosource.app.property.action.PatrolLineAction"
+		scope="prototype">
+		<property name="patrolLineManager" ref="patrolLineManager" />
+	</bean>
+	<bean id="patrolLineManager" class="com.cosmosource.app.property.service.PatrolLineManager"
+		parent="manager">
+	</bean>
+	<!-- 排班计划 2013-7-8 10:22:54 -->
+	<bean id="patrolScheduleAction"
+		class="com.cosmosource.app.property.action.PatrolScheduleAction"
+		scope="prototype">
+		<property name="patrolScheduleManager" ref="patrolScheduleManager" />
+		<property name="patrolLineManager" ref="patrolLineManager" />
+		<property name="patrolPositionCardManager" ref="patrolPositionCardManager" />
+	</bean>
+	<bean id="patrolScheduleManager"
+		class="com.cosmosource.app.property.service.PatrolScheduleManager"
+		parent="manager">
+	</bean>
+	<!-- 巡查记录 2013-7-8 13:45:17 -->
+	<bean id="patrolRecordAction" class="com.cosmosource.app.property.action.PatrolRecordAction"
+		scope="prototype">
+		<property name="patrolRecordManager" ref="patrolRecordManager" />
+	</bean>
+	<bean id="patrolRecordManager"
+		class="com.cosmosource.app.property.service.PatrolRecordManager"
+		parent="manager">
+	</bean>
+	<!-- 员工定位卡绑定 2013-7-8 10:22:54 -->
+	<bean id="patrolPositionCardAction" class="com.cosmosource.app.property.action.PatrolPositionCardAction"
+		scope="prototype">
+		<property name="patrolScheduleManager" ref="patrolScheduleManager" />
+		<property name="patrolPositionCardManager" ref="patrolPositionCardManager" />
+		<property name="patrolLineManager" ref="patrolLineManager" />
+	</bean>
+	<bean id="patrolPositionCardManager" class="com.cosmosource.app.property.service.PatrolPositionCardManager"
+		parent="manager">
+	</bean>
+	<!-- 巡查管理 2013-7-8 10:22:28 -->
+
+	<!-- added by tangtq 2013-7-3 13:40:23 end -->
+	<!-- added by chenyun 2013-7-31 19:35:13 start -->
+	<!-- 考勤定时任务 start here -->
+	<!-- 具体任务定义 -->
+	<bean id="insertAttendance"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="attendanceJob" />
+        </property>
+        <property name="targetMethod">
+           <value>execute</value>
+        </property>
+        <property name="concurrent" value="false" />
+	</bean>
+	<!-- 任务类定义 -->
+	<bean id="attendanceJob" class="com.cosmosource.app.property.job.AttendanceJob">
+        <property name="attendanceManager" ref="attendanceManager" />
+        <property name="attendanceScheduleManager" ref="attendanceScheduleManager" />
+     </bean>
+     <!-- 定时器定义 -->
+     <bean id="saveCron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+      	<property name="jobDetail">
+      		<ref bean="insertAttendance" />
+      	</property>
+      	<property name="cronExpression">
+      		<value>0 0 3 * * ?</value>
+      	</property>
+      </bean>
+     <!-- 工厂类配置 -->
+     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+		    <list>
+			    <ref bean="saveCron" />
+			    <ref bean="patrolRecordTimer" />
+			    <ref bean="patrolExceptionTimer" />
+			    
+			    <!--  date : 2014-01-24  modify:ChunJing 
+			    <ref bean="patrolRecordHistoryTimer" />
+			    <ref bean="patrolExceptionHistoryTimer" />
+			    -->
+			    
+		    </list>
+	    </property>
+     </bean>
+     <!-- 考勤定时任务 end here -->
+	<!-- added by chenyun 2013-7-31 19:35:13 end -->
+	
+	
+	
+	<!-- added by tangtq 2013-8-25 15:36:13 start -->
+	<!-- 巡查记录定时任务 start here -->
+	<!-- 具体任务定义 -->
+	<bean id="insertPatrolRecord"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="patrolRecordJob" />
+        </property>
+        <property name="targetMethod">
+           <value>execute</value>
+        </property>
+        <property name="concurrent" value="false" />
+	</bean>
+	<!-- 任务类定义 -->
+	<bean id="patrolRecordJob" class="com.cosmosource.app.property.job.PatrolRecordJob">
+        <property name="patrolScheduleManager" ref="patrolScheduleManager" />
+        <property name="patrolRecordManager" ref="patrolRecordManager" />
+     </bean>
+     <!-- 定时器定义  同步远程数据  -->
+     <bean id="patrolRecordTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+      	<property name="jobDetail">
+      		<ref bean="insertPatrolRecord" />
+      	</property>
+      	<property name="cronExpression">
+      		<value>0 30 22 * * ?</value>
+      	</property>
+      </bean>
+     <!-- 巡查记录定时任务 end here -->
+	<!-- added by tangtq 2013-8-25 15:36:19 end -->
+	
+	<!-- added by tangtq 2013-8-25 15:36:13 start -->
+	<!-- 巡查异常定时任务 start here -->
+	<!-- 具体任务定义 -->
+	<bean id="insertPatrolException"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="patrolExceptionJob" />
+        </property>
+        <property name="targetMethod">
+           <value>execute</value>
+        </property>
+        <property name="concurrent" value="false" />
+	</bean>
+	<!-- 任务类定义 -->
+	<bean id="patrolExceptionJob" class="com.cosmosource.app.property.job.PatrolExceptionJob">
+        <property name="patrolRecordManager" ref="patrolRecordManager" />
+        <property name="wirelessSqlManager" ref="wirelessSqlManager" />
+        <property name="propManager" ref="propManager"></property>
+     </bean>
+     <!-- 定时器定义 -->
+     <bean id="patrolExceptionTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+      	<property name="jobDetail">
+      		<ref bean="insertPatrolException" />
+      	</property>
+      	<property name="cronExpression">
+      		<value>0 0 8 * * ?</value>
+      	</property>
+      </bean>
+      <!-- 具体任务定义 -->
+	<bean id="insertPatrolRecordHistory"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="patrolRecordHistoryJob" />
+        </property>
+        <property name="targetMethod">
+           <value>execute</value>
+        </property>
+        <property name="concurrent" value="false" />
+	</bean>
+      <!-- 任务类定义 -->
+	<bean id="patrolRecordHistoryJob" class="com.cosmosource.app.property.job.PatrolRecordHistoryJob">
+        <property name="patrolRecordManager" ref="patrolRecordManager" />
+     </bean>
+     <!-- 定时器定义 -->
+     <bean id="patrolRecordHistoryTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+      	<property name="jobDetail">
+      		<ref bean="insertPatrolRecordHistory" />
+      	</property>
+      	<property name="cronExpression">
+      		<value>0 0 0 15 * ?</value>
+      	</property>
+      </bean>
+       <!-- 具体任务定义 -->
+	<bean id="insertPatrolExceptionHistory"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="patrolExceptionHistoryJob" />
+        </property>
+        <property name="targetMethod">
+           <value>execute</value>
+        </property>
+        <property name="concurrent" value="false" />
+	</bean>
+       <!-- 任务类定义 -->
+	<bean id="patrolExceptionHistoryJob" class="com.cosmosource.app.property.job.PatrolExceptionHistoryJob">
+        <property name="patrolRecordManager" ref="patrolRecordManager" />
+     </bean>
+      <!-- 定时器定义 -->
+     <bean id="patrolExceptionHistoryTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+      	<property name="jobDetail">
+      		<ref bean="insertPatrolExceptionHistory" />
+      	</property>
+      	<property name="cronExpression">
+      		<value>0 0 0 15 * ?</value>
+      	</property>
+      </bean>
+     <!-- 巡查记录定时任务 end here -->
+	<!-- added by tangtq 2013-8-25 15:36:19 end -->
+</beans>

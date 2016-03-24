@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	debug="null" threshold="info">
+	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="error" />
+		<param name="File" value="c:/logs/app_njhw.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="1024KB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="app_njhw %-5p [%l] %m%n" />
+		</layout>
+	</appender>
+
+	<!-- ============================== -->
+	<!-- Append messages to the console -->
+	<!-- ============================== -->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="info" />
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="app_njhw %-5p [%l] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="com.xuggle.ferry.NativeLogger" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<!-- 
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Starting execution stack for action" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Executed action" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Finishing execution stack for action" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		 -->
+		 <filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Executed action" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+	</appender>
+
+	<logger name="com.opensymphony.xwork2.util.logging.commons.CommonsLogger" additivity="false">  
+	    <priority value ="error"/>   
+		<appender-ref ref="CONSOLE" />   
+    </logger>  
+    
+	<!-- ======================= -->
+	<!-- Setup the Root category -->
+	<!-- ======================= -->
+	<root>
+		<priority value ="info"/>
+		<appender-ref ref="CONSOLE" />
+	</root>
+</log4j:configuration>

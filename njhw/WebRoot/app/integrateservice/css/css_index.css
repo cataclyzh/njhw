@@ -1,0 +1,63 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{
+	font-size:12px;
+	margin:0px;
+	height:100%;
+         }
+.mesWindow{
+	width:565px;
+	padding:0 30px;
+	background-color: #000;
+	background-image: url(../images/backgrund_tc.jpg);
+	background-repeat: no-repeat;
+	background-position: left center;
+	margin:0 auto;
+         }
+.main_tanu{
+	width:504px;
+	position:relative;
+	padding:0 30px;
+}
+.main_tanua{width:30px;height:30px; display:block;float:left; position:absolute; left:0;top:330px;}
+.main_tanua1{
+	width:30px;
+	height:30px;
+	display:block;
+	float:left;
+	position:absolute;
+	right:0;
+	top:330px;
+}
+.main_tanu1{
+	width:100%;
+	background:#fff;
+	height:600px;
+	flaot:left;
+}
+.main_tubiao{
+	background:#7f90b3;
+	height:31px;
+	}
+.main_tau_right{
+	width:140px;
+	float:right;
+	}
+.main_tuaa{
+	padding:20px 0 10px 0;
+	margin:0 auto;
+	width:244px;
+	}
+.main_tuaa a{ 
+    padding-right:10px;
+}
+.main_newindow{
+	text-align:center; 
+	font-size:24px; 
+	color:#ffcc00; 
+	font-weight:bold;
+	}
+.ovdbok_height{
+	height:200px;
+	overflow-x:hidden;
+	overflow-y:auto;}

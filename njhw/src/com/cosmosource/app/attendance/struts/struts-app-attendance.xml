@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/attendance" extends="default" namespace="/app/attendance">
+		
+		<!-- 考勤管理入口页面 --> 
+		<action name="attendanceManagement" class="newCityAttendance" method="attendanceManagement">
+			<result name="success">/app/attendance/attendanceIndex.jsp</result>
+		</action>
+		
+		<!-- 部门考勤 -->
+		<action name="bumenkaoqin" class="newCityAttendance" method="getAttendancesList">
+			<result name="success">/app/attendance/bumenkaoqin.jsp</result>
+		</action>
+		
+		<!-- 单位考勤 -->
+		<action name="danweikaoqin" class="newCityAttendance" method="getAttendancesList">
+			<result name="success">/app/attendance/danweikaoqin.jsp</result>
+		</action>
+		
+		<!-- 新城考勤 -->
+		<action name="xinchengkaoqin" class="newCityAttendance" method="getAttendancesList">
+			<result name="success">/app/attendance/xinchengkaoqin.jsp</result>
+		</action>
+		
+		<!-- 获取单位下的部门列表 -->
+		<action name="getDepartment" class="newCityAttendance" method="getDepartment">
+		</action>
+		
+		<!-- 申请审批 -->
+		<action name="shenqingshenpi" class="newCityAttendance" method="getAcceptInfo">
+			<result name="success">/app/attendance/shenqingshenpi.jsp</result>
+		</action>
+		
+		<!-- 我的申请 -->
+		<action name="wodeshenqing" class="newCityAttendance" method="queryApplyInfo">
+			<result name="success">/app/attendance/wodeshenqing.jsp</result>
+		</action>
+		
+		<!-- 查询当日用户考勤 -->
+		<action name="getOneday" class="pteroNewCityAttendance" method="getUserTodayAttendanceList">
+		</action>
+
+		<!-- 查询当日当月考勤 -->
+		<action name="getMonth" class="pteroNewCityAttendance" method="getUserMonthAttendanceList">
+		</action>
+
+		<!-- 设置假期 -->
+		<action name="setHoliday" class="pteroNewCityAttendance" method="setHolidays">
+		</action>
+		
+		<!-- 删除假期 -->
+		<action name="delHoliday" class="pteroNewCityAttendance" method="delHolidays">
+		</action>
+		
+		<!-- 查询假期 -->
+		<action name="getHoliday" class="pteroNewCityAttendance" method="getHolidays">
+		</action>
+		
+		<!-- 设置上班时间 -->
+		<action name="setTime" class="pteroNewCityAttendance" method="setTime">
+		</action>
+		
+		<!-- 获取上班时间 -->
+		<action name="getTime" class="pteroNewCityAttendance" method="getTime">
+		</action>
+		
+		<!-- 获取大厦考勤员 -->
+		<action name="getAttendancers" class="pteroNewCityAttendance" method="getAttendancers">
+		</action>
+		
+		<!-- 拒绝考勤申请 -->
+		<action name="rejectApprove" class="newCityAttendance" method="rejectApprove">
+		</action>
+
+		<!-- 获取审批人 -->
+		<action name="getAccepters" class="newCityAttendance" method="getAccepters">
+		</action>
+				
+		<!-- 批准考勤申请 -->
+		<action name="passApprove" class="newCityAttendance" method="passApprove">
+		</action>
+		
+		<!-- 查看详细信息(弹出页面) -->
+		<action name="attendanceDetail" class="newCityAttendance" method="attendanceDetail">
+			<result name="success">/app/attendance/popup/attendanceDetail.jsp</result>
+		</action>
+		
+		<!-- 申请审批详细页面 (弹出页面)-->
+		<action name="approveDetail" class="newCityAttendance" method="approveDetail">
+			<result name="success">/app/attendance/popup/approveDetail.jsp</result>
+		</action>
+		
+		<!-- 申请审批详细信息只读页面 (弹出页面) -->
+		<action name="approveDetailShow" class="newCityAttendance" method="approveDetail">
+			<result name="success">/app/attendance/popup/approveDetailShow.jsp</result>
+		</action>
+		
+		<!-- 申请审批详细信息只读页面 (弹出页面) -->
+		<action name="approveDetailShowPass" class="newCityAttendance" method="approveDetail">
+			<result name="success">/app/attendance/popup/approveDetailShowPass.jsp</result>
+		</action>
+		
+		<!-- 提交申请 -->
+		<action name="approve" class="newCityAttendance" method="approve">
+		</action>
+		
+		<!-- 部门宏观统计柱状图数据 -->
+		<action name="getCharts" class="pieChartAttendance" method="getAttendanceChartData">
+		</action>
+		
+		<!-- 部门宏观统计饼图数据 -->
+		<action name="getPieChartsData" class="pieChartAttendance" method="getAttendancePieChartData">
+		</action>
+		
+		<!-- 实时统计人员是否在大厦状态 -->
+		<action name="getRealTimeDetail" class="newCityAttendance" method="realTimeEmpDetail">
+			<result name="success">/app/attendance/popup/realTimeDetail.jsp</result>
+		</action>
+		
+		<!-- 获取未读审批数目 -->
+		<action name="getApproveCount" class="newCityAttendance" method="getUnReadApproveCount">
+		</action>
+	</package>
+</struts>

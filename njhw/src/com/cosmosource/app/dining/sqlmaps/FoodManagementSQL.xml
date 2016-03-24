@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FoodManagementSQL">
+      
+	<!--功能：查询菜肴信息 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="queryDishes" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select
+		<dynamic>
+            <isNotEmpty property="fdIds">
+            	case when f.fd_id in ($fdIds$) then '1' else '' end CHK,
+            </isNotEmpty>
+            <isEmpty property="fdIds">
+            	'' CHK,
+            </isEmpty>
+		</dynamic>
+		case when f.FD_PHOTO1 is null then '1' else '2' end YN , 
+        case when f.FD_PHOTO2 is null then '1' else '2' end YNT ,
+        case when f.FD_PHOTO3 is null then '1' else '2' end YNC ,f.*
+        from FS_DISHES f where 1=1
+		<dynamic>
+            <isNotEmpty prepend="and" property="fdName">
+				f.FD_NAME like '%' || #fdName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="fdClass">
+				f.FD_CLASS = #fdClass#
+            </isNotEmpty>
+		</dynamic>
+		order by f.FD_CLASS, f.FD_ID
+	</select>
+	
+	
+	<!--功能：查询选中菜肴信息 	开发者：hj 	时间：2013-08-13  -->
+	<select id="getSelectDish" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.fd_id as fd_id
+        from fs_dishes_issue t where trim(t.fdi_type) = #fdiType# and trim(t.fdi_flag) = #fdiFlag#
+	</select>
+	
+	<!--功能：查询预览菜肴信息 	开发者：hj 	时间：2013-08-13  -->
+	<select id="getPreviewDish" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.*
+        from FS_DISHES t where 1=1
+        <dynamic>
+            <isNotEmpty prepend="and" property="fdIds">
+        		t.fd_id in ($fdIds$)
+        	</isNotEmpty>
+        	<isEmpty prepend="and" property="fdIds">
+            	1=2
+            </isEmpty>
+        </dynamic>
+	</select>
+	
+	<!--功能：查询菜肴种类信息 	开发者：hj 	时间：2013-08-09  -->
+	<select id="queryMenu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select f.*
+        from FS_MENU f where 1=1
+		<dynamic>
+            <isNotEmpty prepend="and" property="fmName">
+				f.FM_NAME = #fmName#
+            </isNotEmpty>
+		</dynamic>
+		order by to_number(f.FM_BAK1)
+	</select>
+	
+	<!--功能：查询菜肴种类信息 	开发者：hj 	时间：2013-08-09  -->
+	<select id="getFsClass" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select f.*
+        from FS_MENU f
+		order by to_number(f.FM_BAK1)
+	</select>
+	
+	<!--功能：查询菜肴信息 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="queryTheMenu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    select b.FD_ID, b.FD_BAK1, b.FD_NAME,substr(b.FD_DESC,0,9) as FD_DESC,a.FDI_ID,case when FDI_TYPE is null then 'N' else 'Y' end YN,a.FDI_TYPE, a.FDI_FLAG, b.fd_photo1,b.fd_photo2,b.fd_photo3
+  		from FS_DISHES_ISSUE a, FS_DISHES b
+ 		where a.FD_ID(+) = b.FD_ID and a.FDI_TYPE(+) = #fdiType# and a.FDI_FLAG(+)= #fdiFlag#
+ 		ORDER BY b.FD_NAME
+	</select>
+	
+	<!--功能：查询菜肴类别最大排序码 	开发者：hj 	时间：2013-08-11  -->
+	<select id="findMaxMenuOrder" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select max(to_number(f.fm_bak1)) NUM
+        from FS_MENU f
+	</select>
+	
+	
+	<!--功能：更新菜肴类别排序码 	开发者：hj 	时间：2013-08-11  -->
+	<update id="updateMenuOrder" parameterClass="java.util.Map">
+		UPDATE FS_MENU  SET fm_bak1 = to_char(to_number(fm_bak1) + 1) WHERE 
+		<![CDATA[ to_number(fm_bak1) >= #start# and to_number(fm_bak1) < #end# ]]>
+	</update>
+	
+	<!--功能：更新菜肴类别排序码 	开发者：hj 	时间：2013-08-11  -->
+	<update id="updateMenuOrder2" parameterClass="java.util.Map">
+		UPDATE FS_MENU  SET fm_bak1 = to_char(to_number(fm_bak1) - 1) WHERE 
+		<![CDATA[ to_number(fm_bak1) > #start#]]>
+		<dynamic>
+            <isNotEmpty prepend="and" property="end">
+				<![CDATA[ to_number(fm_bak1) <= #end#]]>
+            </isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 菜肴(显示没分的和已分的  )   sqs -->
+	<select id="selectTheMenu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select *
+  		from (
+       select f.*,'2' yn FROM FS_DISHES_ISSUE fs,FS_DISHES f
+         where FS.FD_ID = F.FD_ID(+)
+        union
+         select f.*,'3' yn
+          FROM FS_DISHES_ISSUE fs,FS_DISHES f
+         where FS.FD_ID = F.FD_ID(+)
+           and (FS.FD_ID != #fdId# and FS.FD_ID is not null)
+        union
+        select f.*, '1' yn
+          FROM FS_DISHES_ISSUE fs,FS_DISHES f
+         where FS.FD_ID = F.FD_ID(+)
+           and FS.FD_ID = #fdId#
+           
+           ) tempa
+	</select>  
+	
+	<!--功能：查询菜肴信息 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="queryNewTheMenu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    SELECT a.FDI_ID,a.FDI_TYPE,a.FDI_FLAG, a.order_num , b.FD_ID , b.FD_NAME, b.FD_BAK1  
+      from FS_DISHES_ISSUE a, FS_DISHES b WHERE a.FD_ID = b.FD_ID order by to_number(a.order_Num)
+	</select>
+	
+	<select id="ajaxqueryMenu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    SELECT a.FDI_ID,a.FDI_TYPE,a.FDI_FLAG, a.order_num , b.FD_ID , b.FD_NAME, b.FD_BAK1  
+      from FS_DISHES_ISSUE a, FS_DISHES b WHERE a.FD_ID = b.FD_ID 
+      <dynamic>
+            <isNotEmpty prepend="and" property="fdiType">
+				a.FDI_TYPE = #fdiType#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="fdiFlag">
+				a.FDI_FLAG = #fdiFlag#
+            </isNotEmpty>
+		</dynamic>
+		order by to_number(a.order_Num)
+	</select>
+</sqlMap>

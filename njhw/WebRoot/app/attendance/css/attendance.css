@@ -1,0 +1,108 @@
+body{
+	margin:0;
+	padding:0;
+	background: white;
+}
+
+#attendance_left a{
+	width:232px;
+	height:68px;
+	display:block;
+}
+
+.m1 a{
+	background:url(../images/wodekaoqin.png) left top no-repeat;
+}
+
+.m1 a:hover{
+	background:url(../images/wodekaoqin_hover.png) left top no-repeat;
+}
+
+.m1_select a{
+	background:url(../images/wodekaoqin_hover.png) left top no-repeat;
+}
+
+.m2 a{
+	background:url(../images/bumenkaoqin.png) left top no-repeat;
+}
+
+.m2 a:hover{
+	background:url(../images/bumenkaoqin_hover.png) left top no-repeat;
+}
+
+.m2_select a{
+	background:url(../images/bumenkaoqin_hover.png) left top no-repeat;
+}
+
+.m3 a{
+	background:url(../images/qingjiashenpi.png) left top no-repeat;
+}
+
+.m3 a:hover{
+	background:url(../images/qingjiashenpi_hover.png) left top no-repeat;
+}
+
+.m3_select a{
+	background:url(../images/qingjiashenpi_hover.png) left top no-repeat;
+}
+
+.m4 a{
+	background:url(../images/wodeshenqing.png) left top no-repeat;
+}
+
+.m4 a:hover{
+	background:url(../images/wodeshenqing_hover.png) left top no-repeat;
+}
+
+.m4_select a{
+	background:url(../images/wodeshenqing_hover.png) left top no-repeat;
+}
+
+.m5 a{
+	background:url(../images/danweikaoqin.png) left top no-repeat;
+}
+
+.m5 a:hover{
+	background:url(../images/danweikaoqin_hover.png) left top no-repeat;
+}
+
+.m5_select a{
+	background:url(../images/danweikaoqin_hover.png) left top no-repeat;
+}
+
+.m6 a{
+	background:url(../images/dashakaoqin.png) left top no-repeat;
+}
+
+.m6 a:hover{
+	background:url(../images/dashakaoqin_hover.png) left top no-repeat;
+}
+
+.m6_select a{
+	background:url(../images/dashakaoqin_hover.png) left top no-repeat;
+}
+
+.m7 a{
+	background:url(../images/piliang.png) left top no-repeat;
+}
+
+.m7 a:hover{
+	background:url(../images/piliang_hover.png) left top no-repeat;
+}
+
+.m7_select a{
+	background:url(../images/piliang_hover.png) left top no-repeat;
+}
+
+.bgsgl_conter td{
+	height:36px;
+}
+
+ #shenpi_num {
+	position: relative;
+	left: 209px;
+	top: -60px;
+	font-size: 10pt;
+	color: #E74C3C;
+	font-weight: bold;
+} 

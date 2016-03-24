@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+       default-lazy-init="true"> 
+	
+	<!-- 检索文件服务  -->
+    <bean id="fileSearch" class="com.simple.tool.file.service.FileSearch">
+	    <property name="filePathConfig">
+			<ref bean="dailyFilePathConfig"/>
+	    </property>
+        <property name="fileFilter">
+			<ref bean="fileFilter"/>
+	    </property>
+    </bean>
+    
+    <!-- 文件存放路径配置 -->
+    <bean id="dailyFilePathConfig" class="com.simple.tool.file.service.DailyFilePathConfig">
+        <!-- 当前日期前几天 -->
+        <property name="days" value="3"/>
+        <!-- 是否包含当天 -->
+        <property name="includeToday" value="true"/>
+        <!-- 文件存放路径 -->
+        <property name="baseDir" value="D:/WebFileRoot/lotus/idata/LOTUS_BAK/"/>
+        <!-- 文件按日期命名格式 -->
+        <property name="pattern" value="yyyyMMdd"/>
+    </bean>
+
+    <!-- 文件修改时间范围 （精确至秒） -->
+    <bean id="accurateSecondTimeFit" class="com.simple.tool.file.service.AccurateSecondTimeFit">  
+    </bean>
+    
+    <!-- 文件修改时间范围（精确至分）  -->
+    <bean id="accurateMinuteTimeFit" class="com.simple.tool.file.service.AccurateMinuteTimeFit">  
+    </bean>
+    
+    <!-- 按一天中时间段过滤文件修改时间 -->
+    <bean id="periodTimeRangeFileFilter" class="com.simple.tool.file.filter.PeriodTimeRangeFileFilter">
+        <!-- 开始时间 -->
+        <property name="from" value="17:00:00"/>
+        <!-- 结束时间 -->
+        <property name="to" value="17:00:00"/>
+        <!-- 文件修改时间范围 -->
+        <property name="timeFit" ref="accurateSecondTimeFit"/>
+    </bean>
+    
+    <!-- 按连续时间段过滤文件修改时间 -->
+    <bean id="continuousTimeRangeFileFilter" class="com.simple.tool.file.filter.ContinuousTimeRangeFileFilter">
+        <!-- 开始时间 -->
+        <property name="start" value="17:00:00"/>
+        <!-- 结束时间 -->
+        <property name="end" value="17:00:00"/>
+        <!-- 前几天 -->
+        <property name="days" value="3"/>
+        <!-- 时间格式 -->
+        <property name="timePattern" value="HH:mm:ss"/>
+        <!-- 是否包含当天 -->
+        <property name="includeToday" value="false"/>
+    </bean>
+    
+    <!-- 文件名过滤器 -->
+    <bean id="nameFileFilter" class="com.simple.tool.file.filter.NameFileFilter">
+        <property name="regex" value="_INVOIC"/>   
+    </bean>
+    
+    <!-- 扩展名过滤器 -->
+    <bean id="extensionFileFilter" class="com.simple.tool.file.filter.ExtensionFileFilter">
+        <!-- 文件后缀列表 -->
+    	<property name="extensions">
+            <list>
+                <value>dat</value>
+            </list> 
+	    </property>
+    </bean>
+    
+    <!-- 自定义过滤器 -->
+    <bean id="fileFilter" class="com.simple.tool.file.filter.CustomFileFilter">
+        <!-- 文件过滤器列表 -->
+        <property name="fileFilterList">  
+            <list>
+                <ref local="extensionFileFilter"/>
+                <ref local="nameFileFilter"/>
+                <ref local="continuousTimeRangeFileFilter"/>
+            </list>     
+        </property> 
+    </bean>
+    
+    <!-- 格式化文件检索结果 -->
+    <bean id="fileSearchResult" class="com.simple.tool.file.service.FileSearchResult">
+        <property name="datePattern" value="yyyy-MM-dd HH:mm:ss"/>   
+    </bean>
+ 	<!-- 邮件发送器 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.Cosmosource.com" />
+		<property name="username" value="Cosmosource" />
+		<property name="password" value="123456" />
+		<property name="javaMailProperties">
+			<props>
+			<!--	<prop key="mail.smtp.auth">true</prop>
+				 
+				<prop key="mail.smtp.starttls.enable">true</prop>使用gmail smtp server的必须参数 -->
+			</props>
+		</property>
+	</bean>
+     <bean id="fileSearchMailService" class="com.simple.tool.file.service.FileSearchMailService">
+	    <property name="mailSender" ref="mailSender"/>
+	    <property name="fileSearch" ref="fileSearch"/>
+	    <property name="fileSearchResult" ref="fileSearchResult"/>
+        <property name="from" value="service@Cosmosource.com" />
+        <property name="subject" value="测试文件监控发送" />
+	   <property name="sendToList">  
+	        <list>  
+			<value>chuangshe.tao@chinab2bi.com</value>
+			<value>lightfever@163.com</value>
+	        </list>  
+	    </property>  
+    </bean>
+    
+</beans>       

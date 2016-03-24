@@ -1,0 +1,45 @@
+.main_top_right1
+{
+	width:250px;
+	height:66px;
+}
+.weather_img
+{
+
+	float:left;
+	height:48px;
+	width:48px;
+	margin:10px 0 0 30px;
+}
+.weather_span
+{
+	float:left;
+	margin:10px 0 0 40px;
+}
+.weather_span span
+{
+	font-family:"Microsoft YaHei",Î¢ÈíÑÅºÚ,"Microsoft JhengHei",»ªÎÄÏ¸ºÚ,STHeiti,MingLiu;
+	font-weight:bold;
+}
+.now_time
+{
+	font-size:15px;
+	color:#0F4ADA;
+	display:block;
+	margin-bottom:5px;
+}
+.word
+{
+	font-size:18px;
+	color:#fff;
+}
+.now_weather
+{
+	font-size:18px;
+	color:#fff;
+}
+.now_temperature
+{
+	font-size:18px;
+	color:#fff;
+}

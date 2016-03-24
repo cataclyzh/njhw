@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <!-- 功能：首页      开发者： WXJ  时间：2011-10-27-->
+   <package name="/app/home" extends="default" namespace="/app/home">
+        <action name="init" class="appHomeAction" method="init">
+			<result name="init">/app/common/home.jsp</result>
+		</action>
+		<action name="loadShortcutButtonList" class="appHomeAction" method="loadShortcutButtonList"/>
+		<action name="loadTaskList" class="appHomeAction" method="loadTaskList"/>
+		<action name="knowledgeList" class="appHomeAction" method="knowledgeList"/>
+		<action name="messageList" class="appHomeAction" method="messageList"/>
+		<action name="bulletinList" class="appHomeAction" method="bulletinList"/>
+ 	</package>
+ 	<package name="/app/operation" extends="default" namespace="/app/operation">
+ 		<!-- 功能：运行管理中心初始化      开发者： cjw  时间：2013-04-04 -->
+ 		<action name="operationInit" class="operationAction" method="init">
+ 			<result name="success">/app/common/operation/operationIndex.jsp</result>
+ 		</action>
+ 		<!-- 功能： 三维地图加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="swMonitor" class="operationAction" method="swMonitor"/>
+ 		<!-- 功能：能耗监控加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="energyMonitor" class="operationAction" method="energyMonitor"/>
+ 		<!-- 功能： 环境监控加载 开发者： cjw  时间：2013-04-04 -->
+ 		<action name="enviromentMonitor" class="operationAction" method="enviromentMonitor"/>
+ 		<!-- 功能： 摄像头加载 开发者： cjw  时间：2013-04-04 -->
+ 		<action name="videoMonitor" class="operationAction" method="videoMonitor"/>
+ 		<!-- 功能：闸机加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="gatesMonitor" class="operationAction" method="gatesMonitor"/>
+ 		<!-- 功能：通过闸机id加载具体信息  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="gatesMonitorByGatesId" class="operationAction" method="gatesMonitorByGatesId"/>
+ 		<!-- 功能： 餐厅加载 开发者： cjw  时间：2013-04-04 -->
+ 		<action name="dinlingMonitor" class="operationAction" method="dinlingMonitor"/>
+ 		<!-- 功能： 天气加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="weatherMonitor" class="operationAction" method="weatherMonitor"/>
+ 		<!-- 功能： 停车场信息加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="parkingMonitor" class="operationAction" method="parkingMonitor"/>
+ 		<!-- 功能： 三维地图加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="swMonitor" class="operationAction" method="swMonitor"/>
+ 		<!-- 功能： 物业呼叫中心加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="propertyMonitor" class="operationAction" method="propertyMonitor"/>
+ 		<!-- 功能： 异常事件处理加载  开发者： cjw  时间：2013-04-04 -->
+ 		<action name="uneventMonitor" class="operationAction" method="uneventMonitor"/>
+ 	</package>
+</struts>

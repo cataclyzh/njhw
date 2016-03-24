@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="/app/pro" extends="default" namespace="/app/pro">
+		<!-- 物业管理首页 tangtq 2013-7-16 19:54:38 -->
+		<action name="propertyIndex" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex.jsp</result>
+		</action>
+
+		<action name="propertyIndexA1" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndexA1.jsp</result>
+		</action>
+		
+		<action name="propertyIndex1" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex1.jsp</result>
+		</action>
+
+		<action name="propertyIndex2" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex2.jsp</result>
+		</action>
+
+		<action name="propertyIndex3" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex3.jsp</result>
+		</action>
+
+		<action name="propertyIndex4" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex4.jsp</result>
+		</action>
+
+		<action name="propertyIndex5" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex5.jsp</result>
+		</action>
+
+		<action name="propertyIndex6" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex6.jsp</result>
+		</action>
+
+		<action name="propertyIndex7" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/property/index/propertyIndex7.jsp</result>
+		</action>
+
+		<action name="propertyIndex8" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/per/orgTreeUserCheckinFrameOther1.act
+			</result>
+		</action>
+
+		<action name="propertyIndex9" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/per/orgTreeUserCheckinFrameOther2.act
+			</result>
+		</action>
+
+		<!-- 新城一期 -->
+		<action name="propertyIndex10" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/per/metroOne.act</result>
+		</action>
+		<!-- 政务服务中心 -->
+		<action name="propertyIndex11" class="propertyIndexAction"
+			method="toPropertyIndex">
+			<result name="success">/app/per/adminService.act</result>
+		</action>
+
+		<!-- 会议套餐模块 start here -->
+
+		<action name="checkConferencePackage" class="conferencePackageAction"
+			method="checkConferencePackage">
+		</action>
+		<action name="checkAddConferencePackage" class="conferencePackageAction"
+			method="checkAddConferencePackage">
+		</action>
+		<action name="checkConferencePackageName" class="conferencePackageAction"
+			method="checkConferencePackageName"></action>
+		<action name="checkConferencePackageRoom" class="conferencePackageAction"
+			method="checkConferencePackageRoom"></action>
+
+		<action name="showConferencePackagesList" class="conferencePackageAction"
+			method="showConferencePackagesList">
+			<result name="success">/app/property/conferencePackage/showConferencePackagesList.jsp
+			</result>
+		</action>
+		<action name="queryConferencePackagesList" class="conferencePackageAction"
+			method="queryConferencePackagesList">
+		</action>
+		<action name="queryConferencePackageById" class="conferencePackageAction"
+			method="queryConferencePackageById">
+			<result name="success">/app/property/conferencePackage/queryConferencePackageById.jsp
+			</result>
+		</action>
+		<action name="suspendOneConferencePackage" class="conferencePackageAction"
+			method="suspendOneConferencePackage">
+			<result name="success">showConferencePackagesList.act</result>
+		</action>
+		<action name="activeOneConferencePackage" class="conferencePackageAction"
+			method="activeOneConferencePackage">
+			<result name="success">showConferencePackagesList.act</result>
+		</action>
+		<action name="modifyOneConferencePackagePrepare" class="conferencePackageAction"
+			method="modifyOneConferencePackagePrepare">
+			<result name="success">/app/property/conferencePackage/modifyOneConferencePackage.jsp
+			</result>
+		</action>
+		<action name="modifyOneConferencePackage" class="conferencePackageAction"
+			method="modifyOneConferencePackage">
+			<result name="success">showConferencePackagesList.act</result>
+		</action>
+		<action name="addOneConferencePackagePrepare" class="conferencePackageAction"
+			method="addOneConferencePackagePrepare">
+			<result name="success">/app/property/conferencePackage/addOneConferencePackage.jsp
+			</result>
+		</action>
+		<action name="addOneConferencePackage" class="conferencePackageAction"
+			method="addOneConferencePackage">
+			<result name="success">showConferencePackagesList.act</result>
+		</action>
+		<action name="showOnePackage" class="conferencePackageAction"
+			method="showOnePackage">
+			<result name="success">/app/property/conference/queryOneConferencePackage.jsp
+			</result>
+		</action>
+		<!-- 会议服务模块end here -->
+		<!-- 失物招领模块 start here -->
+		<action name="lostFoundIndex" class="lostFoundAction" method="lostFoundIndex">
+			<result name="success">/app/property/lostFound/lostfound_index.jsp
+			</result>
+		</action>
+		<action name="defaultLostFound" class="lostFoundAction" method="execute">
+			<result name="success">/app/property/lostFound/defaultLostFound.jsp
+			</result>
+		</action>
+		<action name="showMoreLostFounds" class="lostFoundAction"
+			method="showMoreLostFounds">
+			<result name="success">/app/property/lostFound/showMoreLostFounds.jsp
+			</result>
+		</action>
+		<action name="showLostFoundsList" class="lostFoundAction"
+			method="showLostFoundsList">
+			<result name="success">/app/property/lostFound/showLostFoundList.jsp
+			</result>
+		</action>
+		<action name="showLostFoundsList1" class="lostFoundAction"
+			method="showLostFoundsList">
+			<result name="success">/app/property/lostFound/showLostFoundList1.jsp
+			</result>
+		</action>
+		<action name="queryLostFoundsList" class="lostFoundAction"
+			method="queryLostFoundsList">
+			<result name="success">/app/property/lostFound/queryLostFoundsList.jsp
+			</result>
+		</action>
+		<!-- 失误招领 用于首页JSON 查询专用 开发者：ywl 时间：2013-8-1 -->
+		<action name="queryLostFoundsListJSON" class="lostFoundAction"
+			method="queryLostFoundsListJSON"></action>
+		<action name="queryLostFoundById" class="lostFoundAction"
+			method="queryLostFoundById">
+			<result name="success">/app/property/lostFound/queryLostFoundById.jsp
+			</result>
+		</action>
+		<action name="viewLostFoundById" class="lostFoundAction"
+			method="queryLostFoundById">
+			<result name="success">/app/property/lostFound/viewLostFoundById.jsp
+			</result>
+		</action>
+		<action name="deleteOneLostFound" class="lostFoundAction"
+			method="deleteOneLostFound"></action>
+		<action name="addOneLostFoundPrepare" class="lostFoundAction"
+			method="addOneLostFoundPrepare">
+			<result name="success">/app/property/lostFound/addOneLostFound.jsp
+			</result>
+		</action>
+		<action name="addOneLostFound" class="lostFoundAction" method="addOneLostFound">
+			<result name="success">showLostFoundsList.act</result>
+		</action>
+		<action name="updateOneLostFound" class="lostFoundAction"
+			method="updateOneLostFound">
+			<result name="success">/app/property/lostFound/updateOneLostFound.jsp
+			</result>
+		</action>
+		<action name="updateLostFoundStateById" class="lostFoundAction"
+			method="updateLostFoundStateById">
+			<result name="success">showLostFoundsList.act</result>
+		</action>
+		<action name="modifyOneLostFoundPrepare" class="lostFoundAction"
+			method="modifyOneLostFoundPrepare">
+			<result name="success">/app/property/lostFound/modifyOneLostFound.jsp
+			</result>
+		</action>
+		<action name="modifyOneLostFound" class="lostFoundAction"
+			method="modifyOneLostFound">
+			<result name="success">showLostFoundsList.act</result>
+		</action>
+		<action name="claimOneLostFoundPrepare" class="lostFoundAction"
+			method="claimOneLostFoundPrepare">
+			<result name="success">/app/property/lostFound/claimOneLostFound.jsp
+			</result>
+		</action>
+		<action name="claimOneLostFound" class="lostFoundAction"
+			method="claimOneLostFound">
+			<result name="success">showLostFoundsList.act</result>
+		</action>
+		<action name="showNotClaimCountNumber" class="lostFoundAction"
+			method="showNotClaimCountNumber">
+		</action>
+		<!-- 失物招领模块 end here -->
+
+		<!-- add by tangtq 2013-7-10 14:29:51 start -->
+		<!-- 会议服务模块 start here -->
+		<!--功能：初始进入列表页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="defaultConference" class="conferenceAction"
+			method="execute">
+			<result name="success">/app/property/conference/defaultConference.jsp
+			</result>
+		</action>
+		<!--功能：显示所有会议列表页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="showConferencesList" class="conferenceAction"
+			method="showConferencesList">
+			<result name="success">/app/property/conference/showConferencesList.jsp
+			</result>
+		</action>
+		<action name="showConferencesList1" class="conferenceAction"
+			method="showConferencesList">
+			<result name="success">/app/property/conference/showConferencesList1.jsp
+			</result>
+		</action>
+		<action name="showConferencesIndex" class="conferenceAction"
+			method="toIndex">
+			<result name="success">/app/property/conference/conferenceManage_index.jsp
+			</result>
+		</action>
+		<!--功能：显示我申请的所有列表页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="showMyConferences" class="conferenceAction"
+			method="toIndex">
+			<result name="success">/app/property/conference/conference_index.jsp
+			</result>
+		</action>
+		<action name="showMyConferencesList" class="conferenceAction"
+			method="showMyConferences">
+			<result name="success">/app/property/conference/showMyConferences.jsp
+			</result>
+		</action>
+		<!--功能：显示所有会议列表页面，不分页 开发者：chengyun 时间：2013-07-15 -->
+		<action name="queryConferencesList" class="conferenceAction"
+			method="queryConferencesList">
+			<result name="success">/app/property/conference/queryConferencesList.jsp
+			</result>
+		</action>
+		<!--功能：根据会议ID加载会议信息页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="queryConferenceById" class="conferenceAction"
+			method="queryConferenceById">
+			<result name="success">/app/property/conference/queryConferenceById.jsp
+			</result>
+		</action>
+		<!--功能：删除一个会议信息页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="deleteOneConference" class="conferenceAction"
+			method="deleteOneConference">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		<!--功能：增加一个会议信息页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="addOneConference" class="conferenceAction"
+			method="addOneConference">
+			<result name="success">showMyConferencesList.act</result>
+		</action>
+		<action name="checkOneConference" class="conferenceAction"
+			method="checkOneConference">
+		</action>
+		<action name="addConference" class="conferenceAction" method="addOneConference">
+			<result name="success">showConferencesList.act</result>
+		</action>
+
+		<action name="addOnePrepare" class="conferenceAction" method="addOnePrepare">
+			<result name="success">/app/property/conference/addOneConference.jsp
+			</result>
+		</action>
+
+		<action name="addPrepare" class="conferenceAction" method="addOnePrepare">
+			<result name="success">/app/property/conference/addConference.jsp
+			</result>
+		</action>
+
+		<!--功能：更新一个会议信息页面 开发者：chengyun 时间：2013-07-15 -->
+		<action name="updateOneConference" class="conferenceAction"
+			method="updateOneConference">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		<action name="updateConferenceStateById" class="conferenceAction"
+			method="updateConferenceStateById">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		<action name="cancelConferenceStateById" class="conferenceAction"
+			method="cancelConferenceStateById">
+			<result name="success">showMyConferencesList.act</result>
+		</action>
+		<action name="cancelConferenceListStateById" class="conferenceAction"
+			method="cancelConferenceStateById">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		<action name="confirmConferenceStateById" class="conferenceAction"
+			method="confirmConferenceStateById">
+			<result name="success">showConferencesList.act</result>
+		</action>
+
+
+		<action name="modifyOnePrepare" class="conferenceAction"
+			method="modifyOnePrepare">
+			<result name="success">/app/property/conference/modifyOneConference.jsp
+			</result>
+		</action>
+		<action name="modifyOneConference" class="conferenceAction"
+			method="modifyOneConference">
+			<result name="success">showMyConferencesList.act</result>
+		</action>
+		<action name="modifyPrepare" class="conferenceAction" method="modifyOnePrepare">
+			<result name="success">/app/property/conference/modifyConference.jsp
+			</result>
+		</action>
+		<action name="modifyConference" class="conferenceAction"
+			method="modifyOneConference">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		<action name="valueOnePrepare" class="conferenceAction" method="valueOnePrepare">
+			<result name="success">/app/property/conference/valueOneConference.jsp
+			</result>
+		</action>
+		<action name="valueOneConference" class="conferenceAction"
+			method="valueOneConference">
+			<result name="success">showMyConferencesList.act</result>
+		</action>
+
+		<!-- 会议服务模块end here -->
+
+		<!-- 车辆进出模块 start here -->
+		<action name="addOneParkingInfo" class="parkingInfoAction"
+			method="addOneParkinginfo">
+			<result name="success">parkingList.act</result>
+		</action>
+		<action name="insertParkingInfo" class="parkingInfoAction"
+			method="insertParkinginfo">
+			<result name="success">/app/property/parkingInfo/insertParking.jsp
+			</result>
+		</action>
+		<action name="toParkingInfoListPage" class="parkingInfoAction"
+			method="parkingInfoListPage">
+			<result name="success">/app/property/parkingInfo/parkingQueryList.jsp
+			</result>
+		</action>
+		<action name="lookParking" class="parkingInfoAction" method="lookParking">
+			<result name="success">/app/property/parkingInfo/lookParking.jsp
+			</result>
+		</action>
+		<action name="configParking" class="parkingInfoAction" method="configParkingRead">
+			<result name="success">/app/property/parkingInfo/configParking.jsp
+			</result>
+		</action>
+		<action name="configParkings" class="parkingInfoAction" method="configParkingReads">
+			<result name="success">/app/property/parkingInfo/configParkings.jsp
+			</result>
+		</action>
+		
+		<!-- 查询停车位数量接口 -->
+		<action name="getParkingNum" class="parkingInfoAction" method="getParkingNum">
+		</action>
+		
+		<!-- 		<action name="selectUser" class="orgPerMgrAction" method="orgTreeUserCheckin">
+    		<result name="success" >/app/property/parkingInfo/selectUser.jsp</result>
+		</action> -->
+		<!-- 组织机构用户 Tree -->
+		<action name="orgUserTreeData" class="orgPerMgrAction" method="orgUserTreeData"></action>
+		<action name="selectOrgUser" class="orgPerMgrAction" method="orgUserTree">
+    		<result name="success" >/app/property/parkingInfo/popup/selectOrgUser.jsp</result>
+		</action>
+		<!-- 组织机构用户 Tree -->
+		<!-- 物业编辑车牌号 -->
+		<action name="editParking" class="parkingInfoAction" method="editParking">
+			<result name="success">/app/property/parkingInfo/editParking.jsp</result>
+		</action>
+		<!-- 物业编辑车牌号 -->
+		<action name="setParkings">
+			<result name="success">/app/property/parkingInfo/setParkings.jsp
+			</result>
+		</action>
+		
+		<action name="configParkingLoad" class="parkingInfoAction"
+			method="configParkingLoad">
+			<result name="success">configParking.act</result>
+		</action>
+		<action name="deleteParking" class="parkingInfoAction" method="deleteParking">
+			<result name="success">parkingList.act</result>
+		</action>
+		<action name="modifyParking" class="parkingInfoAction" method="modifyParking">
+			<result name="success">/app/property/parkingInfo/modifyParking.jsp
+			</result>
+		</action>
+		<action name="modifyCarParking" class="parkingInfoAction"
+			method="modifyCarParking">
+			<result name="success">toParkingInfoListPage.act</result>
+		</action>
+		<action name="parkingIndex" class="parkingInfoAction" method="parkingIndex">
+			<result name="success">/app/property/parkingInfo/parkingIndex.jsp
+			</result>
+		</action>
+		<action name="parkingList" class="parkingInfoAction" method="parkingList">
+			<result name="success">/app/property/parkingInfo/parkingQueryList.jsp
+			</result>
+		</action>
+		<!-- 车辆进出模块 end here -->
+
+
+		<!-- 投诉处理模块 start here -->
+		<action name="addComplaints" class="complaintsAction" method="addComplaintsPage">
+			<result name="success">/app/property/complaint/addComplaints.jsp
+			</result>
+		</action>
+		<action name="viewComplaints" class="complaintsAction" method="viewComplaintsPage">
+			<result name="success">/app/property/complaint/viewComplaints.jsp
+			</result>
+		</action>
+		<action name="processComplaints" class="complaintsAction"
+			method="processComplaintsPage">
+			<result name="success">/app/property/complaint/processComplaints.jsp
+			</result>
+		</action>
+		<action name="processComplaintSub" class="complaintsAction"
+			method="processComplaintsPageSub">
+			<result name="success">showComplaintstwo.act</result>
+		</action>
+		<action name="feedbackComplaints" class="complaintsAction"
+			method="feedbackComplaintsPage">
+			<result name="success">/app/property/complaint/feedbackComplaints.jsp
+			</result>
+		</action>
+		<action name="feedbackComplaintSub" class="complaintsAction"
+			method="feedbackComplaintsPageSub">
+			<result name="success">showComplaintstwo.act</result>
+		</action>
+		<action name="addOneComplaint" class="complaintsAction" method="addOneComplaint">
+			<result name="success">showComplaintstwo.act</result>
+		</action>
+		<action name="showComplaintstwo" class="complaintsAction"
+			method="showComplaintstwo">
+			<result name="success">/app/property/complaint/showComplaints.jsp
+			</result>
+		</action>
+
+		<action name="showComplaints" class="complaintsAction" method="showComplaints">
+			<result name="success">/app/property/complaint/showComplaints.jsp
+			</result>
+		</action>
+		<action name="complaintsIndex" class="complaintsAction" method="complaintsIndex">
+			<result name="success">/app/property/complaint/complaintsIndex.jsp
+			</result>
+		</action>
+		<!-- 投诉处理模块 end here -->
+		<!-- add by tangtq 2013-7-10 14:29:51 start -->
+		<!-- 库存管理 tangtq 2013-7-10 14:30:30 -->
+		<!-- 设备类型 -->
+		<action name="checkDeviceType" class="deviceTypeAction" method="checkDeviceType">
+		</action>
+		<action name="checkDeviceTypeModify" class="deviceTypeAction"
+			method="checkDeviceTypeModify">
+		</action>
+		<action name="deviceTypeList" class="deviceTypeAction" method="getDeviceTypeInfoList">
+			<result name="success">/app/property/deviceType/deviceTypeList.jsp
+			</result>
+		</action>
+		<action name="deviceTypeListForQuery" class="deviceTypeAction"
+			method="deviceTypeListForQuery">
+			<result name="success">/app/property/deviceType/deviceTypeList.jsp
+			</result>
+		</action>
+		<action name="toViewDeviceType" class="deviceTypeAction"
+			method="toViewDeviceType">
+			<result name="success">/app/property/deviceType/deviceTypeView.jsp
+			</result>
+		</action>
+		<action name="toAddDeviceType" class="deviceTypeAction" method="toAddDeviceType">
+			<result name="success">/app/property/deviceType/deviceTypeAdd.jsp
+			</result>
+		</action>
+		<action name="addDeviceType" class="deviceTypeAction" method="addDeviceType">
+			<result name="success">deviceTypeList.act</result>
+		</action>
+		<action name="toEditDeviceType" class="deviceTypeAction"
+			method="toEditDeviceType">
+			<result name="success">/app/property/deviceType/deviceTypeEdit.jsp
+			</result>
+		</action>
+		<action name="editDeviceType" class="deviceTypeAction" method="editDeviceType">
+			<result name="success">deviceTypeList.act</result>
+		</action>
+		<action name="deleteDeviceType" class="deviceTypeAction"
+			method="deleteDeviceType">
+			<result name="success">deviceTypeList.act</result>
+		</action>
+		<action name="getDeviceCountByDeviceTypeId" class="deviceTypeAction"
+			method="getDeviceCountByDeviceTypeId">
+		</action>
+		<!-- 设备 -->
+		<action name="deviceCheck" class="deviceAction" method="checkDevice">
+		</action>
+		<action name="checkDeviceModify" class="deviceAction" method="checkDeviceModify">
+		</action>
+		<action name="deviceList" class="deviceAction" method="getDeviceInfoList">
+			<result name="success">/app/property/device/deviceList.jsp</result>
+		</action>
+		<action name="deviceListForQuery" class="deviceAction" method="deviceListForQuery">
+			<result name="success">/app/property/device/deviceList.jsp</result>
+		</action>
+		<action name="getDeviceListByDeviceTypeId" class="deviceAction"
+			method="getDeviceListByDeviceTypeId">
+		</action>
+		<action name="toViewDevice" class="deviceAction" method="toViewDevice">
+			<result name="success">/app/property/device/deviceView.jsp</result>
+		</action>
+		<action name="toAddDevice" class="deviceAction" method="toAddDevice">
+			<result name="success">/app/property/device/deviceAdd.jsp</result>
+		</action>
+		<action name="addDevice" class="deviceAction" method="addDevice">
+			<result name="success">deviceList.act</result>
+		</action>
+		<action name="toEditDevice" class="deviceAction" method="toEditDevice">
+			<result name="success">/app/property/device/deviceEdit.jsp</result>
+		</action>
+		<action name="editDevice" class="deviceAction" method="editDevice">
+			<result name="success">deviceList.act</result>
+		</action>
+		<action name="deleteDevice" class="deviceAction" method="deleteDevice">
+			<result name="success">deviceList.act</result>
+		</action>
+		<action name="inventoryDelete" class="deviceAction" method="inventoryDelete"></action>
+		<!-- 库存 -->
+		<action name="storageIndex" class="storageAction" method="storageIndex">
+			<result name="success">/app/property/storage/storage_index.jsp</result>
+		</action>
+		<action name="storageList" class="storageAction" method="getStorageInfoList">
+			<result name="success">/app/property/storage/storageList.jsp</result>
+		</action>
+		<action name="queryStorageList" class="storageAction" method="queryStorageInfoList">
+			<result name="success">/app/property/storage/storageList.jsp</result>
+		</action>
+		<action name="toViewStorage" class="storageAction" method="toViewStorage">
+			<result name="success">/app/property/storage/storageView.jsp</result>
+		</action>
+		<action name="toInStorage" class="storageAction" method="toInStorage">
+			<result name="success">/app/property/storage/storageIn.jsp</result>
+		</action>
+		<action name="inStorage" class="storageAction" method="inStorage">
+			<result name="success">storageList.act</result>
+		</action>
+		<action name="toOutStorage" class="storageAction" method="toOutStorage">
+			<result name="success">/app/property/storage/storageOut.jsp</result>
+		</action>
+		<action name="outStorage" class="storageAction" method="outStorage">
+			<result name="success">storageList.act</result>
+		</action>
+
+		<!-- 出入库 -->
+		<action name="inOutStorageList" class="inOutStorageAction"
+			method="getInOutStorageInfoList">
+			<result name="success">/app/property/inOutStorage/inOutStorageList.jsp
+			</result>
+		</action>
+		<action name="queryInOutStorageInfoList" class="inOutStorageAction"
+			method="queryInOutStorageInfoList">
+			<result name="success">/app/property/inOutStorage/inOutStorageList.jsp
+			</result>
+		</action>
+		<action name="toViewInOutStorage" class="inOutStorageAction"
+			method="toViewInOutStorage">
+			<result name="success">/app/property/inOutStorage/inOutStorageView.jsp
+			</result>
+		</action>
+		<action name="toAddInOutStorage" class="inOutStorageAction"
+			method="toAddInOutStorage">
+			<result name="success">/app/property/inOutStorage/addInOutStorage.jsp
+			</result>
+		</action>
+		<action name="addInOutStorage" class="inOutStorageAction"
+			method="addInOutStorage">
+			<result name="success">/app/property/inOutStorage/inOutStorageList.jsp
+			</result>
+		</action>
+		<action name="toEditInOutStorage" class="inOutStorageAction"
+			method="toEditInOutStorage">
+			<result name="success">/app/property/inOutStorage/editInOutStorage.jsp
+			</result>
+		</action>
+		<action name="editInOutStorage" class="inOutStorageAction"
+			method="editInOutStorage">
+			<result name="success">/app/property/inOutStorage/inOutStorageList.jsp
+			</result>
+		</action>
+		<action name="deleteInOutStorage" class="inOutStorageAction"
+			method="deleteInOutStorage">
+			<result name="success">/app/property/inOutStorage/inOutStorageList.jsp
+			</result>
+		</action>
+		<!-- 库存管理 tangtq 2013-7-10 14:30:30 -->
+
+		<!-- 维修管理 tangtq 2013-7-13 17:44:37 -->
+		<!-- 维修 -->
+		<action name="repairIndex" class="repairAction" method="repairIndex">
+			<result name="success">/app/property/repair/repair_index.jsp</result>
+		</action>
+		
+		<!-- 只提供报修功能 -->
+		<action name="repairIndex_onlyAdd" class="repairAction" method="repairIndex">
+			<result name="success">/app/property/repair/repair_index_onlyAdd.jsp</result>
+		</action>
+		
+		<!-- 设备科页面 -->
+		<action name="repairIndex_sbk" class="repairAction" method="repairIndex">
+			<result name="success">/app/property/repair/repair_index_sbk.jsp</result>
+		</action>
+		
+		<!-- 服务科页面 -->
+		<action name="repairIndex_fwk" class="repairAction" method="repairIndex">
+			<result name="success">/app/property/repair/repair_index_fwk.jsp</result>
+		</action>
+		
+		<action name="repairList" class="repairAction" method="getRepairInfoList">
+			<result name="success">/app/property/repair/repairList.jsp</result>
+		</action>
+		<action name="repairList1" class="repairAction" method="getRepairInfoList">
+			<result name="success">/app/property/repair/repairList1.jsp</result>
+		</action>
+		<action name="repairListSimple" class="repairAction" method="getRepairInfoList">
+			<result name="success">/app/property/repair/repairListSimple.jsp
+			</result>
+		</action>
+		<action name="queryRepairList" class="repairAction" method="queryRepairInfoList">
+			<result name="success">/app/property/repair/repairList.jsp</result>
+		</action>
+		<action name="queryRepairList1" class="repairAction" method="queryRepairInfoList">
+			<result name="success">/app/property/repair/repairList1.jsp</result>
+		</action>
+		<action name="queryRepairListSimple" class="repairAction"
+			method="queryRepairInfoList">
+			<result name="success">/app/property/repair/repairListSimple.jsp
+			</result>
+		</action>
+		<action name="toViewRepair" class="repairAction" method="toViewRepair">
+			<result name="success">/app/property/repair/viewRepair.jsp
+			</result>
+		</action>
+		<action name="toAddRepair" class="repairAction" method="toAddRepair">
+			<result name="success">/app/property/repair/addRepair.jsp</result>
+		</action>
+		<action name="addRepair" class="repairAction" method="addRepair">
+			<result name="success">repairList.act</result>
+		</action>
+		<action name="toDistributionRepair" class="repairAction"
+			method="toEditRepair">
+			<result name="success">/app/property/repair/distributeRepair.jsp
+			</result>
+		</action>
+		<action name="distributionRepair" class="repairAction" method="distributionRepair">
+			<result name="success">repairList.act</result>
+		</action>
+		<action name="toCompleteRepair" class="repairAction" method="toEditRepair">
+			<result name="success">/app/property/repair/completeRepair.jsp</result>
+		</action>
+		<action name="completeRepair" class="repairAction" method="completeRepair">
+			<result name="success">repairList.act</result>
+		</action>
+		<action name="toEvaluateRepair" class="repairAction" method="toEditRepair">
+			<result name="success">/app/property/repair/evaluateRepair.jsp
+			</result>
+		</action>
+		
+		<!-- 会议申请评价 -->
+		<action name="toEvaluateConference" class="conferenceAction" method="toEvaluateConference">
+			<result name="success">/app/property/conference/evaluateConference.jsp
+			</result>
+		</action>
+		<action name="saveEvaluateConference" class="conferenceAction" method="saveEvaluateConference">
+			<result name="success">showConferencesList.act</result>
+		</action>
+		
+		<action name="evaluateRepair" class="repairAction" method="evaluateRepair">
+			<result name="success">repairList.act</result>
+		</action>
+		<action name="toViewRepair" class="repairAction" method="toViewRepair">
+			<result name="success">/app/property/repair/viewRepair.jsp
+			</result>
+		</action>
+		<action name="suspendRepair" class="repairAction" method="suspendRepair">
+			<result name="success">repairList.act</result>
+		</action>
+		<action name="editRepair" class="repairAction" method="editRepair">
+			<result name="success">/app/property/repair/repairList.jsp
+			</result>
+		</action>
+		<action name="deleteRepair" class="repairAction" method="deleteRepair">
+			<result name="success">/app/property/repair/repairList.jsp
+			</result>
+		</action>
+
+		<!-- 维修耗材 -->
+		<action name="repairCostList" class="repairCostAction" method="getRepairCostInfoList">
+			<result name="success">/app/property/repair/repairCostList.jsp
+			</result>
+		</action>
+		<action name="queryRepairCostList" class="repairCostAction"
+			method="queryRepairCostInfoList">
+			<result name="success">/app/property/repair/repairCostList.jsp
+			</result>
+		</action>
+		<action name="toViewRepairCost" class="repairCostAction"
+			method="toViewRepairCost">
+			<result name="success">/app/property/repair/viewRepairCost.jsp
+			</result>
+		</action>
+		<!-- 维修管理 tangtq 2013-7-13 17:44:37 -->
+		<!-- add by tangtq 2013-7-10 14:29:51 end -->
+
+		<!-- 考勤模块 start here -->
+		<action name="showAttendancesList" class="attendanceAction"
+			method="showAttendancesList">
+			<result name="success">/app/property/attendance/showAttendancesList.jsp
+			</result>
+		</action>
+		<action name="queryAttendanceById" class="attendanceAction"
+			method="queryAttendanceById">
+			<result name="success">/app/property/attendance/queryAttendanceById.jsp
+			</result>
+		</action>
+		
+		<!-- 考勤记录导出 2013-10-29 by：ChunJing-->
+		<action name="exportAttendance" class="attendanceAction"
+			method="exportAttendance">
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
+			</result>
+		</action>
+<!-- 		<action name="exportAttendance" class="attendanceAction"
+			method="exportAttendance">
+		</action> -->
+
+		<action name="exportAttendancePrepare" class="attendanceAction"
+			method="exportAttendancePrepare">
+			<result name="success">/app/property/attendance/exportAttendance.jsp
+			</result>
+		</action>
+
+		<!-- 考勤排班模块 start here -->
+		<action name="attendanceScheduleIndex" class="attendanceScheduleAction"
+			method="attendanceScheduleIndex">
+			<result name="success">/app/property/attendanceSchedule/attendanceSchedule_index.jsp
+			</result>
+		</action>
+		<action name="attendanceOrgTreeSelect" class="attendanceScheduleAction"
+			method="attendanceOrgTreeSelect">
+			<result name="success">/app/property/attendanceSchedule/attendanceOrgUserTree.jsp
+			</result>
+		</action>
+		<action name="attendanceOrgTreeSelect1" class="attendanceScheduleAction"
+			method="attendanceOrgTreeSelect">
+			<result name="success">/app/property/attendanceSchedule/attendanceOrgUserTree1.jsp
+			</result>
+		</action>
+		<action name="getAttendanceOrgUserTreeData" class="attendanceScheduleAction"
+			method="getAttendanceOrgUserTreeData">
+		</action>
+		<!-- 查看排班 -->
+		<action name="showAttendanceSchedulesList" class="attendanceScheduleAction"
+			method="showAttendanceSchedulesList">
+			<result name="success">/app/property/attendanceSchedule/showAttendanceSchedulesList.jsp
+			</result>
+		</action>
+		<action name="queryAttendanceScheduleById" class="attendanceScheduleAction"
+			method="queryAttendanceScheduleById">
+			<result name="success">/app/property/attendanceSchedule/queryAttendanceScheduleById.jsp
+			</result>
+		</action>
+
+		<action name="addOneAttendanceSchedulePrepare" class="attendanceScheduleAction"
+			method="addOneAttendanceSchedulePrepare">
+			<result name="success">/app/property/attendanceSchedule/addOneAttendanceSchedule.jsp
+			</result>
+		</action>
+		<!-- 添加考勤排班 -->
+		<action name="addOneAttendanceSchedule" class="attendanceScheduleAction"
+			method="addOneAttendanceSchedule">
+			<result name="success">showAttendanceSchedulesList.act</result>
+		</action>
+		<action name="modifyOneAttendanceSchedulePrepare" class="attendanceScheduleAction"
+			method="modifyOneAttendanceSchedulePrepare">
+			<result name="success">/app/property/attendanceSchedule/modifyOneAttendanceSchedule.jsp
+			</result>
+		</action>
+		<action name="modifyOneAttendanceSchedule" class="attendanceScheduleAction"
+			method="modifyOneAttendanceSchedule">
+			<result name="success">showAttendanceSchedulesList.act</result>
+		</action>
+		<action name="suspendOneAttendanceSchedule" class="attendanceScheduleAction"
+			method="suspendOneAttendanceSchedule">
+			<result name="success">showAttendanceSchedulesList.act</result>
+		</action>
+		<action name="queryAttendanceScheduleIsExist" class="attendanceScheduleAction"
+			method="queryAttendanceScheduleIsExist">
+		</action>
+		<!-- 查询该时间段是否排班 开发者：ywl 时间：2013-9-5 -->
+		<action name="queryNewAttendanceScheduleIsExist" class="attendanceScheduleAction"
+			method="queryNewAttendanceScheduleIsExist"></action>
+		<action name="modifyAttendanceScheduleIsExist" class="attendanceScheduleAction"
+			method="modifyAttendanceScheduleIsExist">
+		</action>
+		<!-- 考勤排班模块 end here -->
+
+		<!-- 巡查管理 tangtq 2013-8-15 14:27:38 start -->
+		<!-- 巡查主页 -->
+		<action name="patrolIndex" class="patrolLineAction" method="patrolIndex">
+			<result name="success">/app/property/patrol/patrol_index.jsp</result>
+		</action>
+		<!-- 巡查路线管理 -->
+		<action name="patrolLineList" class="patrolLineAction" method="getPatrolLineInfoList">
+			<result name="success">/app/property/patrol/patrolLineList.jsp</result>
+		</action>
+		<action name="queryPatrolLineList" class="patrolLineAction"
+			method="queryPatrolLineInfoList">
+			<result name="success">/app/property/patrol/patrolLineList.jsp</result>
+		</action>
+		<action name="toAddPatrolLine" class="patrolLineAction" method="toAddPatrolLine">
+			<result name="success">/app/property/patrol/addPatrolLine.jsp</result>
+		</action>
+		<action name="addPatrolLine" class="patrolLineAction" method="addPatrolLine">
+			<result name="success">patrolLineList.act</result>
+		</action>
+		<action name="toEditPatrolLine" class="patrolLineAction"
+			method="toEditPatrolLine">
+			<result name="success">/app/property/patrol/editPatrolLine.jsp</result>
+		</action>
+		<action name="editPatrolLine" class="patrolLineAction" method="editPatrolLine">
+			<result name="success">patrolLineList.act</result>
+		</action>
+		<action name="toViewPatrolLine" class="patrolLineAction"
+			method="toViewPatrolLine">
+			<result name="success">/app/property/patrol/viewPatrolLine.jsp</result>
+		</action>
+		<action name="deletePatrolLine" class="patrolLineAction"
+			method="deletePatrolLine">
+			<result name="success">patrolLineList.act</result>
+		</action>
+		<!-- 巡查排班管理 -->
+		<action name="patrolScheduleList" class="patrolScheduleAction"
+			method="getPatrolScheduleInfoList">
+			<result name="success">/app/property/patrol/patrolScheduleList.jsp
+			</result>
+		</action>
+		<action name="queryPatrolScheduleList" class="patrolScheduleAction"
+			method="queryPatrolScheduleInfoList">
+			<result name="success">/app/property/patrol/patrolScheduleList.jsp
+			</result>
+		</action>
+		<action name="toAddPatrolSchedule" class="patrolScheduleAction"
+			method="toAddPatrolSchedule">
+			<result name="success">/app/property/patrol/addPatrolSchedule.jsp
+			</result>
+		</action>
+		<action name="addPatrolSchedule" class="patrolScheduleAction"
+			method="addPatrolSchedule">
+			<result name="success">/app/property/patrol/addPatrolSchedule.jsp
+			</result>
+		</action>
+		<action name="toEditPatrolSchedule" class="patrolScheduleAction"
+			method="toEditPatrolSchedule">
+			<result name="success">/app/property/patrol/editPatrolSchedule.jsp
+			</result>
+		</action>
+		<action name="editPatrolSchedule" class="patrolScheduleAction"
+			method="editPatrolSchedule">
+			<result name="success">patrolScheduleList.act</result>
+		</action>
+		<action name="toViewPatrolSchedule" class="patrolScheduleAction"
+			method="toViewPatrolSchedule">
+			<result name="success">/app/property/patrol/viewPatrolSchedule.jsp
+			</result>
+		</action>
+		<action name="deletePatrolSchedule" class="patrolScheduleAction"
+			method="deletePatrolSchedule">
+			<result name="success">patrolScheduleList.act</result>
+		</action>
+
+		<!-- 定位卡配置 -->
+		<action name="positionCardList" class="patrolPositionCardAction"
+			method="getPatrolPositionCardPage">
+			<result name="success">/app/property/patrol/positionCardList.jsp
+			</result>
+		</action>
+		<action name="queryPositionCardList" class="patrolPositionCardAction"
+			method="getPatrolPositionCardPage">
+			<result name="success">/app/property/patrol/positionCardList.jsp
+			</result>
+		</action>
+		<action name="getPatrolStickRecord" class="patrolPositionCardAction"
+			method="getPatrolStickRecord">
+			<result name="success">/app/property/patrol/patrolStickRecordList.jsp
+			</result>
+		</action> 
+		<!-- 历史轨迹 -->
+		<action name="historyLine" class="patrolPositionCardAction"
+			method="queryHistoryLine">
+			<result name="success">/app/property/patrol/queryHistoryLine.jsp</result>
+			<result name="error">/common/error.jsp</result>
+		</action>
+		<action name="queryHistoryLine" class="patrolPositionCardAction"
+			method="queryHistoryLine">
+			<result name="success">/app/property/patrol/queryHistoryLine.jsp
+			</result>
+		</action>
+		<action name="toAddPositionCard" class="patrolPositionCardAction"
+			method="toAddPatrolPositionCard">
+			<result name="success">/app/property/patrol/addPositionCard.jsp</result>
+		</action>
+		<action name="addPositionCard" class="patrolPositionCardAction"
+			method="addPatrolPositionCard">
+			<result name="success">positionCardList.act</result>
+			<result name="error">/app/property/patrol/addPositionCard.jsp</result>
+		</action>
+		<action name="toEditPositionCard" class="patrolPositionCardAction"
+			method="toEditPatrolPositionCard">
+			<result name="success">/app/property/patrol/editPositionCard.jsp
+			</result>
+		</action>
+		<action name="editPositionCard" class="patrolPositionCardAction"
+			method="editPatrolPositionCard">
+			<result name="success" type="redirect">positionCardList.act</result>
+			<result name="error">/app/property/patrol/editPositionCard.jsp</result>
+		</action>
+		<action name="deletePositionCard" class="patrolPositionCardAction"
+			method="deletePatrolPositionCard">
+			<result name="success">positionCardList.act</result>
+		</action>
+
+		<action name="deletePatrolStick" class="patrolPositionCardAction"
+			method="deletePatrolStick">
+			<result name="success">queryPatrolStickList.act</result>
+		</action>
+
+		<!-- 巡更棒管理 -->
+		<action name="queryPatrolStickList" class="patrolPositionCardAction"
+			method="queryPatrolStickList">
+			<result name="success">/app/property/patrol/queryPatrolStickList.jsp
+			</result>
+		</action>
+		<action name="toAddPatrolStick" class="patrolPositionCardAction"
+			method="toAddPatrolStick">
+			<result name="success">/app/property/patrol/addPatrolStick.jsp</result>
+		</action>
+
+		<action name="addPatrolStick" class="patrolPositionCardAction"
+			method="addPatrolStick">
+			<result name="success">queryPatrolStickList.act</result>
+		</action>
+
+		<action name="toEditPatrolStick" class="patrolPositionCardAction"
+			method="toEditPatrolStick">
+			<result name="success">/app/property/patrol/editPatrolStick.jsp</result>
+		</action>
+
+		<action name="checkUsers" class="patrolPositionCardAction"
+			method="checkUsers">
+		</action>
+
+		<action name="checkStick" class="patrolPositionCardAction"
+			method="checkStick">
+		</action>
+
+		<action name="toEditPatrolStick" class="patrolPositionCardAction"
+			method="toEditPatrolStick">
+			<result name="success">/app/property/patrol/editPatrolStick.jsp</result>
+		</action>
+
+		<action name="editPatrolStick" class="patrolPositionCardAction"
+			method="editPatrolStick">
+			<result name="success" type="redirect">queryPatrolStickList.act</result>
+		</action>
+		<!-- 巡查管理 tangtq 2013-8-15 14:27:38 end -->
+	</package>
+</struts>

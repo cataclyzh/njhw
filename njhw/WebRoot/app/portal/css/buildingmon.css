@@ -1,0 +1,761 @@
+/* Default styles */
+body {
+	font-family: Arial;
+	font-size: 12px;
+	background-color: #FFFFFF;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+table {
+	font-size: 12px;
+	color: #000000;
+	text-decoration: none;
+}
+
+hr {
+	color: #BEBED1;
+	height: 1px;
+}
+hr.title {
+	color: #636384;
+	width: 100%;
+}
+
+a { text-decoration: none; }
+
+/* Style for the main header */
+.header {
+	background-color: #5F7BA4;
+	color: white;
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+/* Style for right side of main header */
+.headerLight {
+	background-color: #8FA8CC;
+	color: white;
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+.headerLightPadded {
+	background-color: #8FA8CC;
+	color: black;
+	font-family: Arial;
+	font-size: 9pt;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.headerButton {
+	display: inline;
+	margin: 0; padding: 0;
+	font-family: Arial;
+	font-size: 8pt;
+	color: black;
+	white-space: nowrap;
+}
+
+/* Welcome text in the header */
+.headerWelcome {
+	font-weight: bold;
+}
+
+.headerTitle {
+	font-family: Arial;
+	font-size: 12pt;
+	font-weight: bold;
+	color: #636384;
+}
+a.headerTitle {
+	color: #006699;
+}
+
+a.header {
+	color: white;
+}
+
+/* ePortfolio Banner & Panel styles */
+.bannerLogo {
+	height:             31px;
+	width:              337px;
+	background-image:   url("../images/appearance/banner_logo.jpg");
+	background-repeat:  no-repeat;
+}
+.bannerLeft {
+	height:             31px;
+	background-image:   url("../images/appearance/banner_fill_left.jpg");
+	background-repeat:  repeat-x;
+	font-family: Arial;
+	font-size: 9pt;
+}
+.bannerCenter {
+	height:             31px;
+	width:              421px;
+	background-image:   url("../images/appearance/banner_fill_center.jpg");
+	background-repeat:  no-repeat;
+}
+.bannerRight {
+	height:             31px;
+	width:              246px;
+	background-image:   url("../images/appearance/banner_fill_right.jpg");
+	background-repeat:  no-repeat;
+	color:              #3E63B1;
+	font-family:		arial;
+	font-size:          9pt;
+	font-weight:        bold;
+	text-align:         right;	
+}
+
+.bannerCustomLeft {
+	height:             31px;
+	color:              #3E63B1;
+	background-color:   #FFFFFF;
+}
+
+.bannerCustomRight {
+	height:             31px;
+	color:              #3E63B1;
+	background-color:   #FFFFFF;
+	font-family:		arial;
+	font-size:          9pt;
+	font-weight:        bold;
+	text-align:         right;	
+}
+
+
+
+.panelFrame {
+	border:             1px solid #636384;
+}
+
+.panelTitlebarup01 {
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill_up01.gif");
+	background-repeat:  repeat-x;
+	height:             20px;
+	color:              #375487;
+	font-family:        Arial;
+	font-size:          9pt;	
+	font-weight:        bold;
+	
+}
+.panelTitlebarup02 {
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill_up02.gif");
+	background-repeat:  repeat;
+	height:             20px;
+	color:              #375487;
+	font-family:        Arial;
+	font-size:          9pt;
+	font-weight:        bold;
+	width: 565px;
+	
+}
+.panelTitlebardown01 {
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill_down01.gif");
+	background-repeat:  repeat-x;
+	height:             22px;
+	color:              #ffffff;
+	font-family:        Arial;
+	font-size:          9pt;	
+	font-weight:        bold;
+	
+}
+.panelTitlebardown02 {
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill_down02.gif");
+	background-repeat:  repeat;
+	height:             22px;
+	color:              #ffffff;
+	font-family:        Arial;
+	font-size:          9pt;
+	font-weight:        bold;
+	width: 661px;
+	
+}
+.panelTitlebarleft01{
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill_left01.gif");
+	background-repeat:  repeat;
+	height:             20px;
+	color:              #ffffff;
+	font-family:        Arial;
+	font-size:          9pt;
+	font-weight:        bold;
+}
+.panelTitlebarline{
+	background-image:   url(../images/appearance/panel_line.gif);
+	background-repeat:  repeat-y;
+	width: 4px;
+}
+.panelTitlebar {
+	background-color:	#9FB5DE;
+	background-image:   url("../images/appearance/panel_title_bar_fill.gif");
+	background-repeat:  repeat-x;
+	height:             18px;
+}
+.panelText {
+	color:              #ffffff;
+	font-family:        Arial;
+	font-size:          9pt;	
+	font-weight:        bold;
+}
+a.panelText {
+	color:              #375487;
+	font-family:        Arial;
+	font-size:          9pt;	
+	font-weight:		normal;
+	vertical-align:		middle;
+}
+a.panelText:hover {
+	color:              #375487;
+}
+
+a.banner {
+	color:				#3E63B1;
+}
+.panelToolbarbg {
+	background-image:   url(../images/appearance/panelToolbar_bg.gif);
+	background-repeat:  repeat-x;
+	height:             26px;
+}
+.panelToolbar {
+	height:             28px;
+}
+
+.textfield {
+	border:		1px solid #636384;
+}
+
+.treeviewBox {
+	margin:				0.5em 0;
+	background-color:	window;
+	color:				windowText;
+	border:				2px inset ThreeDHighlight;
+	overflow:			auto;
+	cursor:				default;
+	height:				230px;
+	width:				280px;
+}
+
+.error {
+	background-color: #466CB4;
+	color: white;
+	font-family: Arial;
+	font-size: 8pt;
+	height:	26px;
+}
+
+.homepage {
+	font-family: Arial;
+	font-size: 10pt;
+}
+a.homepage {
+	text-decoration: underline;
+}
+
+/* Alternate header - accent header in ePortfolio, main header in CMC */
+.menu {
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+.menuTitle {
+	font-family: Arial;
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+.menuItem {
+	font-family: Arial;
+	font-size: 8pt;
+}
+
+a.menuItem {
+	color: black;
+}
+
+/* Font in form elements such as <select> and <input> */
+.menuFormElement {
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+/* Folders listing */
+.category {
+	background-color: white;
+	color: #006699;
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+/* Folder path (breadcrumbs) */
+.path {
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 9pt;
+}
+a.path { color: white; }
+
+.pathSelected {
+	color: black;
+	font-weight: bold;
+}
+.pathSelectedType {
+	 color: #6699FF;
+}
+
+/* Styles for various types of lists and most text */
+INPUT.list {
+	font-family: Arial;
+	font-size: 10pt;
+}
+
+.list {
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+.listReadOnly {
+	font-family: Arial;
+	font-size: 8pt;
+	color: #808080;
+}
+
+.listReadOnlyStrong {
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: bold;
+	color: #808080;
+}
+
+.listReadOnlySpecial {
+	font-family: Arial;
+	font-size: 8pt;
+	font-style: italic;
+	color: #808080
+}
+
+a.list {
+	color: #006699;
+}
+
+.listHeading {
+	color: #636384;
+	font-weight: bold;
+	font-size: 9pt;
+}
+
+/* Disabled */
+.listUnavailable {
+	font-family: Arial;
+	font-size: 8pt;
+	color: #AAAAAA;
+}
+
+/* Selected */
+.listSelected {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+}
+
+/* Selected */
+a.listSelected {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+	color: #006699;
+}
+
+.reportTitlebar {
+	height:				19px;
+	background-image:	url("../images/appearance/grey_title_bar_fill.gif"); 
+	background-repeat:	repeat-x;
+}
+
+/* Styles for Schedule page */
+.schedule {
+	color: black;
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+.main {
+	color: black;
+	font-family: Arial;
+	font-size: 9pt;
+}
+.mainBold {
+	color: black;
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+}
+
+a.main {
+	color: white;
+}
+
+/* Styles for History page */
+.history {
+	font-family: Arial;
+	font-size: 9pt;
+	color: gray;
+}
+
+a.history {color: #006699;}
+
+/* Headings in History page */
+.historyheader {
+	background-color:white;
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+	color: black;
+}
+
+a.historyheader {color: #6699FF;}
+
+/* Styles for Organize pages */
+.orgfolders {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight:bold;
+	color:#000000;
+}
+
+.orgreports {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight:bold;
+	color:#336699;
+}
+
+.cell {
+	background-color: #f0f8ff
+}
+
+.listbox {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+}
+
+/* Styles for inputs of type button */
+.buttonIE {
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+.buttonNN {
+	font-family: Arial;
+	font-size: 9pt;
+}
+
+/* Styles for alerts page */
+.alerts {
+	font-family: Arial;
+	font-size: 9pt;
+	color: black;
+	/* Netscape requires this. */
+	border-style:	none;
+	border-color: #ffffff;
+}
+
+a.alerts {color: #6699FF;}
+
+.alertsheader {
+	background-color:white;
+	font-family: Arial;
+	font-size: 9pt;
+	color: black;
+}
+
+/* Styles for links that are not meant to be clickable */
+a.notclickable {
+	color: #000000;
+	text-decoration: none;
+	cursor: default;
+}
+
+a.notclickable:active {
+	color: #000000;
+	text-decoration: none;
+	cursor: default;
+} 
+
+a.notclickable:hover { 
+	color: #000000;
+	text-decoration: none;
+	cursor: default;
+}
+
+a.notclickable:visited {
+	color: #000000;
+	text-decoration: none;
+	cursor: default;
+}
+
+/* Disabled inputs */
+.inputDisabled
+{ 
+    BACKGROUND-COLOR: #CCCCCC;
+    COLOR: #606060;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Arial;
+}
+
+TD.inputDisabled
+{ 
+    BACKGROUND-COLOR: #CCCCCC;
+    COLOR: #606060;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Arial;
+}
+
+DIV.inputDisabled
+{
+    BACKGROUND-COLOR: #CCCCCC;
+    COLOR: #606060
+    PADDING-LEFT: 2px;
+    PADDING-RIGHT: 2px;
+    BORDER-WIDTH: 1px;
+    BORDER-STYLE: solid; 
+    BORDER-COLOR: #CCCCCC; 
+}
+
+.clsHidden
+{
+    DISPLAY: none;
+}
+
+/* Buttons */
+DIV.clsButton
+{
+    PADDING-TOP: 0px;
+    PADDING-BOTTOM: 0px;
+    PADDING-LEFT: 6px;
+    PADDING-RIGHT: 6px;
+    BORDER-WIDTH: 1px;
+    BORDER-STYLE: solid;
+    BORDER-COLOR: #000000;
+}
+
+TD.clsButton
+{
+    BACKGROUND-COLOR: #CCCCCC;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+}
+
+TD.clsButton A
+{
+    TEXT-DECORATION: none;
+    COLOR: #000000;
+    CURSOR: hand;
+}
+
+TD.clsButton A:hover
+{
+    COLOR: #0000FF;
+}
+
+TD.clsButtonDisabled
+{
+    BACKGROUND-COLOR: #CCCCCC;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+}
+
+TD.clsButtonDisabled A
+{
+    TEXT-DECORATION: none;
+    COLOR: #FFFFFF;
+    CURSOR: default;
+}
+
+TD.clsButtonDisabled A:hover
+{
+    COLOR: #FFFFFF;
+}
+
+/* CMC breadcrumb path separator */
+.clsPathSeparator
+{
+    COLOR: #99CCFF;
+}
+
+/* CMC tabs */
+TD.clsTabSelected 
+{
+    BACKGROUND-COLOR: #006699;
+    COLOR: white;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Arial;
+    FONT-WEIGHT: bold;
+    PADDING-BOTTOM: 2px;
+    PADDING-LEFT: 2px;
+    PADDING-RIGHT: 2px;
+    PADDING-TOP: 2px;
+}
+
+DIV.clsTabSelected
+{
+    PADDING-LEFT: 2px;
+    PADDING-RIGHT: 2px;
+    BORDER-WIDTH: 1px;
+    BORDER-STYLE: solid; 
+    BORDER-COLOR: #006699; 
+}
+
+TD.clsTab 
+{ 
+    BACKGROUND-COLOR: #000000;
+    COLOR: #FFFFFF;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Arial;
+    FONT-WEIGHT: bold;
+}
+
+DIV.clsTab
+{
+    PADDING-LEFT: 2px;
+    PADDING-RIGHT: 2px;
+    BORDER-WIDTH: 1px;
+    BORDER-STYLE: solid; 
+    BORDER-COLOR: #000000; 
+}
+
+TD.clsTabDisabled
+{ 
+    BACKGROUND-COLOR: #CCCCCC;
+    COLOR: #FFFFFF;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Arial;
+    FONT-WEIGHT: bold;
+}
+
+DIV.clsTabDisabled
+{
+    PADDING-LEFT: 2px;
+    PADDING-RIGHT: 2px;
+    BORDER-WIDTH: 1px;
+    BORDER-STYLE: solid; 
+    BORDER-COLOR: #CCCCCC; 
+}
+
+TD.clsTabSpacer
+{
+    WIDTH: 1px;
+    BACKGROUND-COLOR: #FFFFFF;
+}
+
+TR.clsTabBar
+{
+    BACKGROUND-COLOR: #006699;
+}
+
+TD.clsTab A
+{ 
+    TEXT-DECORATION: none;
+    COLOR: white;
+    CURSOR: hand;
+}
+
+TD.clsTab A:hover
+{ 
+    COLOR: #75A3D1;
+}
+
+/* Error text */
+.clsError
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+    COLOR: #FF0000;
+}
+
+.clsErrMsg
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+    COLOR: #000000;
+}
+
+.clsErrReason
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    FONT-STYLE: italic;
+    COLOR: #000000;
+}
+
+/* Style for the tree control */
+.appTreeCtrl {
+	font-family: Arial;
+	font-size: 9pt;
+	margin: 0; padding: 0;
+}
+
+.appTreeCtrl_selected {
+	BACKGROUND-COLOR: #E4E4EC;
+}
+
+a.appTreeCtrl {
+	color: #000000;
+}
+
+a.appTreeCtrl:hover {
+	text-decoration: underline;
+}
+
+img.appTreeCtrl {
+	vertical-align: top;
+}
+
+div.appTreeCtrl_row {
+	white-space: nowrap;
+}
+
+a.actionItem {
+	color: #006699;
+	text-decoration: underline;
+}
+.text_01 {
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration: none;
+}
+.welcome {
+	color: #FFFFFF;
+}
+#inWorkspaceHeaderTitle {
+	font-family:    Arial;
+	font-size:      8.5pt;
+	font-weight:    bold;
+	color:          #375487;
+}
+
+.num:link { FONT-SIZE: 13px; COLOR: #0000E0; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: underline }
+.num:hover { FONT-SIZE: 13px; COLOR: #333399; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: underline }
+.num:visited { FONT-SIZE: 13px; COLOR: #333399; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: underline }
+.title_ppt {
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+INPUT {cursor:expression(((this.type=="submit")||(this.type=="button"))?'hand':'');  }

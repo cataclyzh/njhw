@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+ 	<package name="/app/personnel" extends="default" namespace="/app/personnel">
+ 		<!--功能：初始进入列表页面 	开发者：zh 	时间：2013-03-23  -->
+		<action name="init" class="allotInfo" method="init">
+			<result name="success">/app/personnel/allotInfo/carNumOrgList.jsp</result>
+		</action>
+ 		<!--功能：列表查询  	开发者：zh 	时间：2013-03-23  -->
+		<action name="list" class="allotInfo" method="list">
+			<result name="success">/app/personnel/allotInfo/carNumList.jsp</result>
+		</action> 
+
+		<!--功能：保存车位总数   -->
+		<action name="saveCarPorts" class="allotInfo" method="saveCarPorts">
+			<result name="success">/app/personnel/allotInfo/carNumList.jsp</result>
+		</action> 
+		<!--功能：保存车位总数  主页用  -->
+		<action name="queryCarPorts" class="allotInfo" method="list">
+			<result name="success">/app/personnel/allotInfo/assaginCarNumList.jsp</result>
+		</action> 
+		
+		<!--功能：显示编辑页面 	开发者：zh 	时间：2013-03-23  -->
+		<action name="input" class="allotInfo" method="input">
+			<result name="success">/app/personnel/allotInfo/carNumInput.jsp</result>
+		</action>
+		<!--功能：显示编辑页面 	开发者：zh 	时间：2013-03-23  -->
+		<action name="loadCarNumInfo" class="allotInfo" method="loadCarNumInfo"></action>
+		<!--功能：提交前验证 	开发者：zh 	时间：2013-03-23  -->
+		<action name="validAllCarNum" class="allotInfo" method="validAllCarNum"></action>
+		<!--功能：保存 	开发者：zh 	时间：2013-03-23  -->
+		<action name="save" class="allotInfo" method="save">
+			<result name="success">/app/personnel/allotInfo/carNumInput.jsp</result>
+		</action>
+		<!--功能：删除 	开发者：zh 	时间：2013-03-23  -->
+		<action name="delete" class="allotInfo" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		
+		<!--功能 ：进入人员查询  gxh  -->
+		<action name="intoqueryPerInfo" class="perInfoQueAction" method="intoqueryPerInfo">
+			<result name="success">/app/personnel/perInfoQuery.jsp</result>		
+		</action>
+		<!--功能 ：人员查询  gxh  时间：2013-5-3 -->
+		<action name="queryPerInfo" class="perInfoQueAction" method="queryPerInfo">
+			<result name="success">/app/personnel/perInfoQuery.jsp</result>		
+		</action>
+		<!--功能 :查询组织  gxh  时间：2013-5-6 -->
+		<action name="getSonOrgs" class="personnelExpInforAction" method="getSonOrgs"></action>
+		
+		<!--功能 :人员登记查询列表 	开发者：zh   时间：2013-5-8 -->
+		<action name="perInfoCheckin" class="perInfoQueAction" method="perInfoCheckin">
+			<result name="success">/app/personnel/perInfoCheckinQuery.jsp</result>
+		</action>
+		
+		<!--功能 :其他人员登记查询列表 	开发者：hj   时间：2013-9-13 -->
+		<action name="perInfoCheckinOther" class="perInfoQueAction" method="perInfoCheckinOther">
+			<result name="success">/app/personnel/perInfoCheckinQueryOther.jsp</result>
+		</action>
+		<action name="perInfoCheckinOther1" class="perInfoQueAction" method="perInfoCheckinOther1">
+			<result name="success">/app/personnel/perInfoCheckinQueryOther1.jsp</result>
+		</action>
+		
+		<!-- 新城一期 -->
+		<action name="perInfoCheckinMetro" class="perInfoQueAction" method="perInfoCheckinMetro">
+			<result name="success">/app/personnel/perInfoCheckinQueryMetro.jsp</result>
+		</action>
+		<!-- 政务服务中心 -->
+		<action name="perInfoCheckinAdminService" class="perInfoQueAction" method="perInfoCheckinAdminService">
+			<result name="success">/app/personnel/perInfoCheckinQueryAdminService.jsp</result>
+		</action>
+		
+	</package>
+	
+	<!--功能 :文件上传   gxh  时间：2013-5-6 -->
+	<package name="/app/fileupload" extends="json-default" namespace="/app/fileupload">
+		<action name="saveImg" class="PersonnelManagAction" method="saveImg">
+			<result type="json" name="success">
+	           <param name="contentType"> text/html </param>
+			</result>
+			<result type="json" name="error">
+	           <param name="contentType">  text/html  </param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="/app/allotIPNum" extends="default" namespace="/app/allotIPNum">
+ 		<!--功能：初始进入列表页面 	开发者：zh 	时间：2013-5-1  -->
+		<action name="init" class="allotIpPhone" method="init">
+			<result name="success">/app/personnel/allotInfo/ipPhoneNumOrgList.jsp</result>
+		</action>
+ 		<!--功能：列表查询  	开发者：zh 	时间：2013-5-1  -->
+		<action name="list" class="allotIpPhone" method="list">
+			<result name="success">/app/personnel/allotInfo/ipPhoneNumList.jsp</result>
+		</action> 
+		<!--功能：显示编辑页面 	开发者：zh 	时间：2013-5-1  -->
+		<action name="input" class="allotIpPhone" method="input">
+			<result name="success">/app/personnel/allotInfo/ipPhoneNumInput.jsp</result>
+		</action>
+		<!--功能：加载ip电话号码	开发者：zh 	时间：2013-5-1  -->
+		<action name="loadIpPhoneNumInfo" class="allotIpPhone" method="loadIpPhoneNumInfo"></action>
+		<!--功能：提交前验证 	开发者：zh 	时间：2013-5-1  -->
+		<action name="validAllIpPhoneNum" class="allotIpPhone" method="validAllIpPhoneNum"></action>
+		<!--功能：保存 	开发者：zh 	时间：2013-5-1  -->
+		<action name="save" class="allotIpPhone" method="save">
+			<result name="success">/app/personnel/allotInfo/ipPhoneNumInput.jsp</result>
+		</action>
+		<!--功能：删除 	开发者：zh 	时间：2013-5-1  -->
+		<action name="delete" class="allotIpPhone" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+	</package>
+	
+	<package name="/app/room" extends="default" namespace="/app/room">
+		<!--功能：初始进入列表页面 	开发者：zh 	时间：2013-04-07  -->
+		<action name="init1" class="allotRoomInfo" method="init">
+			<result name="success">/app/personnel/allotInfo/allotRoomOrgList2.jsp</result>
+		</action>
+		<!--功能：列表查询  	开发者：zh 	时间：2013-04-07  -->
+		<action name="queryAllotRooms" class="allotRoomInfo" method="queryAllotRooms">
+			<result name="success">/app/personnel/allotInfo/allotRooms.jsp</result>
+		</action>
+		<!--功能：列表查询  	开发者：hj 	时间：2013-09-05  -->
+		<action name="queryAllRooms" class="allotRoomInfo" method="queryAllRooms">
+			<result name="success">/app/personnel/allotInfo/allotRoomsAll.jsp</result>
+		</action>
+		<!--功能：根据楼座ID，加载楼层信息 	开发者：zh 	时间：2013-03-23  -->
+		<action name="loadFloorByBid" class="allotRoomInfo" method="loadFloorByBid"></action>
+		<!--功能：保存分配数据 	开发者：zh 	时间：2013-03-23  -->
+		<action name="allotDeleteSave" class="allotRoomInfo" method="allotDeleteSave">
+		</action>
+		
+		<action name="allotRoomSave" class="allotRoomInfo" method="allotRoomSave">
+		</action>
+		<action name="queryAllotRoomsForAdd" class="allotRoomInfo" method="queryAllotRoomsForAdd">
+			<result name="success">/app/personnel/allotInfo/allotRoomsForAdd.jsp</result>
+		</action>
+		<!--功能：显示资源树	开发者：zh 	时间：2013-03-23  -->
+		<action name="showTree" class="allotRoomInfo" method="showTree">
+			<result name="success">/app/personnel/allotInfo/objTree.jsp</result>
+		</action>
+		<action name="objTreeSelectData" class="allotRoomInfo" method="objTreeSelectData"></action>
+		
+		<!--
+	 		功能：列表查询  	开发者：zh 	时间：2013-03-24  
+			<action name="list" class="allotRoomInfo" method="list">
+				<result name="success">/app/personnel/allotInfo/allotRoomList.jsp</result>
+			</action>
+			功能：删除 	开发者：zh 	时间：2013-03-23  
+			<action name="delete" class="allotRoomInfo" method="delete">
+				<result name="reload">list.act</result>
+			</action>
+			功能：分配页面 	开发者：zh 	时间：2013-03-23  
+			<action name="input" class="allotRoomInfo" method="input">
+				<result name="success">/app/personnel/allotInfo/allotRoomInput.jsp</result>
+			</action>
+			功能：根据楼层ID，加载未分配房间信息 	开发者：zh 	时间：2013-03-23  
+			<action name="loadRoomByFid" class="allotRoomInfo" method="loadRoomByFid"></action>
+			功能：提交前的验证 	开发者：zh 	时间：2013-03-23  
+			<action name="validAllotInfo" class="allotRoomInfo" method="validAllotInfo"></action>
+		-->
+	</package>	
+		
+	<package name="/app/swallot" extends="default" namespace="/app/swallot">
+		<!--功能：初始进入列表页面 	开发者：zh 	时间：2013-03-24  -->
+		<action name="init" class="swAllotRoom" method="init">
+			<result name="success">/app/personnel/swAllot/allotRoom.jsp</result>
+		</action>
+		<!--功能：提交前的验证 	开发者：zh 	时间：2013-03-23  -->
+		<action name="validAllotInfo" class="swAllotRoom" method="validAllotInfo"></action>
+		<!--功能：保存分配数据 	开发者：zh 	时间：2013-03-23  -->
+		<action name="allotSave" class="swAllotRoom" method="allotSave">
+			<result name="success">/app/personnel/swAllot/allotRoom.jsp</result>
+		</action>
+		
+		<!--功能：初始化人员分配房间 	开发者：cjw 	时间：2013-04-02  -->
+		<action name="swPersonAllotRoomInit" class="swPersonAllotRoomAction" method="init">
+			<result name="init">/app/personnel/swAllot/swPersonAllotRoomInit.jsp</result>
+		</action>
+		<!--功能：人员分配房间 	开发者：cjw 	时间：2013-04-02  -->
+		<action name="swPersonAllotRoomInput" class="swPersonAllotRoomAction" method="input">
+			<result name="input">/app/personnel/swAllot/swPersonAllotRoomInput.jsp</result>
+		</action>
+		<!--功能：保存人员分配房间 	开发者：cjw 	时间：2013-04-02  -->
+		<action name="swPersonAllotRoomSave" class="swPersonAllotRoomAction" method="save">
+			<result name="success">/app/personnel/swAllot/swPersonAllotRoomInput.jsp</result>
+		</action>
+		<!--功能：通过单位id得到用户 	开发者：cjw 	时间：2013-04-02  -->
+		<action name="swLoadUsersByOrgId" class="swPersonAllotRoomAction" method="loadUsersByOrgId"/>
+ 	</package>
+ 	
+	<package name="/app/seeAssignRoom" extends="default" namespace="/app/seeAssignRoom">
+		<!--功能：初始进入委办局列表查看页面 	开发者：sqs 	  -->
+		<action name="initSeeRoom" class="seeAssignRoom" method="initSeeRoom">
+			<result name="success">/app/personnel/seeAssignRoom/seeAssignRoom.jsp</result>
+		</action>
+ 	</package>
+</struts>

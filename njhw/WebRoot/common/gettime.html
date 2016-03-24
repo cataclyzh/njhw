@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>gettime</title>
+</head>
+<body>
+
+<script>
+var xmlhttp = new ActiveXObject("Msxml2.XMLHTTP")
+xmlhttp.open("GET", "http://www.baidu.com/index.htm", false)
+xmlhttp.setRequestHeader("Range", "bytes=-1")
+xmlhttp.send()
+var ts = new Date(xmlhttp.getResponseHeader("Date"))
+setInterval("serverTime.innerText = ts.toLocaleString()", 1)
+</script>  
+<div id="serverTime"> </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://cxf.apache.org/jaxws 
+	http://cxf.apache.org/schemas/jaxws.xsd ">
+
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="aegisBean" class="org.apache.cxf.aegis.databinding.AegisDatabinding" />
+
+	<bean id="jaxws-and-aegis-service-factory" class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+		<property name="dataBinding" ref="aegisBean" />
+	</bean>
+
+	<!-- 功能1：WS服务接口 ip电话 -->
+	<jaxws:server id="iPPhoneSiteServices"
+		serviceClass="com.cosmosource.app.port.service.IPPhoneSiteService"
+		address="/iPPhoneSiteServices">
+		<jaxws:serviceBean>
+			<bean class="com.cosmosource.app.port.serviceimpl.IPPhoneSiteServiceImpl">
+				<property name="iPPhoneManager" ref="iPPhoneManager"></property>
+				<property name="doorControlToAppService" ref="doorControlToAppService" />
+			</bean>
+		</jaxws:serviceBean>
+	</jaxws:server>
+
+	<!-- 功能1：WS服务接口 ip电话 ,ISE门控制 -->
+	<jaxws:server id="iPPhoneISESite"
+		serviceClass="com.cosmosource.app.port.service.IPPhoneISESiteService"
+		address="/iPPhoneISESite">
+		<jaxws:serviceBean>
+			<bean
+				class="com.cosmosource.app.port.serviceimpl.IPPhoneISESiteServiceImpl">
+				<property name="doorControlToAppService" ref="doorControlToAppService" />
+				<property name="iPPhoneManager" ref="iPPhoneManager"></property>
+			</bean>
+		</jaxws:serviceBean>
+	</jaxws:server>
+
+	<!-- 功能1：WS服务接口 ip电话 ,IP电话通电注册 -->
+	<jaxws:server id="iPPhoneReg"
+		serviceClass="com.cosmosource.app.port.service.IPPhoneRegisterService"
+		address="/iPPhoneReg">
+		<jaxws:serviceBean>
+			<bean
+				class="com.cosmosource.app.port.serviceimpl.IPPhoneRegisterServiceImpl">
+				<property name="doorControlToAppService" ref="doorControlToAppService" />
+				<property name="iPPhoneManager" ref="iPPhoneManager"></property>
+			</bean>
+		</jaxws:serviceBean>
+	</jaxws:server>
+
+	<!-- 功能1：WS服务接口 ip电话 ,IP电话只识别mac地址开门 -->
+	<jaxws:server id="openDoorOnlyMac"
+		serviceClass="com.cosmosource.app.port.service.OpenDoorOnlyMacService"
+		address="/openDoorOnlyMac">
+		<jaxws:serviceBean>
+			<bean
+				class="com.cosmosource.app.port.serviceimpl.OpenDoorOnlyMacServiceImpl">
+				<property name="doorControlToAppService" ref="doorControlToAppService" />
+				<property name="iPPhoneManager" ref="iPPhoneManager"></property>
+			</bean>
+		</jaxws:serviceBean>
+	</jaxws:server>
+</beans>

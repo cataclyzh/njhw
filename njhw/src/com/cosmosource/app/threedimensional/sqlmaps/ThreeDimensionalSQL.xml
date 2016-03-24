@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ThreeDimensionalSQL">
+	<typeAlias alias="WaterEnergyOfFloor"
+		type="com.cosmosource.app.threedimensional.model.WaterEnergyOfFloor" />
+	<typeAlias alias="FlowEnergyOfFloor"
+		type="com.cosmosource.app.threedimensional.model.FlowEnergyOfFloor" />
+	<resultMap id="SEARCH_WATER_ENERGY_MAP" class="WaterEnergyOfFloor">
+		<result property="floorId" column="water_floor" javaType="java.lang.String" />
+		<result property="measure_water" column="measure" javaType="java.lang.Double" />
+	</resultMap>
+	<resultMap id="SEARCH_FLOW_ENERGY_MAP" class="FlowEnergyOfFloor">
+		<result property="floorId" column="flow_floor" javaType="java.lang.String" />
+		<result property="measure_flow" column="measure" javaType="java.lang.Double" />
+	</resultMap>
+	<!-- 根据房间编号获取房间的ID -->
+	<select id="SELECT_ROOM_ID_BY_ROOMNUM" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select node_id from objtank where keyword = #roomNum#
+	</select>
+	<!-- 根据单位或部门名称查询对应的部门ID和部门所在的楼层ID -->
+	<!-- 根据单位或部门名称查询对应的部门ID -->
+	<select id="SELECT_ORGID_BY_ORGNAME" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select org_id from org where name= #orgName#
+	</select>
+	    <!-- 查询进入大厦的访客 -->
+    <sql id="query_visitor_in">
+		SELECT a.vs_id, a.vi_id as id, a.vi_name as NAME, a.user_id as USER_ID,
+			TO_CHAR(a.vs_st1,'YYYY-MM-DD HH24:MI:SS') as TIME, 
+			TO_CHAR(a.vs_et1,'YYYY-MM-DD HH24:MI:SS') time_out, 
+			a.res_bak3 as wireless_card, 
+			a.in_out,
+			a.user_name, a.org_name,
+			CASE a.RES_BAK1
+		        WHEN '1'
+					THEN	a.card_id
+		        WHEN '2' 
+		        	THEN	b.resident_no
+		        WHEN '3'
+		             THEN 	b.res_bak3     
+	       	END card_id,
+	      	CASE a.RES_BAK1 
+	       		WHEN '1'
+	            	THEN 	'市民卡'
+	       		WHEN '2'
+	            	THEN 	'身份证'
+	       		WHEN '3'
+	            	THEN 	'其他' 
+	       	END CARD_TYPE  
+		FROM vm_visit a, vm_visitorinfo b
+		WHERE a.vi_id = b.vi_id 
+		<isNotEmpty prepend="AND" property="vDate">
+			<![CDATA[
+				TO_CHAR(a.vs_st1,'YYYY-MM-DD') = #vDate# 
+			]]>
+		</isNotEmpty>
+		<![CDATA[
+			AND a.res_bak1 <> '1'
+		]]>
+		AND a.vs_et1 is null order by a.vs_id desc
+	</sql>
+    
+    <!-- 查询访客及附属访客入闸信息-->
+	<select id="SELECT_VISITOR" resultClass="java.util.HashMap" remapResults="true">
+		SELECT * FROM ( <include refid="query_visitor_in"/> ) a WHERE 1=1
+		<isNotEmpty prepend="AND" property="visitorID">
+			<![CDATA[
+				a.ID = #visitorID#
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="name">
+			<![CDATA[
+				a.NAME = #name#
+			]]>
+		</isNotEmpty>
+    </select>
+	<!-- 查询访客及附属访客信息 -->
+	<select id="SELECT_VISITOR_INFO" resultClass="java.util.HashMap">
+		select v.id,
+		v.name, v.oid, v.oname, v.bak, r.recordtime time from
+		vm_punch_record
+		r,
+		(select vi_id as id, vi_name as name, org_id as oid, org_name as
+		oname,
+		res_bak3 as bak, in_out, card_id from vm_visit union all
+		select
+		v1.va_id as id, v1.va_bak1 as name, org_id as oid, org_name as oname,
+		v1.va_bak2 as bak, v1.in_out, v1.card_id from vm_visit_auxi v1,
+		vm_visit v2 where v1.vs_id = v2.vs_id)v
+		where v.card_id = r.card_no and
+		v.in_out = '1' and r.flag = '1' and r.token
+		= '0'
+	</select>
+	<!-- 根据访问单位查询楼层信息 -->
+	<select id="SELECT_OBJTANK_BY_OGRID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select o1.node_id nodeid, o1.keyword keyword from
+		objtank o1 where o1.node_id
+		in (select distinct o.p_id from em_org_res
+		er left join objtank o on
+		(er.res_id = o.node_id)
+		where 1=1 and
+		er.org_id = #orgId# and er.eor_type = 1)
+	</select>
+	<!-- 查询访客状态 -->
+	<select id="SELECT_VISITOR_STATUS" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+	<![CDATA[
+		SELECT * FROM vm_visit_status s 
+		WHERE s.VI_ID = #vId# 
+			AND TO_CHAR(RECORDTIME,'YYYY-MM-DD HH24:MI:SS') = #RECORDTIME#
+	]]>	
+	</select>
+	<!--插入访客异常信息 -->
+	<insert id="INSERT_VISITOR_STATUS" parameterClass="java.util.Map">
+		insert into
+		vm_visit_status
+		(VI_ID, VI_NAME, IS_NORMAL, RECORDTIME, FREQUENCY,
+		ORG_ID, ORG_NAME)
+		values
+		(#vid#,#vname#,#isnormal#,#time#,#frequency#,#oid#,#oname#)
+	</insert>
+	<!-- 更新访客异常信息 -->
+	<update id="UPDATE_VISITOR_STATUS" parameterClass="java.util.Map">
+		UPDATE vm_visit_status
+		SET IS_NORMAL = #isnormal#, 
+			FREQUENCY = #frequency#
+		WHERE VI_ID = #vi_id#
+		AND TO_CHAR(RECORDTIME,'YYYY-MM-DD HH24:MI:SS') = #time#
+	</update>
+	<!-- 查询异常访客列表 -->
+	<select id="SELECT_VISITOR_ERROR" resultClass="java.util.HashMap">
+		select s.vi_id id,
+		s.vi_name name, to_char(s.recordtime,'yyyy-MM-dd hh24:mi:ss') as time, s.org_name
+		orgname, o.short_name short
+		from vm_visit_status s, org o where
+		s.org_id = o.org_id and s.is_normal =
+		'0' and s.frequency > 2
+	</select>
+	<!-- 根据部门ID查询对应的人员信息 -->
+	<select id="SELECT_USER_BY_ORGID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select u.userid id, u.display_name name from users u
+		where u.org_id = #orgId#
+	</select>
+	
+	<!-- 根据人员ID查询当班时段 -->
+	<select id="SELECT_TIME_BY_USERID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		 SELECT S.SCHEDULE_START_DATE AS START_DATE,
+		      S.SCHEDULE_END_DATE AS END_DATE,
+		      S.SCHEDULE_START_TIME AS START_TIME,
+		      S.SCHEDULE_END_TIME AS END_TIME
+		 FROM GR_PATROL_SCHEDULE_USER  U,
+		      GR_PATROL_SCHEDULE_SPLIT S,
+		      GR_PATROL_SCHEDULE       G
+		WHERE U.SCHEDULE_ID = S.SCHEDULE_ID
+			  AND G.USER_ID = U.USER_ID
+			  AND G.ORG_ID = #orgId#
+			  AND U.USER_ID = #userId#
+		<!-- 
+		select re.schedule_id, to_char(re.schedule_start_time, 'mm/dd') startdate, 
+		to_char(re.schedule_end_time, 'mm/dd') enddate, to_char(re.schedule_start_time, 
+		'hh24:mi:ss') starttime, to_char(re.schedule_end_time, 'hh24:mi:ss') endtime, 
+		to_char(re.schedule_start_time, 'yyyy/MM/dd') start_date, to_char(re.schedule_end_time, 
+		'yyyy/MM/dd') end_date from gr_patrol_schedule re where re.user_id = #userId# 
+		and re.org_id = #orgId# 
+		SELECT G.SCHEDULE_ID,
+		TO_CHAR(G.SCHEDULE_START_DATE, 'yyyy/MM/dd') START_DATE,
+		TO_CHAR(G.SCHEDULE_END_DATE, 'yyyy/MM/dd') END_DATE,
+		G.SCHEDULE_START_TIME START_TIME,
+		G.SCHEDULE_END_TIME END_TIME
+		FROM GR_PATROL_SCHEDULE G
+		WHERE G.USER_ID = #userId#
+		AND G.ORG_ID = #orgId#
+		-->
+	</select>
+	
+	<!-- 根据部门ID查询当班路线 -->
+	<select id="SELECT_PATROLLINE_BY_ORGID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		SELECT GR.PATROL_LINE_ID as lineid,GR.PATROL_LINE_NAME as linename
+		FROM GR_PATROL_SCHEDULE GR WHERE GR.ORG_ID = #orgId#
+		<!--  
+		select r.patrol_line_id lineid, r.patrol_line_name
+		linename
+		from gr_patrol_record r where r.org_id = #orgId#
+		-->
+	</select>
+	
+	<!-- 根据当班路线查询人员信息 -->
+	<select id="SELECT_USER_BY_LINE" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		SELECT GR.USER_ID USERID, GR.USER_NAME USERNAME
+        FROM GR_PATROL_SCHEDULE GR
+        WHERE GR.ORG_ID = #orgId#
+        AND GR.PATROL_LINE_ID = #lineId#
+		
+		<!--  
+		select r.user_id userid, r.user_name username
+		from
+		gr_patrol_record r where r.org_id = #orgId# and r.patrol_line_id =
+		#lineId#
+		-->
+	</select>
+	<!-- 查询当班时段 -->
+	<select id="SELECT_TIME" resultClass="java.util.HashMap"
+			parameterClass="java.util.Map">
+		SELECT S.SCHEDULE_START_DATE AS START_DATE,
+			S.SCHEDULE_END_DATE AS END_DATE,
+			S.SCHEDULE_START_TIME AS START_TIME,
+			S.SCHEDULE_END_TIME AS END_TIME
+		FROM GR_PATROL_SCHEDULE_USER U,
+			GR_PATROL_SCHEDULE_SPLIT S,
+			GR_PATROL_SCHEDULE G
+		WHERE U.SCHEDULE_ID = S.SCHEDULE_ID
+			AND G.USER_ID = U.USER_ID
+			AND G.ORG_ID = #orgId#
+			AND U.USER_ID = #userId#
+			AND g.patrol_line_id = #lineId#
+		<!-- 
+		select r.record_id recordid,
+		to_char(r.schedule_start_time,'MM/dd') as startdate,
+		to_char(r.schedule_end_time,'MM/dd') as enddate,
+		trim(substr(to_char(r.schedule_start_time,'yyyy/mm/dd hh24:mi:ss'),11,
+		6))starttime, trim(substr(to_char(r.schedule_end_time,'yyyy/mm/dd
+		hh24:mi:ss'), 11, 6)) endtime,
+		substr(to_char(r.schedule_start_time,'yyyy/mm/dd hh24:mi:ss'),1,10)
+		start_date, substr(to_char( r.schedule_end_time,'yyyy/mm/dd
+		hh24:mi:ss'),1,10) end_date,
+		trim(substr(to_char(r.schedule_start_time,'yyyy/mm/dd hh24:mi:ss'),11,
+		6)) start_time, trim(substr(to_char(r.schedule_end_time,'yyyy/mm/dd
+		hh24:mi:ss'), 11, 6)) end_time
+		from gr_patrol_record r where r.org_id =
+		#orgId# and r.patrol_line_id =
+		#lineId# and r.user_id = #userId#
+		-->
+	</select>
+	<!-- 查询巡查异常信息 -->
+	<select id="SELECT_PATROL_EXCEPTION" resultClass="java.util.HashMap">
+		select
+		e.schedule_id sid, e.user_id userid, e.user_name username, e.org_id
+		orgid, e.org_name orgname, e.exception_desc describe,
+		to_char(e.schedule_start_date,'yyyy/MM/dd hh24:mi:ss') as startdate,
+		to_char(e.schedule_end_date,'yyyy/MM/dd hh24:mi:ss') as enddate,
+		res_bak1
+		from
+		gr_patrol_exception e where e.is_normal = '1'
+	</select>
+	<!-- 查询巡查点信息 -->
+	<select id="SELECT_PATROL_EXCEPTION_BY_USER" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select e.schedule_id sid, e.user_id userid, e.user_name
+		username, e.org_id orgid, e.org_name orgname, e.exception_desc
+		describe,
+		e.patrol_line_name line, to_char(e.schedule_start_date,'yyyy/MM/dd hh24:mi:ss') as startdate,
+		to_char(e.schedule_end_date,'yyyy/MM/dd hh24:mi:ss') as
+		enddate,
+		e.res_bak1
+		from gr_patrol_exception e
+		where e.is_normal = '1' and
+		e.schedule_id = #scheduleId#
+		and to_char(e.schedule_start_date,'yyyy/MM/dd hh24:mi:ss') = #startTime#
+		and to_char(e.schedule_end_date,'yyyy/MM/dd hh24:mi:ss') =  #endTime#
+	</select>
+
+	<!-- 获取当前时间的前一小时每一层的电能耗数 -->
+	<select id="SEARCH_ELEC_ENERGY_BY_FLOORID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select e.kwh_floor floor, sum(e1.measure) as measure
+		from ei_kwh_meter e, ei_kwh_consume_analysis e1
+		where e.kwh_id =
+		e1.meter_id
+		and e1.time_energy_id = (select ei.time_energy_id from
+		ei_time_energy ei
+		where ei.time_energy_year=#year# and
+		ei.time_energy_month=#month# and
+		ei.time_energy_day=#day# and
+		ei.time_energy_hour=#hour#)
+		group by e.kwh_floor
+	</select>
+
+	<!-- 获取当前时间的前一小时每一层的水能耗数 -->
+	<resultMap id="SELECT_WATER_VALUE_OF_FLOOR_MAP" class="java.util.HashMap">
+		<result property="floorId" column="water_floor" javaType="java.lang.String" />
+		<result property="measure" column="measure" javaType="java.lang.Double" />
+	</resultMap>
+	<select id="SELECT_WATER_VALUE_OF_FLOOR" parameterClass="java.util.Map"
+		resultMap="SELECT_WATER_VALUE_OF_FLOOR_MAP">
+		select w.water_floor, sum(w1.measure) as measure from
+		ei_water_meter
+		w,ei_water_consume_analysis w1 where w.water_floor
+		in(select
+		w.water_floor from ei_water_meter w group by w.water_floor )
+		and w.water_id=w1.meter_id and w1.time_energy_id=(select
+		ei.time_energy_id from ei_time_energy ei where
+		ei.time_energy_year=#year# and ei.time_energy_month=#month# and
+		ei.time_energy_day=#day#
+		and ei.time_energy_hour=#hour#) group by
+		w.water_floor order by measure
+	</select>
+	<!-- 获取当前时间的前一小时每一层的气能耗数 -->
+	<resultMap id="SELECT_FLOW_VALUE_OF_FLOOR_MAP" class="java.util.HashMap">
+		<result property="floorId" column="flow_floor" javaType="java.lang.String" />
+		<result property="measure" column="measure" javaType="java.lang.Double" />
+	</resultMap>
+	<select id="SELECT_FLOW_VALUE_OF_FLOOR" parameterClass="java.util.Map"
+		resultMap="SELECT_FLOW_VALUE_OF_FLOOR_MAP">
+		select w.flow_floor,sum(w1.measure_flow) as measure from
+		ei_flow_meter
+		w,ei_flow_consume_analysis w1 where w.flow_floor
+		in(select
+		w.flow_floor from ei_flow_meter w group by w.flow_floor )
+		and
+		w.flow_id=w1.meter_id and w1.time_energy_id=(select ei.time_energy_id
+		from ei_time_energy ei where ei.time_energy_year=#year# and
+		ei.time_energy_month=#month# and ei.time_energy_day=#day#
+		and
+		ei.time_energy_hour=#hour#) group by w.flow_floor order by measure
+		asc
+	</select>
+	<!-- 获取每一层的水电气的能耗值 -->
+	<resultMap id="SELECT_ENERGY_VALUE_OF_FLOOR_MAP" class="java.util.HashMap">
+		<result property="floorId" column="flow_floor" javaType="java.lang.String" />
+		<result property="measure_flow" column="measure_flow" javaType="java.lang.Double" />
+		<result property="measure_kwh" column="measure_kwh" javaType="java.lang.Double" />
+		<result property="measure_water" column="measure_water"
+			javaType="java.lang.Double" />
+	</resultMap>
+	<select id="SELECT_ENERGY_VALUE_OF_FLOOR" parameterClass="java.util.Map"
+		resultMap="SELECT_ENERGY_VALUE_OF_FLOOR_MAP">
+		select
+		t1.flow_floor,t1.measure_flow,t2.measure_kwh,t3.measure_water from (
+
+		select w.flow_floor,sum(w1.measure_flow) as measure_flow from
+		ei_flow_meter w,ei_flow_consume_analysis w1 where w.flow_floor
+		in(select w.flow_floor from ei_flow_meter w group by w.flow_floor )
+		and w.flow_id=w1.meter_id and w1.time_energy_id=(select
+		ei.time_energy_id from ei_time_energy ei where
+		ei.time_energy_year=#year# and ei.time_energy_month=#month# and
+		ei.time_energy_day=#day#
+		and ei.time_energy_hour=#hour#) group by
+		w.flow_floor ) t1,
+
+		(
+		select e.kwh_floor floor, sum(e1.measure) as
+		measure_kwh from ei_kwh_meter
+		e, ei_kwh_consume_analysis e1
+		where
+		e.kwh_id = e1.meter_id
+		and e1.time_energy_id = (select
+		ei.time_energy_id from ei_time_energy ei
+		where ei.time_energy_year=2013
+		and ei.time_energy_month=8 and
+		ei.time_energy_day=1 and
+		ei.time_energy_hour=11)
+		group by e.kwh_floor
+		) t2,
+		(
+		select w.water_floor,
+		sum(w1.measure) as measure_water from ei_water_meter
+		w,ei_water_consume_analysis w1 where w.water_floor in(select
+		w.water_floor from ei_water_meter w group by w.water_floor )
+		and
+		w.water_id=w1.meter_id and w1.time_energy_id=(select
+		ei.time_energy_id
+		from ei_time_energy ei where
+		ei.time_energy_year=2013 and
+		ei.time_energy_month=8 and
+		ei.time_energy_day=1
+		and
+		ei.time_energy_hour=11) group by w.water_floor
+		) t3 where t1.flow_floor
+		= t2.floor and t1.flow_floor = t3.water_floor
+	</select>
+
+	<!-- 根据部门物业人员的姓名和当班时段查询该人员的执勤路线名称和进过的点位ID <resultMap id="SELECT_PROPERTY_STAFF_INFO_BY_NAME_AND_TIME_MAP" 
+		class="java.util.HashMap"> <result property="lineName" column="patrol_line_name" 
+		javaType="java.lang.String"/> <result property="lineDescription" column="exception_desc" 
+		javaType="java.lang.String"/> </resultMap> <select id="SELECT_PROPERTY_STAFF_INFO_BY_NAME_AND_TIME" 
+		resultClass="java.util.HashMap" parameterClass="java.util.Map"> select e.patrol_line_name,e.exception_desc 
+		from GR_PATROL_EXCEPTION e where e.user_name=#staffName# and e.schedule_start_date=#beginTime# 
+		and e.schedule_end_date=#endTime# </select> --><!--根据访客真实开始访问时间和真实结束时间查询访客经过的一组设备ID -->
+	<select id="SELECT_VISITOR_DEVICEIDS_BY_REAL_TIME" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select
+		v1.set_no,s.card_id,s.card_type,v.vi_name,v.vi_id,s.org_name,s.user_name,v.res_bak2,s.res_bak3
+		from VM_VISITORINFO v, VM_VISIT s,vm_punch_record v1
+		where v.VI_ID =
+		s.VI_ID and s.card_id=v1.card_no and v.vi_id=#visitorID# 
+         <![CDATA[
+      and v1.recordtime>=s.vs_st1 and v1.recordtime<=s.vs_et1 
+          ]]>
+		order by v1.recordtime
+	</select>
+	<!--根据访客随行人员真实开始访问时间和真实结束时间查询访客 随行人员经过的一组设备ID -->
+	<select id="SELECT_AUXI_DEVICEIDS_BY_REAL_TIME" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select v1.set_no,v.user_name, v.org_name, au.vs_id,
+		au.va_bak1,au.card_type,au.card_id, au.va_bak2
+		from vm_visit v,
+		vm_visit_auxi au , vm_punch_record v1
+		where v.vs_id = au.vs_id and
+		au.card_id=v1.card_no and au.va_id=#visitorID# 
+       <![CDATA[
+      and v1.recordtime>=au.start_time and v1.recordtime<= au.end_time
+        ]]>
+		order by v1.recordtime
+	</select>
+	<!-- 根据物业人员的名称和执勤的开始时间和结束时间查询物业人员经过的无线定位设备的ID -->
+	<select id="SELECT_PROPERTY_STAFF_INFO_BY_NAME_AND_TIME"
+		resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		select g.user_name,g.org_name,g.patrol_line_name,g.patrol_line_desc,
+		g.exception_desc
+		from gr_patrol_exception g
+		where g.user_id=#staffID#
+		and
+         <![CDATA[
+          to_char(g.schedule_start_date,'yyyy/MM/dd HH24:mi') = substr(#beginTime#,0,16)]]>
+		and
+         <![CDATA[
+          to_char(g.schedule_end_date,'yyyy/MM/dd HH24:mi') = substr(#endTime#,0,16) 
+           ]]>
+	</select>
+
+	<!-- 根据人员ID查找员工所绑定的巡更棒信息 -->
+	<select id="getPatrolStickByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select s.s_no, u.display_name, o.short_name, su.su_id
+		from
+		GR_PATROL_STICK_user su, GR_PATROL_STICK s, users u, org o
+		where
+		su.s_id = s.s_id
+		and su.u_id = u.userid
+		and o.org_id = u.org_id
+		and
+		s.is_avaliable = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="staffID">
+				u.userid = #staffID#
+			</isNotEmpty>
+		</dynamic>
+		order by s.s_no DESC
+	</select>
+
+	<!-- 根据人员ID查找分配的巡更路线信息 -->
+	<select id="getPatrolLineInfoByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		<!-- SELECT T.PATROL_LINE_ID, T.PATROL_LINE_NAME, T.PATROL_LINE_DESC,T.PATROL_NODES 
+			FROM GR_PATROL_SCHEDULE T WHERE T.USER_ID = #staffID# -->
+		SELECT G.PATROL_LINE_ID,
+		G.PATROL_LINE_NAME,
+		G.PATROL_LINE_DESC,
+		G.PATROL_NODES,
+		G.IS_AVALIABLE
+		FROM GR_PATROL_SCHEDULE T, GR_PATROL_LINE
+		G
+		WHERE T.PATROL_LINE_ID = G.PATROL_LINE_ID
+		AND T.USER_ID = #staffID# 
+		AND T.SCHEDULE_START_DATE = TO_DATE(#beginTime#, 'yyyy-MM-dd')
+	</select>
+
+	<!-- 根据cardName(巡更点的名称) 获取相应的 点位信息 (巡更点位) -->
+	<select id="getPointIDByCardName" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT t.card_name,t.point_id,t.position FROM gr_patrol t
+		<dynamic>
+			<isNotEmpty property="cardNameList" prepend="where">
+				t.card_name in
+				<iterate property="cardNameList" open="(" close=")"
+					conjunction=",">
+					#cardNameList[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 从定时同步的 表中获取历史点位信息 -->
+	<!-- 
+		String sql = "select t.CheckDateTime,t.CardName"+
+				"  from BC_patrolrecord t"+
+				" where   t.CheckDateTime >= ?"+
+				"   and t.CheckDateTime <= ?"+
+				"   and t.TermId = ?"+
+				" order by t.CheckDateTime asc";
+	
+	 -->
+	<select id="getPatrolLineHistoryPoints" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.CHECK_DATE_TIME, T.CARD_NAME, G.POINT_ID
+		FROM GR_PATROL_REMOTE_SYNC T, GR_PATROL G
+		WHERE TO_DATE(T.CHECK_DATE_TIME, 'yyyy-MM-dd hh24:mi:ss') BETWEEN
+		TO_DATE(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') AND
+		TO_DATE(#endTime#, 'yyyy-MM-dd hh24:mi:ss')
+		AND T.TERM_ID = #termId#
+		AND T.CARD_NAME = G.CARD_NAME
+		ORDER BY T.CHECK_DATE_TIME ASC
+	</select>
+
+
+	<!-- 根据访客信息查询定位卡号 -->
+	<select id="SELECT_HISTORY_BY_VISITOR" resultClass="java.util.HashMap"
+		parameterClass="java.util.HashMap">
+		select u.bak, u.starttime, u.endtime, u.cardid from
+		((select v.RES_BAK3 bak, to_char(v.VS_ST1, 'yyyy-MM-dd hh24:mi:ss') as
+		starttime, to_char(v.VS_ET1, 'yyyy-MM-dd hh24:mi:ss') as endtime,
+		v.card_id cardid from vm_visit v where 1 = 1) union all
+		(select
+		v1.VA_BAK2 bak, to_char(v1.START_TIME, 'yyyy-MM-dd hh24:mi:ss') as
+		starttime, to_char(v1.END_TIME, 'yyyy-MM-dd hh24:mi:ss') as endtime,
+		v1.card_id cardid from vm_visit_auxi v1 where 1 = 1))u
+		where 1=1 and
+		u.cardid = #cardId# and u.starttime = #startTime# and
+		u.endtime =
+		#endTime#
+	</select>
+	
+	<!-- 根据访客编号查询访客开始访问和结束访问的时间及定位卡卡号 -->
+	<select id="SELECT_VISITOR_CARDNUM_BY_VISITORID" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		(select to_char(s.vs_st1, 'yyyy-MM-dd hh24:mi:ss') as
+		beginTime,
+		to_char(s.vs_et1, 'yyyy-MM-dd hh24:mi:ss') as endTime
+		,s.res_bak3 as
+		cardNum
+		from vm_visit s
+		where s.vi_id= #visitorID#) union
+		all
+		(select to_char(au.start_time, 'yyyy-MM-dd hh24:mi:ss') as
+		beginTime,to_char(au.end_time, 'yyyy-MM-dd hh24:mi:ss') as endTime
+		,au.va_bak2 as cardNum from vm_visit_auxi au
+		where au.va_id =
+		#visitorID#) order by beginTime
+	</select>
+	
+	<!-- 根据访客证件号和证件类型查询访客开始访问和结束访问的时间及定位卡卡号 -->
+	<select id="SELECT_VISITOR_CARDNUM_BY_VISITOR_CARDID"
+		resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		select * from ((select
+		to_char(s.vs_st1, 'yyyy-MM-dd hh24:mi:ss') as
+		beginTime,to_char(s.vs_et1, 'yyyy-MM-dd hh24:mi:ss') as endTime
+		,s.res_bak3 as cardNum
+		from vm_visit s,vm_visitorinfo v
+		where
+		decode(#cardType#,'市民卡',v.res_bak1,'身份证',v.resident_no,'其他',v.res_bak3
+		)= #cardId#
+		and s.vi_id=v.vi_id )
+		union all
+		(select
+		to_char(au.start_time, 'yyyy-MM-dd hh24:mi:ss') as beginTime
+		,to_char(au.end_time, 'yyyy-MM-dd hh24:mi:ss') as endTime ,au.va_bak2
+		as cardNum from vm_visit_auxi au
+		where
+		decode(#cardType#,'市民卡',au.card_id,'身份证',au.resident_no)= #cardId# ))
+		order by beginTime
+	</select>
+	
+	<select id="getOrgIdByUserId" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		select * from (
+			select * from org connect by prior p_id=org_id start with org_id=
+			(select org_id from users where userid=#userId#)
+		) where p_id = 2
+	</select>
+	
+	<select id="getVisitByVisitorIdAndTimeIn" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		SELECT a.vi_id, a.vi_name as NAME, a.user_name, a.org_name, 
+			to_char(a.vs_st1, 'yyyy-MM-dd hh24:mi:ss') as time_in,
+			to_char(a.vs_et1, 'yyyy-MM-dd hh24:mi:ss') time_out1, 
+			to_char(a.vs_et, 'yyyy-MM-dd hh24:mi:ss') time_out2, 
+			a.res_bak3 as WIRELESS_CARD,
+			CASE a.RES_BAK1
+		        WHEN '1'
+					THEN	a.card_id
+		        WHEN '2' 
+		        	THEN	b.resident_no
+		        WHEN '3'
+		             THEN 	b.res_bak3     
+	       	END card_id,
+	      	CASE a.RES_BAK1 
+	       		WHEN '1'
+	            	THEN 	'市民卡'
+	       		WHEN '2'
+	            	THEN 	'身份证'
+	       		WHEN '3'
+	            	THEN 	'其他' 
+	       	END CARD_TYPE
+		FROM vm_visit a, vm_visitorinfo b WHERE a.vi_id=b.vi_id 
+		AND to_char(vs_st1, 'yyyy-MM-dd hh24:mi:ss') = #recordTime#
+	</select>
+</sqlMap>
+

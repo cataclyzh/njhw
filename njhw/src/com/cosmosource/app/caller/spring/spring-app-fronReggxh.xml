@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+    
+   
+	  <!--访客查询gxh-->
+	<bean id="frontRegManager" class="com.cosmosource.app.caller.service.FrontRegManager" parent="manager"></bean>
+	<bean id="frontRegAction" class="com.cosmosource.app.caller.action.FrontRegAction" scope="prototype">    
+    	<property name="frontRegManager" ref="frontRegManager"/>
+    	<property name="noOrderManager" ref="noOrderManager"/>
+    	<property name="visitorqueryManager" ref="visitorqueryManager"/>
+    	<property name="devicePermissionToAppService" ref="devicePermissionToAppService"/>
+    	<property name="personCardQueryToAppService" ref="personCardQueryToAppService"/>
+    	<property name="personnelExpInforManager" ref="personnelExpInforManager"/>
+    	<property name="iPPhoneSiteToAppService" ref="iPPhoneSiteToAppService"/>
+    </bean>
+     <!--未预约访客登记gxh-->
+    <bean id="noOrderManager" class="com.cosmosource.app.caller.service.NoOrderManager" parent="manager"></bean>
+    <bean id="noOrderAction" class="com.cosmosource.app.caller.action.NoOrderAction" scope="prototype">    
+    	<property name="noOrderManager" ref="noOrderManager"/>
+    	<property name="frontRegManager" ref="frontRegManager"/>
+    	<property name="authorityManager" ref="authorityManager"/>
+    </bean>
+ 
+</beans>

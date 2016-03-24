@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+       
+       <!-- 考勤管理  -->
+       <bean id="newCityAttendance" class="com.cosmosource.app.attendance.action.NewCityAttendanceAction" scope="prototype">
+			<property name="newCityAttendanceManager"  >
+				<ref bean="newCityAttendanceManager"/>
+			</property>       
+       </bean>
+       
+       <bean id="newCityAttendanceManager" class="com.cosmosource.app.attendance.service.NewCityAttendanceManager" parent="manager">
+       </bean>
+       
+        <!-- Ptero的考勤  -->
+       <bean id="pteroNewCityAttendance" class="com.cosmosource.app.attendance.action.PteroAttendAction" scope="prototype">
+			<property name="pteroAttendManager"  >
+				<ref bean="pteroAttendManager"/>
+			</property>       
+       </bean>
+       
+       <bean id="pteroAttendManager" class="com.cosmosource.app.attendance.service.PteroAttendManager" parent="manager">
+       </bean>
+       
+        <!-- 考勤图表统计  -->
+       <bean id="pieChartAttendance" class="com.cosmosource.app.attendance.action.AttendancePieChartAction" scope="prototype">
+			<property name="pieChartManager"  >
+				<ref bean="pieChartManager"/>
+			</property>       
+       </bean>
+       
+       <bean id="pieChartManager" class="com.cosmosource.app.attendance.service.AttendancePieChartManager" parent="manager">
+       </bean>
+       
+</beans>

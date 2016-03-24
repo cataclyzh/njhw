@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.obj/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/e4personnel" extends="default" namespace="/app/e4personnel">
+		<action name="personnelTree" class="orgPerMgrAction" method="orgTreeUserCheckin">
+    		<result name="success" >/app/personnel_e/personnelTree.jsp</result>
+		</action>
+		
+		<action name="registerPage" class="personRO" method="inputRegisterE4Personnel">
+			<result name="success">/app/personnel_e/registerPage.jsp</result>
+		</action>
+		
+		<action name="saveRegisterE" class="personRO" method="saveRegisterE"/>
+	</package>
+</struts>

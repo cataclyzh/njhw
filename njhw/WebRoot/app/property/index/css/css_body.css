@@ -1,0 +1,16 @@
+
+.header_right_as{
+	padding-left:10px;
+	width:18%;
+	float:right;
+	color:#9eadcc;
+	height:20px;
+	margin-top:30px;
+	font-size:12px;
+	}
+
+.header_right_as a{
+	background:url(../images/top_image1.png) left top no-repeat;
+	padding-left:15px;
+	color:#fff;
+	}

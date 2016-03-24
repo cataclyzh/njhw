@@ -1,0 +1,286 @@
+body
+{
+	width:99.5%;
+	height:100%;
+}
+*{maigin:0;padding: 0}
+.main
+{
+    width: 1010px!important;
+    width: 1011px;
+    height: 410px!important;
+    height: 411px;
+    border-bottom: 1px solid #b0badf;
+    border-right: 1px solid #b0badf;
+}
+.main_top
+{
+    width: 1010px;
+    height: 61px;
+    background:url(../images/main_top.png) 0 0 repeat-x;
+    overflow: hidden;
+    position: absolute;
+    top:0;
+    left: 0;
+}
+.main_top_span
+{
+    position: absolute;
+    top:8px;
+    left: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #5d6da4;
+}
+.main_top_btn1
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 0 no-repeat;
+    position: absolute;
+    top:30px;
+    left: 500px;
+    cursor: pointer;
+}
+.main_top_btn1_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px 0 no-repeat;
+    position: absolute;
+    top:30px;
+    left: 500px;
+    cursor: pointer;
+}
+.main_top_btn2
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -100px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 592px;
+    cursor: pointer;
+}
+.main_top_btn2_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -100px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 592px;
+    cursor: pointer;
+}
+.main_top_btn3
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -200px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 684px;
+    cursor: pointer;
+}
+.main_top_btn3_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -200px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 684px;
+    cursor: pointer;
+}
+.main_top_btn4
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -300px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 10px;
+    cursor: pointer;
+}
+.main_top_btn4_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -300px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 10px;
+    cursor: pointer;
+}
+.main_top_btn5
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -400px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 105px;
+    cursor: pointer;
+}
+.main_top_btn5_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -400px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 105px;
+    cursor: pointer;
+}
+.main_top_btn6
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -500px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 205px;
+    cursor: pointer;
+}
+.main_top_btn6_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -500px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 205px;
+    cursor: pointer;
+}
+.main_top_btn7
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -600px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 850px;
+    cursor: pointer;
+}
+.main_top_btn7_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -600px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 850px;
+    cursor: pointer;
+}
+.main_top_btn8
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) 0 -700px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 305px;
+    cursor: pointer;
+}
+.main_top_btn8_hover
+{
+    width:92px;
+    height:25px;
+    background:url(../images/main_top_btn.png) -200px -700px no-repeat;
+    position: absolute;
+    top:30px;
+    left: 305px;
+    cursor: pointer;
+}
+.main_main
+{
+    width: 1010px;
+    height: 349px;
+    overflow: hidden;
+    position: absolute;
+    top:61px;
+    left: 0;
+}
+.main_main_left
+{
+    position:absolute;
+    width:160px;
+    height: 349px;
+    top:0;
+    left:0;
+    border-right:1px solid #b0badf;
+    border-top: 1px solid #b0badf;
+    background: #ebefff;
+}
+.main_main_left_top
+{
+    width:130px;
+    height: 27px;
+    line-height: 27px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+.main_main_left_top span
+{
+    font-size: 13px;
+    color: #484848;
+}
+.main_main_right_div
+{
+    width:160px;
+    height: 27px;
+    line-height: 27px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.main_main_right_img
+{
+    width:27px;
+    height: 27px;
+    background:url(../images/main_main_right_img.png) 0 0 no-repeat;
+    float: left;
+    overflow: hidden;
+    margin-left: 20px;
+}
+.main_main_right_img_person
+{
+    width:27px;
+    height: 27px;
+    background:url(../images/man.png) 0 0 no-repeat;
+    float: left;
+    overflow: hidden;
+    margin-left: 20px;
+}
+.main_main_right_span
+{
+    height: 27px;
+    line-height: 27px;
+    overflow: hidden;
+    float: left;
+}
+.main_main_right_span span
+{
+    font-size: 13px;
+    color: #484848;
+}
+.main_main_right
+{
+    position:absolute;
+    width:850px;
+    height: 349px;
+    top:0;
+    left:161px;
+    overflow: auto;
+}
+.man
+{
+    width: 27px;
+    height: 27px;
+    background:url(../images/man.png) 0 0 no-repeat;
+}
+.woman
+{
+    width: 27px;
+    height: 27px;
+    background:url(../images/woman.png) 0 0 no-repeat;
+}

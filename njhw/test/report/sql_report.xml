@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="report">
+
+	<typeAlias alias="comparePhotoInfo" type="cn.fnst.facecomp.model.ComparePhotoInfo" />
+	<typeAlias alias="comparePhotoTicket" type="cn.fnst.facecomp.model.ComparePhotoTicket" />
+	<typeAlias alias="comparePhotoNumber" type="cn.fnst.facecomp.model.ComparePhotoNumber" />
+	
+	<select id="getCompareTotalNum" resultClass="long" parameterClass="string">
+		<![CDATA[
+		select count(0) from ComparePhotoInfo 
+		where upload_time like #day# || '%'
+		]]>
+	</select>
+	
+	<select id="getCorrectCompareTotalNum" resultClass="long" parameterClass="string">
+		select count(0) from ComparePhotoInfo 
+		where (length(compare_result) = 3 or length(compare_result) = 2 or length(compare_result) = 1) 
+		and upload_time like #day# || '%'
+	</select>
+	
+	<select id="getNum1" resultClass="long" parameterClass="map">
+	<![CDATA[
+		select count(0) from ComparePhotoInfo where compare_result >= #point# 
+		and length(compare_result) <= 3 
+		and upload_time like #day# || '%'
+	]]>
+	</select>
+	
+	<select id="getNum2" resultClass="long" parameterClass="map">
+	<![CDATA[
+		select count(0) from ComparePhotoInfo where compare_result >= #point1# 
+		and compare_result < #point2# and length(compare_result) = 2 
+		and upload_time like #day# || '%'
+	]]>
+	</select>
+	
+	<select id="getNum3" resultClass="long" parameterClass="map">
+	<![CDATA[
+		select count(0) from ComparePhotoInfo where compare_result < #point1# 
+		and length(compare_result) = 1 
+		and upload_time like #day# || '%'
+	]]>
+	</select>
+	
+	<select id="getNum4" resultClass="long" parameterClass="map">
+	<![CDATA[
+		select count(0) from ComparePhotoInfo where 
+		compare_info = '2'	 
+		and upload_time like #day# || '%'
+	]]>
+	</select>
+	
+	<select id="getNum5" resultClass="long" parameterClass="map">
+	<![CDATA[
+		select count(0) from ComparePhotoInfo where length(compare_result) > 3	 
+		and upload_time like #day# || '%'
+	]]>
+	</select>
+	
+	<select id="getNumShared" resultClass="long" parameterClass="string">
+		select count(0) from ComparePhotoInfo where share_info = '1' 
+		and upload_time like #day# || '%'
+	</select>
+	
+	<select id="getNumAllComment" resultClass="long">
+		select count(0) from ComparePhotoInfo where user_comment is not null 
+		and upload_time like #day# || '%' 
+	</select>
+	
+	<select id="getNumComment" resultClass="long" parameterClass="map">
+		select count(0) from ComparePhotoInfo where user_comment = #comment# 
+		and upload_time like #day# || '%'
+	</select>
+	
+	<select id="getTotalNum" resultClass="hashmap" parameterClass="string">
+		select * from comparephoto_number where day = #day#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SuggestSql">
+	<!-- 意见分页查询-->
+	<select id="selectSuggestPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+			select sug.*,
+			       to_char(sug.createtime,'YYYY-MM-DD HH24:mi:ss') sugcreatetime,
+			       rep.repid,
+			       to_char(rep.createtime,'YYYY-MM-DD HH24:mi:ss') repcreatetime,
+			       to_char(rep.modifytime,'YYYY-MM-DD HH24:mi:ss') repmodifytime,
+			       rep.content repcontent,
+			       rep.status repstatus,
+			       rep.userid repuserid,
+			       rep.suggestionid suggestionid,
+			       u.display_name displayname,
+			       o.short_name shortname
+			  from t_common_suggestion sug, t_common_sug_reply rep,users u,org o
+			 where sug.sugid = rep.suggestionid(+) and u.userid(+) = rep.userid and u.org_id = o.org_id(+)
+			
+			<isNotEmpty prepend="AND" property="startDate">
+		  		<![CDATA[
+		  			to_char(sug.createtime,'YYYY-MM-DD') >= to_char(#startDate#,'YYYY-MM-DD')
+		  		]]>
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="AND" property="endDate">
+		  		<![CDATA[
+		  			to_char(sug.createtime,'YYYY-MM-DD') <= to_char(#endDate#,'YYYY-MM-DD')
+		  		]]>
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="AND" property="status">
+		  			sug.status = #status#
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="AND" property="content">
+		  			sug.content like '%' || #content# || '%'
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="AND" property="userid">
+		  			sug.userid = #userid#
+		  	</isNotEmpty>
+		  	
+		  	order by sug.createtime desc ,rep.modifytime desc
+	</select>
+	
+	<!-- 意见查询 -->
+	<select id="selectSuggestSuggestReplyListBySugid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+			select sug.*,
+			       to_char(sug.createtime,'YYYY-MM-DD HH24:mi:ss') sugcreatetime,
+			       rep.repid,
+			       to_char(rep.createtime,'YYYY-MM-DD HH24:mi:ss') repcreatetime,
+			       to_char(rep.modifytime,'YYYY-MM-DD HH24:mi:ss') repmodifytime,
+			       rep.content repcontent,
+			       rep.status repstatus,
+			       rep.userid repuserid,
+			       rep.suggestionid suggestionid,
+			       u.display_name displayname,
+			       o.short_name shortname
+			  from t_common_suggestion sug, t_common_sug_reply rep,users u,org o
+			 where sug.sugid = rep.suggestionid(+) and u.userid(+) = rep.userid and u.org_id = o.org_id(+) and sug.sugid = #sugid#
+		  	 order by sug.createtime desc ,rep.modifytime desc
+	</select>
+	
+	<!-- 根据意见id删除意见和回复  SUGGESTIONID是关联字段 -->
+	<delete id="delByIds"  parameterClass="java.lang.String" >
+		DELETE FROM T_COMMON_SUGGESTION WHERE SUGID = #id#
+	</delete>
+	<delete id="delByIdrs"  parameterClass="java.lang.String" >
+		DELETE FROM T_COMMON_SUG_REPLY WHERE SUGGESTIONID = #id#
+	</delete>
+	
+</sqlMap>

@@ -1,0 +1,741 @@
+@charset "utf-8";
+/* CSS Document */
+.main1_main2_left1{
+	width:328px;
+	margin:0 10px;
+	}
+.main1_main2_left1 li{
+	padding-bottom:2px;
+	}
+.main1_lnbox a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/fex_lnbox1.jpg) left top no-repeat;
+	}
+.main1_lnbox a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/fex_lnbox.jpg) left top no-repeat;
+	}
+.main1_send a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/send_fax.jpg) left top no-repeat;
+	}
+.main1_send a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/send_fax1.jpg) left top no-repeat;
+	}
+.main1_been a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/fax_been.jpg) left top no-repeat;
+	}
+.main1_been a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/fax_been1.jpg) left top no-repeat;
+	}
+
+.message_send a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/message_send.jpg) left top no-repeat;
+}
+.message_send a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/message_send_hover.jpg) left top no-repeat;
+}
+.message_outbox a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/message_outbox.jpg) left top no-repeat;
+}
+.message_outbox a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/message_outbox_hover.jpg) left top no-repeat;
+}
+	
+.main1_main2_right{
+	width:99%;
+	margin:10px auto;
+	}
+.main2_border_01 p span{
+	font-size:12px;
+	color:#999999;
+	font-weight:100;
+	font-family:"宋体";
+	padding-left:10px;
+	}
+.main2_border_01 p span span{
+	font-size:12px;
+	color:#ff9900;
+	font-weight:100;
+	font-family:"宋体";
+	padding-left:0px;
+	}
+.main2_border_02{
+	background:url(../images/border_left1.jpg) right bottom no-repeat;
+	}
+.main2_border_02 .main1_p{
+	padding:0;
+	margin:0;
+	height:30px;
+	line-height:30px;
+	padding-left:12px;
+	background:url(../images/border_left2.jpg) left center no-repeat;
+	font-size:14px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	color:#808080;
+	width:20%;
+	float:left;
+	}
+.main2_border_02 .main1_p span{
+	font-size:12px;
+	color:#999999;
+	font-weight:100;
+	font-family:"宋体";
+	padding-left:10px;
+	}
+.main2_border_02 .main1_p span span{
+	font-size:12px;
+	color:#ff9900;
+	font-weight:100;
+	font-family:"宋体";
+	padding-left:0px;
+	}
+.main1_fax_top{
+	width:500px;
+	float:right;
+	}
+.clear2{
+	clear:both;
+	height:1px;
+	width:100%;
+	overflow: hidden;
+	}
+.main1_fax_top{
+	font-size:12px;
+	color:#6699cc;
+	padding-top:0;
+	_padding-top:10px;
+	height:26px;
+	overflow:hidden;
+	}
+.input_text{
+	border:none;
+	height:18px;
+	line-height:18px;
+	_height:16px;
+	_line-height:16px;
+	_border:solid 1px #f1f1f1;
+	background:#f1f1f1;
+	padding:0;
+	margin:0;
+	width:120px;
+	font-size:12px;
+	color:#cccccc;
+	}
+.input_text1{
+	border:none;
+	height:18px;
+	line-height:18px;
+	_height:16px;
+	_line-height:16px;
+	_border:solid 1px #f1f1f1;
+	background: url(../images/main_sou.jpg) left center no-repeat #f1f1f1;
+	padding:0;
+	margin:0;
+	width:120px;
+	font-size:12px;
+	color:#cccccc;
+	padding-left:28px;
+	}
+.input_button1{
+	border:none;
+	height:18px;
+	line-height:18px;
+	_height:16px;
+	_line-height:16px;
+	background: url(../images/main_sou.jpg) right center no-repeat;
+	;
+	padding:0;
+	margin:0;
+	width:60px;
+	}
+.main1_main2_right li{
+	height:31;
+	line-height:31px;
+	background:url(../images/border_00_4.jpg) left bottom repeat-x;
+	font-size:12px;
+	color:#808080;
+	background:#f6f5f1;
+	}
+.main_main2_tba{
+	background:#ebebeb;
+	margin-top:10px;
+	font-size:14px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	color:#6699cc;
+	}
+.main2_tba1{
+	width:49%;
+	padding-left:1%;
+	display:inline-block;
+	}
+.main2_tba2{
+	width:12%;
+	display:inline-block;
+	}
+.main_cen_sq{
+	background:url(../images/border_00_7.jpg) left bottom repeat-x;
+	}
+.main_cen_sq a{
+	width:48%;
+	margin-left:1%;
+	display:inline-block;
+	color:#999999;
+	}
+.main2_tab3{
+	width:12%;
+	display:inline-block;
+	}
+.main2_tab4{
+	color:#ff9900;
+	}
+.main_peag{
+	background:#e0e3ea;
+	text-align:center;
+	width:100%;
+	margin:0 auto;
+	}
+.main_peag a{
+	width:24px;
+	height:24px;
+	line-height:24px;
+	display:inline-block;
+	background:#98a6be;
+	margin:5px;
+	}
+/****************发件箱****************/
+.main3_tba1{
+	width:30%;
+	padding-left:1%;
+	display:inline-block;
+	}
+.main3_tba2{
+	width:16%;
+	display:inline-block;
+	}
+.main3_cen_sq{
+	background:url(../images/border_00_7.jpg) left bottom repeat-x;
+	}
+.main3_cen_sq a{
+	width:29%;
+	margin-left:1%;
+	display:inline-block;
+	color:#999999;
+	}
+.main3_tab3{
+	width:16%;
+	display:inline-block;
+	}
+.main3_tab4{
+	color:#ff9900;
+	}
+.main3_lefts{
+	text-decoration:none;
+	font-size:12px;
+	color:#7f90b3;
+	background:url(../images/border_left.jpg) left center no-repeat;
+	padding-left:10px;
+}
+.main3_right{
+	width:26%;
+	float:right;
+	background:#f6f5f1;
+	padding:0 10px;
+	margin-top:10px;
+}
+.main_maink4{
+	background:url(../images/main_sou1.jpg) left top no-repeat;
+	height:22px;
+	padding-left:50px;
+}
+.input_txts{
+	border:none;
+	height:18px;
+	line-height:18px;
+	_height:16px;
+	_line-height:16px;
+	_border:solid 1px #d6d6d6;
+	background:#d6d6d6;
+	padding:0;
+	margin:0;
+	width:120px;
+}
+.input_buttons{
+	border:none;
+	height:18px;
+	line-height:18px;
+	_height:16px;
+	_line-height:16px;
+	background: none;
+	padding:0;
+	margin:0;
+	width:60px;
+}
+.main3_left_01{
+	width:70%;
+	float:left;
+	margin-top:10px;
+}
+.main_from_left{
+	width:12%;
+	text-align:right;
+	padding-right:10px;
+	font-size:14px;
+	color:#999999;
+	height:30px;
+	line-height:30px;
+}
+.main_input{
+	border: solid 1px #ccc;
+}
+.main_from_right1{
+	height:30px;
+	line-height:30px;
+	font-size:12px;
+	color:#999999;
+}
+.main_from_right1 a{
+	font-size:12px;
+	text-decoration:blink;
+	color:#999999;
+}
+.main_from_right1 a:hover{
+	font-size:12px;
+	text-decoration:blink;
+	color:#6699cc;
+}
+.input_button2{
+	width:111px;
+	height:32px;
+	background:url(../images/main_get.jpg) left top no-repeat;
+	border:none;
+	margin-right:10px;
+}
+.input_button3{
+	width:111px;
+	height:32px;
+	background:url(../images/get_main.jpg) left top no-repeat;
+	border:none;
+}	
+.main1_addconference a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addConference_image.jpg) left top no-repeat;
+}
+.main1_addconference a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addConference_hover.jpg) left top no-repeat;
+}
+.main1_viewconference a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewConference_image.jpg) left top no-repeat;
+}
+.main1_viewconference a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewConference_hover.jpg) left top no-repeat;
+}
+.main1_addConferencePackage a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addPackage_images.jpg) left top no-repeat;
+}	
+.main1_addConferencePackage a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addPackage_hover.jpg) left top no-repeat;
+}
+.main1_viewConferencePackage a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPackage_images.jpg) left top no-repeat;
+}
+.main1_viewConferencePackage a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPackage_hover.jpg) left top no-repeat;
+}
+.main1_addRepair a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addRepair_images.jpg) left top no-repeat;
+}
+.main1_addRepair a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addRepair_hover.jpg) left top no-repeat;
+}
+.main1_viewRepair a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewRepair_images.jpg) left top no-repeat;
+}
+.main1_viewRepair a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewRepair_hover.jpg) left top no-repeat;
+}
+.main1_repairCost a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/repairCost_images.jpg) left top no-repeat;
+}
+.main1_repairCost a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/repairCost_hover.jpg) left top no-repeat;
+}
+.main1_addDeviceType a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addDeviceType_images.jpg) left top no-repeat;
+}
+.main1_addDeviceType a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addDeviceType_hover.jpg) left top no-repeat;
+}
+.main1_viewDeviceType a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewDeviceType_images.jpg) left top no-repeat;
+}
+.main1_viewDeviceType a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewDeviceType_hover.jpg) left top no-repeat;
+}
+.main1_addDevice a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addDevice_images.jpg) left top no-repeat;
+}
+.main1_addDevice a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addDevice_hover.jpg) left top no-repeat;
+}
+.main1_viewDevice a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewDevice_images.jpg) left top no-repeat;
+}
+.main1_viewDevice a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewDevice_hover.jpg) left top no-repeat;
+}
+.main1_viewStorage a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewStorage_images.jpg) left top no-repeat;
+	}
+.main1_viewStorage a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewStorage_hover.jpg) left top no-repeat;
+}
+.main1_inOutStorage a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/inOutStorage_images.jpg) left top no-repeat;
+}
+.main1_inOutStorage a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/inOutStorage_hover.jpg) left top no-repeat;
+}
+
+.main1_addLostFound a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addLostFound_images.jpg) left top no-repeat;
+}
+.main1_addLostFound a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addLostFound_hover.jpg) left top no-repeat;
+}
+.main1_viewLostFound a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewLostFound_images.jpg) left top no-repeat;
+}
+.main1_viewLostFound a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewLostFound_hover.jpg) left top no-repeat;
+}
+.main1_addConfigPacking a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addConfigPacking_images.jpg) left top no-repeat;
+	}
+.main1_addConfigPacking a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addConfigPacking_hover.jpg) left top no-repeat;
+}
+.main1_viewConfigPacking a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/a_images26.jpg) left top no-repeat;
+	}
+.main1_viewConfigPacking a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/a_hover26.jpg) left top no-repeat;
+}
+.main1_totalConfigPacking a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/totalConfigPacking_images.jpg) left top no-repeat;
+	}
+.main1_totalConfigPacking a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/totalConfigPacking_hover.jpg) left top no-repeat;
+}
+
+.main1_totalConfigPackings a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/a_images27.jpg) left top no-repeat;
+	}
+.main1_totalConfigPackings a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/a_hover27.jpg) left top no-repeat;
+}
+.main1_addInfo a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addInfo_images.jpg) left top no-repeat;
+	}
+.main1_addInfo a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addInfo_hover.jpg) left top no-repeat;
+}
+.main1_viewInfo a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewInfo_images.jpg) left top no-repeat;
+	}
+.main1_viewInfo a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewInfo_hover.jpg) left top no-repeat;
+}
+.main1_addComplaint a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addComplaint_images.jpg) left top no-repeat;
+	}
+.main1_addComplaint a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addComplaint_hover.jpg) left top no-repeat;
+}
+.main1_viewComplaint a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewComplaint_images.jpg) left top no-repeat;
+	}
+.main1_viewComplaint a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewComplaint_hover.jpg) left top no-repeat;
+}
+.main1_addAttendanceSchedule a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addAttendanceSchedule_images.jpg) left top no-repeat;
+}
+.main1_addAttendanceSchedule a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/addAttendanceSchedule_hover.jpg) left top no-repeat;
+}
+.main1_viewAttendanceSchedule a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewAttendanceSchedule_images.jpg) left top no-repeat;
+	}
+.main1_viewAttendanceSchedule a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewAttendanceSchedule_hover.jpg) left top no-repeat;
+}
+.main1_viewAttendance a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewAttendance_images.jpg) left top no-repeat;
+	}
+.main1_viewAttendance a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewAttendance_hover.jpg) left top no-repeat;
+}
+
+.main1_viewPatrolLine a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolLine_images.jpg) left top no-repeat;
+	}
+.main1_viewPatrolLine a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolLine_hover.jpg) left top no-repeat;
+}
+
+.main1_viewPatrolSchedule a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolSchedule_images.jpg) left top no-repeat;
+	}
+.main1_viewPatrolSchedule a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolSchedule_hover.jpg) left top no-repeat;
+}
+
+.main1_viewPositionCard a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPositionCard_images.jpg) left top no-repeat;
+	}
+.main1_viewPositionCard a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPositionCard_hover.jpg) left top no-repeat;
+}
+
+.main1_viewPatrolException a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolException_images.jpg) left top no-repeat;
+	}
+.main1_viewPatrolException a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolException_hover.jpg) left top no-repeat;
+}
+
+
+.main1_viewHistory a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolHistoryLine_images.jpg) left top no-repeat;
+	}
+.main1_viewHistory a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/viewPatrolHistoryLine_hover.jpg) left top no-repeat;
+}
+
+.main1_viewPatrolStick a{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/patrolStick_image.jpg) left top no-repeat;
+	}
+.main1_viewPatrolStick a:hover{
+	width:327px;
+	height:70px;
+	display:block;
+	background:url(../images/patrolStick_hover.jpg) left top no-repeat;
+}

@@ -1,0 +1,227 @@
+@charset "utf-8";
+/* CSS Document */
+/* css菜单*/
+.fest_index_left{
+	width:22%;
+	float:left;
+	background:#f6f5f1;
+}
+.fest_index_right{
+	width:76%;
+	float:right;
+}
+.fest_border{
+	height:30px;
+	line-height:28px;
+	background:#ecebe4;
+	padding-left:10px;
+	font-size:14px;
+	font-family:"微软雅黑";
+	color:#7f90b3;
+	font-weight:bold;
+}
+.fest_left_list{
+	width:252px;
+	margin:0 auto;
+}
+.fest_left_list a{
+	width:252px;
+	height:74px;
+	display:block;
+	text-decoration:none;
+	font-weight:bold;
+}
+.fest_left_list a span{
+	display:block;
+}
+/**星期一**/
+.fest_a1{
+	background:url(../images/mon_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}
+
+.fest_a1_c{
+	background:url(../images/mon_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+/**星期二**/
+.fest_a2{
+	background:url(../images/tues_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}
+
+.fest_a2_c{
+	background:url(../images/tues_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+/**星期三**/
+.fest_a3{
+	background:url(../images/wednes_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}
+.fest_a3_c{
+	background:url(../images/wednes_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+/**星期四**/
+.fest_a4{
+	background:url(../images/thurs_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}
+.fest_a4_c{
+	background:url(../images/thurs_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+
+/**星期五**/
+.fest_a5{
+	background:url(../images/fri_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}.fest_a5_c{
+	background:url(../images/fri_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+/**星期六**/
+.fest_a6{
+	background:url(../images/satur_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}
+.fest_a6_c{
+	background:url(../images/satur_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+/**星期日**/
+.fest_a7{
+	background:url(../images/sun_day.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#9aa7c2;
+}.fest_a7_c{
+	background:url(../images/sun_day_hover.jpg) left top no-repeat;
+	margin-top:10px;
+	color:#ffffff;
+}
+.fest_span1{
+	font-family:"微软雅黑";
+	font-size:18px;
+	padding-left:20px;
+	padding-top:16px;
+}
+.fest_span2{
+	font-family:"微软雅黑";
+	font-size:12px;
+	padding-left:20px;
+	padding-top:4px;
+}
+.fest_right_top{
+	border-bottom:solid 2px #a4b0c5;
+	height:26px;
+}
+.fest_right_top a{
+	width:162px;
+	height:26px;
+	display:inline-block;
+	line-height:26px;
+	text-align:center;
+	text-decoration:none;
+	background:url(../images/time_morn3.jpg) left top no-repeat;
+}
+.fest_right_top a:hover{
+	width:162px;
+	height:26px;
+	display:inline-block;
+	line-height:26px;
+	text-align:center;
+	text-decoration:none;
+	background:url(../images/time_morn1.jpg) left top no-repeat;
+}
+.fest_right_top a.selected{
+	width:162px;
+	height:26px;
+	display:inline-block;
+	line-height:26px;
+	text-align:center;
+	text-decoration:none;
+	background:url(../images/time_morn1.jpg) left top no-repeat;
+}
+
+.fest_right_top_a{
+	width:162px;
+	height:26px;
+	float:left;
+}
+.fest_right_top a .fest_right_top_span1{
+	color:#7f90b3;
+	font-size:12px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.fest_right_top a .fest_right_top_span2{
+	color:#808080;
+	font-size:14px;
+	padding-left:10px;
+	font-family:Arial;
+	font-weight:bold;
+}.fest_right_top a:hover .fest_right_top_span1{
+	color:#fff;
+	font-size:12px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.fest_right_top a .fest_right_top_span1.selected{
+	color:#fff;
+	font-size:12px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.fest_right_top a:hover .fest_right_top_span2{
+	color:#fff;
+	font-size:14px;
+	padding-left:10px;
+	font-family:Arial;
+	font-weight:bold;
+}
+.fest_right_top a .fest_right_top_span2.selected{
+	color:#fff;
+	font-size:14px;
+	padding-left:10px;
+	font-family:Arial;
+	font-weight:bold;
+}
+.fest_border_right{
+	border-bottom:solid 1px #ebebeb;
+	font-weight:bold;
+	font-size:12px;
+	color:#878787;
+	padding-top:18px;
+	padding-left:22px;
+	padding-bottom:4px;
+}
+.fest_conter_right{
+	font-size:12px;
+	color:#878787;
+	padding-top:10px;
+	padding-left:12px;
+}
+.fest_conter_right li{
+	width:138px;
+	float:left;
+	padding-left:10px;
+}
+.fest_title{
+	width:100%;
+}
+.fest_title span{
+	padding-left:10px;
+	}

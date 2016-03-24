@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BuildingmonSQL">
+	
+	<!--功能：查询门禁信息 	开发者：zh 	时间：2013-03-28  -->
+	<select id="mjQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #SearchExtResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID in(SELECT a.NODE_ID from OBJTANK a where a.P_ID = 6))
+          	</isEqual>
+          	<isEqual compareValue="B" property="extResType">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+          		</isGreaterEqual>
+          	</isEqual>
+          	<isEqual compareValue="F" property="extResType">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID = #pid#
+          		</isGreaterEqual>
+          	</isEqual>
+       	</dynamic>
+       	order by t.NODE_ID asc 
+	</select>
+	
+	<!--功能：查询闸机信息 	开发者：zh 	时间：2013-03-28  -->
+	<select id="zjQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #SearchExtResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+          	</isEqual>
+          	<isEqual compareValue="B" property="extResType">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID = #pid#
+          		</isGreaterEqual>
+          	</isEqual>
+       	</dynamic>
+       	order by t.NODE_ID asc 
+	</select>
+	
+	<!--功能：查询楼梯信息 	开发者：cjw 	时间：2013-03-28  -->
+	<select id="dtQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #extResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+          	</isEqual>
+          	<isEqual compareValue="B" property="floor">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID = #pid#
+          		</isGreaterEqual>
+          	</isEqual>
+       	</dynamic>
+       	order by t.NODE_ID asc 
+	</select>
+	
+	<!-- 分页、分级查询摄像头列表 -->
+	<select id="getLevelSXTPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #SearchExtResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID in(SELECT a.NODE_ID from OBJTANK a where a.P_ID = 6))
+          	</isEqual>
+          	<isEqual compareValue="B" property="extResType">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+          		</isGreaterEqual>
+          	</isEqual>
+          	<isEqual compareValue="F" property="extResType">
+          		<isGreaterEqual compareValue="0" prepend="and" property="pid">
+          			t.P_ID = #pid#
+          		</isGreaterEqual>
+          	</isEqual>
+       	</dynamic>
+       	order by t.NODE_ID asc
+	</select>
+	
+	<!--功能：加载访客位置点 	开发者：zh 	时间：2013-05-4  -->
+	<select id="loadVisitorPoints" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<dynamic>
+			<isNotEmpty prepend="and" property="visitorName">
+				
+			</isNotEmpty>
+       	</dynamic>
+	</select>
+	
+	<!--功能：加载访客信息 	开发者：mzy 	时间：2013-08-15  -->
+	<!-- 从访客表中查访客信息(res_bak2：访客照片,res_bak3:无线定位卡号) -->
+	<select id="loadVisitorInfo_visitor" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+SELECT
+       v.vi_name, s.vs_id  , s.res_bak3 as wireless_card, v.res_bak2, s.user_name, s.org_name, s.res_bak3 ,  
+       CASE s.res_bak1
+          WHEN '1'
+             THEN  v.res_bak1
+          WHEN '2' 
+             THEN v.resident_no
+          WHEN '3'
+             THEN v.res_bak3     
+       END card_id ,
+      CASE S.RES_BAK1 
+       WHEN '1'
+            THEN '市民卡'
+       WHEN '2'
+            THEN '身份证'
+       WHEN '3'
+            THEN '其他' 
+       END  CARD_TYPE  
+    FROM vm_visit s,vm_visitorinfo v
+    where s.vi_id=v.vi_id 
+ <isNotEmpty prepend="and" property="visitorName">
+		v.vi_name=#visitorName#		
+	  </isNotEmpty>
+	  <isNotEmpty prepend="and" property="visitorID">
+        v.vi_id=#visitorID#
+      </isNotEmpty>
+       order by s.vs_id desc
+	</select>
+	<!-- <select id="loadVisitorInfo_visitor" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+      ( SELECT
+       v.vi_name as visitorName , v.res_bak2 as visitorPhoto, s.user_name as userName, s.org_name as orgName, s.res_bak3 as cardNum,  
+       CASE s.res_bak1
+          WHEN '1'
+             THEN  v.res_bak1
+          WHEN '2' 
+             THEN v.resident_no
+          WHEN '3'
+             THEN v.res_bak3     
+       END cardId ,
+      CASE S.RES_BAK1 
+       WHEN '1'
+            THEN '市民卡'
+       WHEN '2'
+            THEN '身份证'
+       WHEN '3'
+            THEN '其他' 
+       END cardType  
+    FROM vm_visit s,vm_visitorinfo v
+    where s.vi_id=v.vi_id and s.in_out=#in_out#  
+    <isNotEmpty prepend="and" property="visitorName">
+		v.vi_name=#visitorName#		
+	  </isNotEmpty>
+	  <isNotEmpty prepend="and" property="visitorID">
+        v.vi_id=#visitorID#
+      </isNotEmpty>  )
+    union all
+    ( SELECT   
+     au.va_bak1 as visiorName,au.va_bak2 as visitorPhoto,v1.user_name as userName,v1.org_name as ogrName,null,
+       CASE au.card_type
+          WHEN '1'
+             THEN  au.card_id
+          WHEN '2' 
+             THEN au.resident_no   
+       END cardId ,
+       CASE au.card_type
+          WHEN '1'
+             THEN  '市民卡'
+          WHEN '2' 
+             THEN  '身份证'   
+       END cardType 
+      FROM vm_visit_auxi au , vm_visit v1
+      where au.vs_id = v1.vs_id and au.in_out=#in_out# 
+      <isNotEmpty prepend="and" property="visitorName">
+		v.vi_name=#visitorName#		
+	  </isNotEmpty>
+	  <isNotEmpty prepend="and" property="visitorID">
+        v.vi_id=#visitorID#
+      </isNotEmpty> )
+	</select>-->
+	<!-- 从随行人员表中查询信息(va_bak1：名称，card_type：证件类型，card_id：证件号，va_bak2：无线定位卡号，vs_id：事务ID，没有照片) -->
+	<select id="loadVisitorInfo_auxi" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	  SELECT   
+     au.va_bak1,au.va_bak2,v1.user_name,v1.org_name,
+       CASE au.card_type
+          WHEN '1'
+             THEN  au.card_id
+          WHEN '2' 
+             THEN au.resident_no   
+       END card_id ,
+       CASE au.card_type
+          WHEN '1'
+             THEN  '市民卡'
+          WHEN '2' 
+             THEN  '身份证'   
+       END card_type 
+      FROM vm_visit_auxi au , vm_visit v1
+      where au.vs_id = v1.vs_id and au.in_out=#in_out# 
+       <isNotEmpty prepend="and" property="visitorName">
+		au.va_bak1=#visitorName#		
+	  </isNotEmpty>
+      <isNotEmpty prepend="and" property="visitorID">
+      au.va_id = #visitorID#
+      </isNotEmpty>
+	</select>
+</sqlMap>

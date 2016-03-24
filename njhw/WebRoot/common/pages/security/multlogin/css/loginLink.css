@@ -1,0 +1,81 @@
+body
+{
+    width:100%;
+    height:100%;
+    background:url(../images/back.jpg) 0 0 no-repeat;
+    overflow-y:auto ;
+}
+*{margin: 0;padding: 0}
+.logo
+{
+    position: absolute;
+    width: 630px;
+    height: 86px;
+    background:url(../images/logo.png) 0 0 no-repeat;
+    top:100px;
+    left:50%;
+    margin-left: -315px;
+}
+.link1
+{
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    background:url(../images/link1.png) 0 0 no-repeat;
+    top:300px;
+    left:50%;
+    margin-left: -510px;
+    cursor: pointer;
+}
+.link2
+{
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    background:url(../images/link2.png) 0 0 no-repeat;
+    top:300px;
+    left:50%;
+    margin-left: -150px;
+    cursor: pointer;
+}
+.link3
+{
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    background:url(../images/link3.png) 0 0 no-repeat;
+    top:300px;
+    left:50%;
+    margin-left: 210px;
+    cursor: pointer;
+}
+.link1_bg
+{
+    position: absolute;
+    width: 306px;
+    height: 23px;
+    background:url(../images/link_bg.png) 0 0 no-repeat;
+    top:490px;
+    left:50%;
+    margin-left: -510px;
+}
+.link2_bg
+{
+    position: absolute;
+    width: 306px;
+    height: 23px;
+    background:url(../images/link_bg.png) 0 0 no-repeat;
+    top:490px;
+    left:50%;
+    margin-left: -150px;
+}
+.link3_bg
+{
+    position: absolute;
+    width: 306px;
+    height: 23px;
+    background:url(../images/link_bg.png) 0 0 no-repeat;
+    top:490px;
+    left:50%;
+    margin-left: 210px;
+}

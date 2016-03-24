@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommonSQL">
+	<!-- 目的：获得用户缺省页　开发者：WXJ 　调用:AuthorityManager 　时间：2013-04-20 -->
+	<select id="getDefaultPage" parameterClass="java.util.Map" resultClass="java.lang.String" >
+		select OBJPATH 
+		from DEFAULT_PAGE 
+		where PERSON_ID = #userid#
+		and TYPE = #type#  
+	</select> 
+	
+	<delete id="delbr"  parameterClass="java.util.Map"   >
+		delete from T_COMMON_MSG_BOARD_READ where MSGID = #msgid#
+	</delete>
+	<delete id="delBoard"  parameterClass="java.util.Map"   >
+		delete from T_COMMON_MSG_BOARD where MSGID = #msgid#
+	</delete>
+		<select id="selectAllMsgBoard" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from T_COMMON_MSG_BOARD t where 1=1 order by MSGID desc
+	</select>
+	<update id="updateMsgInfo" parameterClass="java.util.Map">
+		update T_COMMON_MSG_BOARD set TITLE=#title#,
+									CONTENT=#content#
+									where MSGID=#msgid#
+	</update>
+	
+	
+	<!-- 通知 -->
+	<!-- 获取消息编号 -->
+	<select id="getMessageId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select seq_message_box.nextval from dual 
+	</select>
+	<!-- 获取阅读状态 -->
+	<select id="getOutboxStatus" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from T_COMMON_MSG_BOX where  NOTIFICATION_ID = #notificationId#
+	</select>
+	<!-- 获取查询发件箱数据 -->
+	<select id="getReceiveList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from T_COMMON_MSG_BOX where MSGID in (select max(MSGID) from T_COMMON_MSG_BOX group by NOTIFICATION_ID) and SENDER = #sender# order by MSGTIME desc 
+	</select>
+	<!-- 获取人员部门名 -->
+	<select id="getOrgById" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from users inner join org on users.org_id=org.org_id where users.userid= #userid# 
+	</select>
+	<!-- 目的：用户权限分配　开发者：WXJ 　调用:RightMgrManager 　时间：2011-02-28 -->
+	<select id="findUsers4Right" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select a.userid,a.usercode,a.username,a.loginname,b.orgname from t_ac_user a,t_ac_org b 
+	 where not exists (select c.userid
+	                  from t_ac_userrole c
+	                 where c.roleid = #proleid# and a.userid =c.userid)
+	                 and b.orgid = a.orgid
+	                 and b.company = #company#
+		<dynamic >
+			<!--用户名称 -->
+			<isNotEmpty prepend="and" property="username">
+				a.username like '%'|| #username# || '%'
+            </isNotEmpty>
+			<!--用户编码 -->
+			<isNotEmpty prepend="and" property="usercode">
+				a.usercode = #usercode#
+            </isNotEmpty>
+		</dynamic>	                   
+	</select>  
+
+ <!-- 目的：CA信息查询显示列　开发者：yc 　调用: SQL caQuery 　时间：2011-11-22 -->
+    <sql id="caQueryItems">
+        CAID,APPLYUSER,APPLYDATE,APPLYNO,APPLYNUM,CATERM,APPLYTYPE,ORGNAME,ORGNAMEEN,ORGIDTYPE,ORGIDNUM 
+        ,HANDLER,HANDLERIDTYPE,HANDLERIDNUM,STAMPDATE,AUDITUSER,AUDITDATE,AUDITSTATUS,
+        GENCAUSER,GENCADATE,ISGENCA,GENCADESC,ISSUBMIT
+    </sql>
+	<!-- 目的：CA信息查询　开发者：yc 　 　时间：2011-11-22 -->
+	<select id="caQryList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select <include refid="caQueryItems" />
+		from T_AC_CAAPPLY where 1=1
+		<dynamic >
+            <!--申请人 -->
+			<isNotEmpty prepend="and" property="applyuser">
+				APPLYUSER = #applyuser#
+            </isNotEmpty>
+			<!--审核状态 -->
+			<isNotEmpty prepend="and" property="auditstatus">
+				AUDITSTATUS = #auditstatus#
+            </isNotEmpty>
+            <!--是否已制证 -->
+			<isNotEmpty prepend="and" property="isgenca">
+				ISGENCA = #isgenca#
+            </isNotEmpty>
+            <!--删除状态 -->
+			<isNotEmpty prepend="and" property="delstatus">
+				DELSTATUS = #delstatus#
+            </isNotEmpty>
+            <!-- 提交状态 -->
+            <isNotEmpty prepend="and" property="issubmit">
+				ISSUBMIT = #issubmit#
+            </isNotEmpty>
+           	<!-- 日期类型申请日期 -->
+           	<isEqual property="dateType"  prepend="and"  compareValue="1" >
+           	<![CDATA[
+				APPLYDATE >= to_date(#applyDateStart#, 'yyyy-mm-dd') 
+				and APPLYDATE < to_date(#applyDateEnd#, 'yyyy-mm-dd') +1
+			]]>
+			</isEqual>	
+		</dynamic>
+		ORDER BY APPLYDATE <!-- CA申请日期 --> DESC,APPLYNO ASC
+	</select>
+
+	<sql id="T_AC_CAAPPLY">
+		CAID,APPLYUSER,APPLYDATE,APPLYNO,APPLYNUM,CATERM,CATYPE,APPLYTYPE,CADN,ORGNAME,ORGNAMEEN,ORGIDTYPE,ORGIDNAME,ORGIDNUM,HANDLER,HANDLERIDTYPE,HANDLERIDNUM,HANDLERTEL,HANDLERFAX,HANDLERMAIL,HANDLERADDR,HANDLERPOSTCODE,HANDLERSTAMP,STAMPDATE,DELSTATUS,AUDITUSER,AUDITDATE,AUDITSTATUS,AUDITDESC,GENCAUSER,GENCADATE,ISGENCA,GENCADESC,ISSUBMIT
+	</sql>
+	<!-- 目的：CA 发证查询已经审核同意的 资料  -->
+	<select id="findCaApply4LicenseList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select 
+	  <include refid="T_AC_CAAPPLY"/>
+	  from t_ac_caapply t
+	  <dynamic prepend="where">
+		<!-- 机构名称-->
+	  	<isNotEmpty prepend="and" property="orgname">
+	  		t.ORGNAME like '%'|| #orgname# || '%'
+	  	</isNotEmpty>
+		<!--机构证件号码-->
+	  	<isNotEmpty prepend="and" property="orgidnum">
+	  		t.ORGIDNUM = #orgidnum#
+	  	</isNotEmpty>
+	  	<!-- 是否删除 -->
+	  	<isNotEmpty prepend="and" property="delstatus">
+	  		t.DELSTATUS = #delstatus#
+	  	</isNotEmpty>
+	  	<!-- 审核状态 -->
+	  	<isNotEmpty prepend="and" property="auditstatus">
+	  		t.AUDITSTATUS = #auditstatus#
+	  	</isNotEmpty>
+	  	<!-- 是否已发证-->
+	  	<isNotEmpty prepend="and" property="isgenca">
+	  		t.ISGENCA = #isgenca#
+	  	</isNotEmpty>
+	  	<!-- 业务类型 -->
+	  	<isNotEmpty prepend="and" property="applytype">
+	  		t.APPLYTYPE = #applytype#
+	  	</isNotEmpty>
+	  	<!-- 是否提交 -->
+	  	<isNotEmpty prepend="and" property="issubmit">
+	  		t.ISSUBMIT = #issubmit#
+	  	</isNotEmpty>
+	  	<!--申请人-->
+	  	<isNotEmpty prepend="and" property="applyuser">
+	  		t.APPLYUSER = #applyuser#
+	  	</isNotEmpty>
+	  	<!--申请代码-->
+	  	<isNotEmpty prepend="and" property="applyno">
+	  		t.APPLYNO = #applyno#
+	  	</isNotEmpty>
+	  	<!--申请开始日期-->
+	  	<isNotEmpty prepend="and" property="startTime">
+	  	<![CDATA[
+	  		t.APPLYDATE >=  to_date(#startTime#,'yyyy-mm-dd')
+	  		]]>
+	  	</isNotEmpty>
+	  	<!--申请结束日期-->
+	  	<isNotEmpty prepend="and" property="endTime">
+	  	<![CDATA[
+	  		t.APPLYDATE < to_date(#endTime#,'yyyy-mm-dd') + 1
+	  		]]>
+	  	</isNotEmpty>
+	  </dynamic>
+	</select>
+
+	
+	<!-- 目的：查询一个纳税人识别号下的全部用户(供应商)　开发者：csq 　调用:CAMgrManager 　时间：2011-11-25 -->
+	<select id="findUsersWithTaxno" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    select a.userid,a.usercode,a.username,a.loginname from t_ac_user a
+        where exists (select b.orgid from t_ac_org b where a.orgid = b.orgid 
+                and (b.orgtype = '8' or b.orgtype = '9') 
+                and b.taxno = #taxno#)           
+	</select>
+	
+	<!-- 目的：查询一个用户已经申请数　开发者：csq 　调用:CAMgrManager 　时间：2011-11-25 -->
+	<select id="countUserApply" parameterClass="java.util.Map" resultClass="java.lang.Long" >
+	    select count(*) from t_ac_caapply a where a.delstatus = '0' and a.applyuser = #applyuser#        
+	</select>
+	
+	<!-- 目的：查看当前用户的公告板阅读信息　开发者：csq 　调用:CAMgrManager 　时间：2011-11-25 -->
+	<select id="loadBoard" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    SELECT t1.* from T_COMMON_MSG_BOARD t1 order by t1.msgtime desc
+	</select>
+	
+	<!-- 目的：查询一个用户当前申请步骤　开发者：csq 　调用:CAMgrManager 　时间：2011-11-28 -->
+	<select id="currentApplyStep" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    select a.caid, a.applyno, a.stepcode, a.applynum from t_ac_caapply a 
+	    where a.delstatus = '0' and a.issubmit = '0' and a.applyuser = #applyuser#  
+	    order by a.applydate      
+	</select>	
+
+
+	<!-- 目的：ca资料审核 开发者：fengfj 　调用:CAMgrManager 　时间：2011-11-24 -->
+	<select id="findCaapplyAuditList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select t.CAID,t.ORGNAME,t.ORGIDNUM,t.ORGIDTYPE,t.APPLYNO,t.APPLYNUM,t.CATERM,t.CATYPE,t.APPLYDATE from t_ac_caapply t
+	  where t.AUDITSTATUS = '0' and t.APPLYTYPE = '0' and t.ISSUBMIT = '1' and t.DELSTATUS = '0'
+	  <dynamic>
+		<!-- 机构名称-->
+	  	<isNotEmpty prepend="and" property="orgname">
+	  		t.ORGNAME like '%'|| #orgname# || '%'
+	  	</isNotEmpty>
+		<!--机构证件号码-->
+	  	<isNotEmpty prepend="and" property="orgidnum">
+	  		t.ORGIDNUM = #orgidnum#
+	  	</isNotEmpty>
+	  	<!--申请人-->
+	  	<isNotEmpty prepend="and" property="applyuser">
+	  		t.APPLYUSER = #applyuser#
+	  	</isNotEmpty>
+	  	<!--申请代码-->
+	  	<isNotEmpty prepend="and" property="applyno">
+	  		t.APPLYNO = #applyno#
+	  	</isNotEmpty>
+	  	<!--申请开始日期-->
+	  	<isNotEmpty prepend="and" property="startTime">
+	  	<![CDATA[
+	  		t.APPLYDATE >=  to_date(#startTime#,'yyyy-mm-dd')
+	  		]]>
+	  	</isNotEmpty>
+	  	<!--申请结束日期-->
+	  	<isNotEmpty prepend="and" property="endTime">
+	  	<![CDATA[
+	  		t.APPLYDATE < to_date(#endTime#,'yyyy-mm-dd') + 1
+	  		]]>
+	  	</isNotEmpty>
+	  </dynamic>
+	  order by t.APPLYDATE desc
+	</select>
+
+	<!-- 目的：ca加载 开发者：WXJ 　调用:StartupListener 　时间：2011-12-12 -->
+	<select id="findCaaction4Mem" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select t.loginname,t.actioncode,t.isuseca from t_ac_causeraction t
+	</select>
+	
+	<!-- 目的：ca加载 开发者：WXJ 　调用:StartupListener 　时间：2011-12-12 -->
+	<select id="findCauser4Mem" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select  t.loginname,t.cano,t.isvalidca from t_ac_causer t
+	</select>
+	
+	<!-- 目的：查询用户操作列表　开发者：csq 　调用:CAMgrManager 　时间：2011-12-15 -->
+	<select id="findUserActionList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+      select distinct a.causeractionid, a.loginname, a.isuseca, b.actioncode, b.actionname, b.actiondesc 
+      from t_ac_causeraction a, t_ac_caaction b
+      where a.actioncode = b.actioncode
+	  <dynamic>
+		<!-- 用户名 -->
+	  	<isNotEmpty prepend="and" property="loginname">
+	  		a.loginname = #loginname#
+	  	</isNotEmpty>
+		<!-- 操作编码  -->
+	  	<isNotEmpty prepend="and" property="actioncode">
+	  		a.actioncode = #actioncode#
+	  	</isNotEmpty>
+		<!-- 操作名  -->
+	  	<isNotEmpty prepend="and" property="actionname">
+	  		b.actionname like '%'|| #actionname# || '%'
+	  	</isNotEmpty>
+		<!-- 是否已制证  -->
+	  	<isNotEmpty prepend="and" property="isuseca">
+	  		a.isuseca = #isuseca#
+	  	</isNotEmpty>
+	  </dynamic>         
+	</select>
+	
+	<!-- 目的：查询CA用户没有关联的操作　开发者：csq 　调用: SQL findUserNotHaveActionList 　时间：2011-12-20 -->
+	<select id="findUserNotHaveActionList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+      select a.actionid, a.actioncode, a.actionname, a.actiondesc 
+      from t_ac_caaction a
+      where not exists(select b.actioncode from t_ac_causeraction b where a.actioncode = b.actioncode
+              and b.loginname = #loginname#)     
+	</select>
+	
+    <!-- 目的：查询用户数　开发者：csq 　调用:CAMgrManager 　时间：2011-12-20 -->
+	<select id="countUser" parameterClass="java.util.Map" resultClass="java.lang.Long" >
+	    select count(*) from t_ac_user a where a.loginname = #loginname#        
+	</select>
+	
+ 	<!-- 目的：CA用户关联查询显示列　开发者：yc 　调用: SQL caQuery 　时间：2011-12-14 -->
+    <sql id="causerQueryItems">
+        CAUSERID,LOGINNAME,CANO,ISVALIDCA,APPLYNO
+    </sql>
+	<!-- 目的：CA用户关联查询　开发者：yc 　 　时间：2011-12-14 -->
+	<select id="causerQryList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select <include refid="causerQueryItems" />
+		from T_AC_CAUSER where 1=1
+		<dynamic >
+            <!--用户登录名 -->
+			<isNotEmpty prepend="and" property="loginname">
+				LOGINNAME = #loginname#
+            </isNotEmpty>
+			<!--CA序列号 -->
+			<isNotEmpty prepend="and" property="cano">
+				CANO = #cano#
+            </isNotEmpty>
+            <!--是否有效CA（0启用，1停用） -->
+			<isNotEmpty prepend="and" property="isvalidca">
+				ISVALIDCA = #isvalidca#
+            </isNotEmpty>
+            <!--申请代码 -->
+			<isNotEmpty prepend="and" property="applyno">
+				APPLYNO = #applyno#
+            </isNotEmpty>
+		</dynamic>
+		ORDER BY CAUSERID <!-- 用户CAID --> DESC
+	</select>
+	
+	<!-- 目的：ca功能维护     开发者：fengfj  调用:CAMgrManager 时间：2011-12-14 -->
+	<select id="findCaFunctionList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ACTIONID,t.ACTIONNAME,t.ACTIONDESC,t.ACTIONCODE from t_ac_caaction t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="actionname">
+				t.ACTIONNAME like '%'|| #actionname# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="actiondesc">
+			 	t.ACTIONDESC like '%'|| #actiondesc# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="actioncode">
+			 	t.ACTIONCODE = #actioncode#
+			</isNotEmpty>
+		</dynamic>
+		order by t.ACTIONID desc
+	</select>
+	
+	<typeAlias alias="knowledge" type="com.cosmosource.common.entity.TCommonKnowledge" />
+	
+	<resultMap id="knowledge_map" class="knowledge">
+        <result property="knowledgeId" column="KNOWLEDGE_ID" />
+        <result property="code" column="CODE" />
+        <result property="subject" column="SUBJECT" />
+        <result property="content" column="CONTENT" />
+        <result property="question" column="QUESTION" />
+        <result property="answer" column="ANSWER" />
+        <result property="type" column="TYPE" />
+        <result property="restrictLevel" column="RESTRICT_LEVEL" />
+        <result property="createTime" column="CREATE_TIME" />
+        <result property="displayModel" column="DISPLAY_MODEL" />
+    </resultMap>
+    
+	<!-- 目的：知识查询显示列　开发者：csq 　调用: SQL knowledgeQuery 　时间：2012-2-8 -->
+    <sql id="knowledgeQueryItems">
+        KNOWLEDGE_ID,CODE,SUBJECT,CONTENT,QUESTION,ANSWER,TYPE,RESTRICT_LEVEL,
+        TO_CHAR(CREATE_TIME, 'yyyy-MM-dd HH24:mi:ss') AS CREATE_TIME,DISPLAY_MODEL
+    </sql>
+    
+	<!-- 目的：知识查询      开发者：csq  调用:KnowledgeMgrManager  时间：2012-2-8 -->
+	<select id="findKnowledgeList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT <include refid="knowledgeQueryItems" />
+		FROM T_COMMON_KNOWLEDGE
+		WHERE company=#company#
+		<dynamic>
+			<isNotEmpty prepend="and" property="code">
+				CODE = #code#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="subject">
+			 	SUBJECT like '%'|| #subject# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="content">
+			 	CONTENT like '%'|| #content# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="question">
+			 	QUESTION like '%'|| #question# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="answer">
+			 	ANSWER like '%'|| #answer# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="type">
+				TYPE = #type#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="restrictLevel">
+				RESTRICT_LEVEL = #restrictLevel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="restrictLevelList">
+                RESTRICT_LEVEL IN
+                <iterate property="restrictLevelList" open="(" close=")" conjunction=",">
+			        $restrictLevelList[]$
+		        </iterate> 
+            </isNotEmpty> 
+			<isNotEmpty prepend="and" property="displayModel">
+				DISPLAY_MODEL = #displayModel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="state">
+				STATE = #state#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY CREATE_TIME DESC
+	</select>
+		
+	<!-- 目的：知识文件查询显示列    开发者：csq    调用: SQL knowledgeQuery    时间：2012-2-8 -->
+    <sql id="knowledgeFileQueryItems">
+        FILE_ID,FILE_NAME,FILE_SIZE,FILE_EXTENSION
+    </sql>
+    
+	<!-- 目的：知识文件查询      开发者：csq  调用:KnowledgeMgrManager  时间：2012-2-8 -->
+	<select id="findKnowledgeFileList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT <include refid="knowledgeFileQueryItems" />
+		FROM T_COMMON_KNOWLEDGE_FILE
+		WHERE KNOWLEDGE_ID = #knowledgeId#
+		ORDER BY FILE_ID DESC
+	</select>
+		
+	<!-- 目的：删除知识     开发者：csq  调用:KnowledgeMgrManager  时间：2012-2-14 -->
+	<delete id="deleteKnowledge" parameterClass="java.lang.Long">   
+        DELETE FROM T_COMMON_KNOWLEDGE
+        WHERE KNOWLEDGE_ID = #knowledgeId#  
+    </delete>
+    
+	<!-- 目的：删除知识文件     开发者：csq  调用:KnowledgeMgrManager  时间：2012-2-10 -->
+	<delete id="deleteKnowledgeFile" parameterClass="java.util.Map">   
+        DELETE FROM T_COMMON_KNOWLEDGE_FILE 
+        WHERE 1=1 
+        <dynamic>
+			<isNotEmpty prepend="and" property="fileId">
+				FILE_ID = #fileId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="knowledgeId">
+				KNOWLEDGE_ID = #knowledgeId#
+			</isNotEmpty>
+		</dynamic>  
+    </delete>
+    	
+	<!-- 目的：发布知识     开发者：csq  调用:KnowledgeMgrManager  时间：2012-2-13 -->
+    <update id="updateKnowledge" parameterClass="java.util.Map">   
+        UPDATE T_COMMON_KNOWLEDGE 
+        SET STATE = '2', PUBLISH_TIME = #publishTime#, PUBLISH_USER = #publishUser#
+        WHERE KNOWLEDGE_ID = #knowledgeId#
+    </update>
+    
+    <!-- 目的：更新密码错误次数    开发者：csq  调用:AuthorityManager  时间：2012-6-4 -->
+    <update id="updatePasswordWrongCount" parameterClass="java.util.Map">
+        UPDATE T_AC_USER
+        SET PWD_WRONG_COUNT = #wrongCount#
+        WHERE LOGINNAME = #loginname#
+    </update>
+        
+    <!-- 目的：密码错误次数清零     开发者：csq  调用:AuthorityManager  时间：2012-6-4 -->
+    <update id="clearPasswordWrongCount" parameterClass="java.util.Map">
+        UPDATE T_AC_USER 
+        SET PWD_WRONG_COUNT = 0
+        WHERE LOGINNAME = #loginname#
+    </update>
+    
+    <!-- 目的：查询密码错误次数     开发者：csq  调用:AuthorityManager  时间：2012-6-4 -->
+    <select id="findPasswordWrongCount" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		SELECT PWD_WRONG_COUNT FROM T_AC_USER
+		WHERE LOGINNAME = #loginname#
+	</select>
+	
+	<!-- 目的：更新用户状态     开发者：csq  调用:AuthorityManager  时间：2012-6-5 -->
+	<update id="updateUserStatus" parameterClass="java.util.Map">
+        UPDATE T_AC_USER 
+        SET STATUS = #status#
+        WHERE LOGINNAME = #loginname#
+    </update>
+    	
+	<!-- 目的：更新用户状态为锁定，并记录锁定时间     开发者：csq  调用:AuthorityManager  时间：2012-6-7 -->
+	<update id="updateUserLocked" parameterClass="java.util.Map">
+        UPDATE T_AC_USER 
+        SET STATUS = '3', LOCK_TIME = SYSDATE
+        WHERE LOGINNAME = #loginname#
+    </update>
+        	
+	<!-- 目的：更新用户状态为正常，并清空锁定时间，秘密错误次数为零     开发者：csq  调用:AuthorityManager  时间：2012-6-7 -->
+	<update id="updateUserUnLock" parameterClass="java.util.Map">
+        UPDATE T_AC_USER 
+        SET STATUS = '1', LOCK_TIME = null, PWD_WRONG_COUNT = 0
+        WHERE LOGINNAME = #loginname#
+    </update>
+    
+    <!-- 目的：查询密码失效用户     开发者：csq  调用:AuthorityManager  时间：2012-6-5 -->
+    <select id="findPasswordExpired" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT LOGINNAME FROM T_AC_USER U, T_AC_ORG O
+        WHERE U.ORGID = O.ORGID
+        AND U.STATUS = '1'
+        AND O.COMPANY = #company# AND 
+        <![CDATA[PWD_MODIFY_TIME < SYSDATE - #passwordExpiredDays#]]>
+	</select>
+	    
+    <!-- 目的：查询密码失效被锁定的用户     开发者：csq  调用:AuthorityManager  时间：2012-6-7 -->
+    <select id="findPasswordExpiredLockedUser" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT LOGINNAME FROM T_AC_USER U, T_AC_ORG O
+        WHERE U.ORGID = O.ORGID
+        AND U.STATUS = '3'
+        AND O.COMPANY = #company# AND 
+        <![CDATA[LOCK_TIME < SYSDATE - #unlockDays#]]>
+	</select>
+	
+	<!-- 目的：级别查询显示列    开发者：WXJ  调用: SQL findLevelList  时间：2012-8-2 -->
+    <sql id="levelQueryItems">
+        T.LEVEL_ID,T.LEVEL_CODE,T.LEVEL_NAME,T.REMARK,T.COMPANY
+    </sql>
+    
+	<!-- 目的：级别查询      开发者：WXJ  调用:LevelAction  时间：2012-8-2 -->
+	<select id="findLevelList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT <include refid="levelQueryItems" />
+		FROM T_AC_LEVEL T
+		WHERE T.COMPANY = #company#
+		<dynamic>
+			<isNotEmpty prepend="and" property="levelCode">
+				T.LEVEL_CODE = #levelCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="levelName">
+				T.LEVEL_NAME = #levelName#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY T.LEVEL_CODE ASC
+	</select>
+		
+	<!-- 目的：指定级别供应商查询显示列    开发者：WXJ  调用: SQL findLevelVendorList  时间：2012-8-2 -->
+    <sql id="levelVendorQueryItems">
+        ORGID,ORGCODE,ORGNAME,TAXNO,REMARK,COMPANY
+    </sql>
+    
+	<!-- 目的：指定级别供应商查询      开发者：WXJ  调用:LevelAction  时间：2012-8-2 -->
+	<select id="findLevelVendorList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT <include refid="levelVendorQueryItems" />
+		FROM T_AC_ORG
+		WHERE ORGTYPE = '9' AND COMPANY = #company#
+		<dynamic>
+			<isNotEmpty prepend="and" property="orgcode">
+				ORGCODE = #orgcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgname">
+				ORGNAME like '%'|| #orgname# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="taxno">
+				TAXNO like '%'|| #taxno# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="taxname">
+				TAXNAME like '%'|| #taxname# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="levelCode">
+				EXTF4 = #levelCode#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 目的：更新8码供应商级别字段     开发者：WXJ  调用:LevelManager  时间：2012-8-2 -->
+    <update id="updateVendorLevel" parameterClass="java.util.Map">   
+        UPDATE T_AC_ORG 
+        SET EXTF4 = #levelCode#
+        WHERE ORGID = #orgId#
+    </update>
+    
+	<!-- 目的：删除级别     开发者：WXJ  调用:LevelManager  时间：2012-8-3 -->
+    <update id="deleteLevel" parameterClass="java.util.Map">   
+        DELETE FROM T_AC_LEVEL WHERE LEVEL_ID = #levelId#
+    </update>
+        
+	<!-- 目的：查询已经被使用的级别编码     开发者：WXJ  调用:LevelManager  时间：2012-8-6 -->
+    <select id="queryUsedLevelCodeList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        SELECT DISTINCT EXTF4 FROM T_AC_ORG WHERE 1=1
+        <dynamic>
+    	    <isNotEmpty prepend="and" property="levelCodeList">
+                EXTF4 IN
+                <iterate property="levelCodeList" open="(" close=")" conjunction=",">
+			        $levelCodeList[]$
+		        </iterate> 
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+<!-- 问题贴的基本SQl -->	
+	<sql id="selectBasicSql">
+		select  DISTINCT(QUEST_ID), QUEST_CODE, QUEST_TYPE, QUEST_LEVEL, QUEST_TITLE,
+		        QUEST_USER, QUEST_TIME, QUEST_STATUS, CLOSED_USER, CLOSED_TIME,
+		        QUEST_COMPANY, VENDOR_REGION, DC_FLAG
+		from T_COMMON_VENDOR_QUEST 
+	</sql>
+	
+<!--功能： 查询问题贴列表(待审批) -->
+	<select id="selectQuestionList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		<include refid="selectBasicSql"/> where  
+	        <![CDATA[
+				TO_CHAR(QUEST_TIME, 'yyyy-mm-dd') >=  #questTimeStart#
+				AND TO_CHAR(QUEST_TIME, 'yyyy-mm-dd') <=  #questTimeEnd#
+			]]>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="and" property="questType">
+				QUEST_TYPE=#questType#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="questStatus">
+				QUEST_STATUS=#questStatus#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="questLevel">
+				QUEST_LEVEL=#questLevel#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="loginName">
+				LOGINNAME=#loginName#
+            </isNotEmpty>
+		</dynamic>
+	</select>
+
+
+<!-- 查询发帖的详细内容 -->
+	<select id="selectApprovingQuestionContent" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select b.ANS_ID, b.ANS_CONTENT  from  T_COMMON_VENDOR_ANS  b  
+		      where b.ANS_TYPE='0' and  b.QUEST_ID=#questId# 
+	</select>
+
+
+<!-- 查询发帖的时候上传的文件列表 -->
+	<select id="selectApprovingQuestionFileList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select c.FILE_ID, c.FILE_NAME, c.FILE_SIZE, c.FILE_EXTENSION
+		    from  T_COMMON_VENDOR_ANSFILE  c  
+				left join T_COMMON_VENDOR_ANS  b  on b.ANS_ID=c.ANS_ID
+				left join T_COMMON_VENDOR_QUEST  a on a.QUEST_ID=b.QUEST_ID
+		 where a.QUEST_ID=#questId# and b.ANS_TYPE='0'
+	</select>
+
+
+<!-- 查询问题贴对应的所有回复帖 -->
+	<select id="selectAllAns" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select b.ANS_ID, b.ANS_USER, b.ANS_COMPANY, b.ANS_CONTENT, TO_CHAR(b.ANS_TIME, 'yyyy-mm-dd hh24:mi:ss') AS ANS_TIME
+					from  T_COMMON_VENDOR_ANS  b  
+		      where b.ANS_TYPE='1' and  b.QUEST_ID=#questId# ORDER BY b.ANS_ID ASC
+	</select>
+	
+<!-- 根据登录名，查询当前登录用户所属公司类型 -->
+	<select id="findOrgTypeByLoginName" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select o.ORGTYPE from T_AC_ORG o, T_AC_USER u 
+					where o.ORGID=u.ORGID and u.LOGINNAME=#loginName# 
+	</select>
+	
+<!-- 根据角色名称，得到角色Id -->
+	<select id="findRoleByRoleName" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select ROLEID,ROLECODE from T_AC_ROLE where ROLENAME like '%'|| #roleName# || '%'
+	</select>
+	
+<!-- 查询客服部门，目前问题贴最少的员工loginName-->
+	<select id="findLoginNameWithMinQuestion" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select T.LOGINNAME from 
+			(select t.LOGINNAME, count(q.LOGINNAME) NUM from (select LOGINNAME from t_ac_user  where USERID in (select USERID from T_AC_USERROLE where ROLEID=#roleId#)) t  left join  T_COMMON_VENDOR_QUEST q on q.LOGINNAME = t.LOGINNAME GROUP BY t.LOGINNAME ORDER BY NUM asc)  T
+ 		where rownum=1
+	</select>
+
+  <!--查询个人信息   作者：qiyanqiang 日期：2013 - 05 -10  -->
+  <select id="searchPersonIfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select u.*, exp.*, t.tel_num telnum from users u, NJHW_USERS_EXP exp, TC_IP_TEL t   where u.USERID = exp.USERID(+) and exp.tel_num = t.tel_id(+)
+        <dynamic>
+		<isNotEmpty prepend="and" property="userId">
+			 u.USERID  = #userId#
+           </isNotEmpty>
+           </dynamic>
+</select>
+
+  <!--卡信息的查询  作者：qiyanqiang 日期：2013 - 05 -10  -->
+  <select id="searchCardsIfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select   * from NJHW_TSCARD card where  card.USER_ID  =#userId#
+
+        
+</select>
+
+<select id="searchUserNameByLogin" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select display_name from users where login_uid  = #id#
+</select>
+
+  <!--  查询用户的车牌     作者：qiyanqiang   日期： 2013-05-17 -->
+ <select id="searchUserLicensePlate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select   nup_pn , DECODE(nup_flag, 1,'付费',2,'免费', NULL) as nupFlag from NJHW_USERS_PLATENUM    WHERE 1=1  
+        <dynamic>
+		<isNotEmpty prepend="and" property="userId">
+			userid  =#userId#
+           </isNotEmpty>
+           </dynamic>
+</select>
+
+
+  <!--  查询用户闸机、门禁、门锁：     作者：qiyanqiang   日期： 2013-05-17     -->
+ <select id="searchAllFacility" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select a.userid,
+       a.display_name,
+       a.login_uid,
+       a.org_id,
+       (select trim(short_name) from org b where b.org_id = a.org_id) org_name,
+       fn_get_smart1('1') dev1,
+       fn_get_smart2(a.org_id) dev2,
+       fn_get_smart3(a.userid) dev3,
+       fn_get_smart4(a.userid) dev4
+  from users a
+  where a.userid = #userId#
+
+</select>
+
+
+<select id="getGateWhiteMsg" resultClass="java.util.HashMap" >
+	select MSG from T_025_GATE_WHITEMSG
+</select>
+
+</sqlMap>

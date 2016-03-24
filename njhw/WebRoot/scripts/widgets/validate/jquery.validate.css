@@ -1,0 +1,13 @@
+input.error { border: 1px dotted red; }
+label.error {
+	color: red;display: none;
+}
+div.error{
+	position: absolute;
+	Border: 1px solid #ff8080;
+	font-size: 9pt;
+	height: 19px;
+	color: #000000;
+	background: #fff2f2;
+	padding-top: 2px;
+}

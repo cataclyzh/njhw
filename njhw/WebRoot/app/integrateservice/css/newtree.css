@@ -1,0 +1,141 @@
+*{margin:0;padding: 0;}
+.treeNode
+{
+    float: right;
+    display: none;
+    overflow: hidden;
+    margin-top: 5px;
+    padding: 0;
+}
+.treeNode p{font-size: 13px;}
+/*下划线样式*/
+.solidDiv
+{
+    height: 7px;
+    background:url('../images/treemain.png') 0 -195px repeat-x;
+    overflow: hidden;
+}
+/*展开图片样式*/
+.unfold
+{
+    height:15px;
+    width:9px;
+    background:url('../images/treemain.png') 0 3px no-repeat;
+    overflow: hidden;
+    float: left;
+    cursor: pointer;
+}
+/*折叠图片样式*/
+.fold
+{
+    height:15px;
+    width:9px;
+    background:url('../images/treemain.png') 0 -95px no-repeat;
+    overflow: hidden;
+    float: left;
+    cursor: pointer;
+}
+/*空对象*/
+.empty
+{
+    height:15px;
+    width:9px;
+    overflow: hidden;
+    display:none;
+    float: left;
+}
+/*树状图*/
+.reportTips_tips1{
+	height:32px;
+	margin-top:10px; 
+	background:url(../images/border_00_3.jpg) left bottom repeat-x;
+}
+.reportTips_tips2{
+	height:32px;
+	margin-top:10px; 
+	background:url(../images/border_00_3.jpg) left bottom repeat-x;
+}
+.reportTips_tips3{
+	height:32px;
+	margin-top:10px; 
+	background:url(../images/border_00_3.jpg) left bottom repeat-x;
+}
+.tips1{
+	width:66px;
+	height:32px;
+	float:left;
+	background:url(../images/border_00_1.jpg) left top no-repeat;
+	line-height:32px; 
+	text-align:center; 
+	text-decoration:none; 
+	font-family:"微软雅黑"; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#808080;
+}
+.tips2{
+	width:66px;
+	float:left;
+	height:32px; 
+	display:block;
+	background:url(../images/border_00_2.jpg) left top no-repeat;
+	line-height:32px; 
+	text-align:center; 
+	text-decoration:none; 
+	font-family:"微软雅黑"; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#808080;
+}
+.tips3{
+	width:66px;
+	float:left;
+	height:32px; 
+	display:block;
+	background:url(../images/border_00_2.jpg) left top no-repeat;
+	line-height:32px; 
+	text-align:center; 
+	text-decoration:none; 
+	font-family:"微软雅黑"; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#808080;
+}
+.treeOn{
+	width:66px;
+	height:32px;
+	float:left;
+	background:url(../images/border_00_1.jpg) left top no-repeat;
+	line-height:32px; 
+	text-align:center; 
+	text-decoration:none; 
+	font-family:"微软雅黑"; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#808080;
+}
+.treeNone{
+	width:66px;
+	float:left;
+	height:32px; 
+	display:block;
+	background:url(../images/border_00_2.jpg) left top no-repeat;
+	line-height:32px; 
+	text-align:center; 
+	text-decoration:none; 
+	font-family:"微软雅黑"; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#808080;
+}
+.main_right3_input{
+	background:url(../images/main_sou.jpg) left top no-repeat;
+	height:22px;
+	padding-left:40px;
+}
+.address_list{
+	overflow:auto;
+	height:200px;
+	background:#f4f4f4;
+	color:#808080;
+}

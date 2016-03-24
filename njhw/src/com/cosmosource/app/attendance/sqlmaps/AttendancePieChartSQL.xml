@@ -1,0 +1,1769 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AttendancePieChartSQL">
+
+	<!--功能：获取部门下面员工数目 开发者：ChunJing 时间：2014-04-11 -->
+	<select id="getEmpCountByOrgId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT COUNT(v.userid) as count FROM
+		v_platenum_list v
+		WHERE v.department_id = #org_id#
+		AND v.userid NOT IN (SELECT nue.userid FROM njhw_users_exp nue WHERE nue.uep_type = '04')
+	</select>
+	
+	<!--功能：获取大厦、单位、部门下面员工数目 开发者：ChunJing 时间：2014-04-24
+	scope : 3 大厦
+			1 单位
+			2 部门 -->
+	<select id="getEmpCount" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT COUNT(u.userid) as count FROM
+		users  u 
+		WHERE u.org_id in
+		 (SELECT g.org_id FROM org g 
+                 start with
+		<dynamic>
+			<isEqual property="scope" compareValue="3" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="1" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+         connect by prior g.org_id = g.p_id)
+        <dynamic>
+        	<!-- 内部人员 -->
+        	and u.userid
+			<isNotEmpty property="isInternalEmp">
+				 not 
+			</isNotEmpty>
+			<!-- 临时人员 -->
+			in (SELECT nue.userid
+                  FROM njhw_users_exp nue
+                       WHERE nue.uep_type = '04')
+        </dynamic>
+<!--          AND u.userid NOT IN 
+         (SELECT nue.userid FROM njhw_users_exp nue 
+         WHERE nue.uep_type = '04') -->
+	</select>
+	
+	<!--功能：获取实时在大厦人员信息   ChunJing 时间：2014-04-24 -->
+	<select id="realTimeInBuildingEmpList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		
+		select count(1) as count from
+			(select u.userid,
+			trim(u.display_name) AS user_name,
+			nvl(to_char(b.last_record_time,'yyyy-MM-dd hh24:mi:ss'),'--') as
+			LAST_RECORD_TIME,
+			nvl(b.equipment_type,'--') as equipment_type,
+			nvl(b.in_or_out_flag,'--') as in_or_out_flag
+			from T_022_CURRENT_DAY_LAST_RECORD b, users u
+			where u.userid = b.user_id(+)
+			and u.org_id in (SELECT G.ORG_ID
+			FROM ORG G
+			start with
+		<dynamic>
+			<isEqual property="scope" compareValue="3" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="1" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+	      CONNECT BY PRIOR G.ORG_ID = G.P_ID)) t
+          where t.userid
+	    <dynamic>
+			<isNotEmpty property="isInternalEmp">
+				 not 
+			</isNotEmpty>
+			in (SELECT nue.userid
+                  FROM njhw_users_exp nue
+                       WHERE nue.uep_type = '04')
+                       
+	    	<isNotEmpty prepend="and" property="status">
+	    		<!-- 最后一次刷卡时闸机，状态是进 -->
+	      		<isEqual property="status" compareValue="in_building" >
+	      		t.equipment_type = '0' and t.in_or_out_flag = '1'
+				</isEqual>
+				
+				<!-- 最后一次刷卡是闸机，状态是出 -->
+	      		<isEqual property="status" compareValue="out_of_building" >
+	      		t.equipment_type = '0' and t.in_or_out_flag = '0' 
+				</isEqual>
+				
+				<!-- 最后一次刷卡是门禁或者没有记录，无法判断  -->
+	      		<isEqual property="status" compareValue="unkonwn" >
+	      		(t.equipment_type = '--' or t.in_or_out_flag = '1')
+				</isEqual>
+	      	</isNotEmpty>
+	    </dynamic>  
+		
+		
+<!-- 		SELECT SUM(DECODE(FN_GET_LAST_RECORD_STATUS(U.USERID,0),#in_or_out_flag#,1,0)) AS COUNT FROM USERS U WHERE U.ORG_ID IN 
+			(SELECT G.ORG_ID
+				FROM ORG G
+				START WITH 
+		<dynamic>
+			<isEqual property="scope" compareValue="3" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="1" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+	      CONNECT BY PRIOR G.ORG_ID = G.P_ID)
+	    <dynamic>
+        	内部人员
+        	and u.userid
+			<isNotEmpty property="isInternalEmp">
+				 not 
+			</isNotEmpty>
+			临时人员
+			in (SELECT nue.userid
+                  FROM njhw_users_exp nue
+                       WHERE nue.uep_type = '04')
+        </dynamic>  -->
+		
+	</select>
+	
+	<!--功能：获取实时在大厦人员信息，包括临时人员   ChunJing 时间：2014-05-08 -->
+	<select id="selectRealTimeEmpStatus" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		
+		 SELECT U.USERID,TRIM(U.DISPLAY_NAME) AS USER_NAME,
+		 FN_GET_LAST_RECORD_TIME(U.USERID) AS LAST_RECORD_TIME
+		  FROM USERS U WHERE U.ORG_ID IN 
+		(SELECT G.ORG_ID FROM ORG G
+			START WITH 
+		<dynamic>
+			<isEqual property="scope" compareValue="1" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="3" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+		      CONNECT BY PRIOR G.ORG_ID = G.P_ID) 
+	      <dynamic>
+	      	<isNotEmpty prepend="and" property="status">
+	      		<isEqual property="status" compareValue="in_building" >
+	      		FN_GET_LAST_RECORD_STATUS(U.USERID) = 1 
+				</isEqual>
+	      		<isEqual property="status" compareValue="out_of_building" >
+	      		(FN_GET_LAST_RECORD_STATUS(U.USERID) != 1 or FN_GET_LAST_RECORD_STATUS(U.USERID) is null)
+				</isEqual>
+	      	</isNotEmpty>
+	      </dynamic>
+		ORDER BY U.USERID
+		
+<!-- 		SELECT U.USERID,U.DISPLAY_NAME AS USER_NAME FROM USERS U,ORG O WHERE U.ORG_ID = O.ORG_ID AND 
+			U.ORG_ID IN (SELECT G.ORG_ID
+			FROM ORG G
+			START WITH 
+		<dynamic>
+			<isEqual property="scope" compareValue="1" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="3" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+			CONNECT BY PRIOR G.ORG_ID = G.P_ID)
+			ORDER BY O.ORDER_NUM,U.ORDER_NUM -->
+	</select>
+	
+	<!--功能：获取实时在大厦人员状态，包括临时人员   ChunJing 时间：2014-05-08 -->
+	<select id="selectRealTimeEmpStatus_@Deprecated" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	    SELECT DISTINCT A.USER_ID,
+	                    A.USER_NAME,
+	                    TO_CHAR(A.RECORD_TIME, 'YYYY/MM/DD HH24:MI:SS') AS LAST_RECORD_TIME,
+	                    A.IN_OR_OUT_FLAY as STATUS
+	                    <!-- DECODE(A.IN_OR_OUT_FLAY, '1', 'IN', 'OUT') AS STATUS -->
+	      FROM T_010_ATTENDANCE_LOG A
+	     WHERE A.RECORD_TIME = (SELECT MAX(T.RECORD_TIME) AS MAX_RECORD_TIME
+	                              FROM T_010_ATTENDANCE_LOG T
+	                             WHERE (T.ATTEND_YEAR || T.ATTEND_MONTH ||
+	                                   T.ATTEND_DATE) = (SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') FROM DUAL)                                
+	                               AND T.USER_ID = #user_id#)
+	</select>
+	
+	
+	
+	
+	
+	<!--功能：获取实时在大厦人员信息   ChunJing 时间：2014-05-13 -->
+	<select id="getRealTimegEmpList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+
+		select t.* from
+			(select u.userid,
+			trim(u.display_name) AS user_name,
+			nvl(to_char(b.last_record_time,'yyyy-MM-dd hh24:mi:ss'),'--') as
+			LAST_RECORD_TIME,
+			nvl(b.equipment_type,'--') as equipment_type,
+			nvl(b.in_or_out_flag,'--') as status
+			from T_022_CURRENT_DAY_LAST_RECORD b, users u
+			where u.userid = b.user_id(+)
+			and u.org_id in (SELECT G.ORG_ID
+			FROM ORG G
+			start with
+         <dynamic>
+			<isEqual property="scope" compareValue="1" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="3" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+	      CONNECT BY PRIOR G.ORG_ID = G.P_ID)) t
+	      where t.userid
+	     <dynamic>
+	         <!-- 0:内部人员 1：临时人员 -->
+	    	 <isNotEmpty property="personType">
+	    	 	<isEqual compareValue="0" property="personType">
+				 not 
+	    	 	</isEqual> 
+			 </isNotEmpty>
+			
+			in (SELECT nue.userid
+                  FROM njhw_users_exp nue
+                       WHERE nue.uep_type = '04')
+                       
+	    	<isNotEmpty prepend="and" property="status">
+	    	
+	    		<!-- 最后一次刷卡时闸机，状态是进 -->
+	      		<isEqual property="status" compareValue="in_building" >
+	      		t.equipment_type = '0' and t.status = '1'
+				</isEqual>
+				
+				<!-- 最后一次刷卡是闸机，状态是出 -->
+	      		<isEqual property="status" compareValue="out_of_building" >
+	      		t.equipment_type = '0' and t.status = '0' 
+				</isEqual>
+				
+				<!-- 最后一次刷卡是门禁或者没有记录，无法判断  -->
+	      		<isEqual property="status" compareValue="unkonwn" >
+	      		(t.equipment_type = '1' or t.status = '--')
+				</isEqual>
+	      	</isNotEmpty>
+	    </dynamic>  
+		ORDER BY t.USERID
+
+		
+<!-- 		SELECT U.USERID,U.DISPLAY_NAME,
+		fn_get_last_record_time(u.userid) as LAST_RECORD_TIME
+		FROM USERS U WHERE U.ORG_ID IN 
+			(SELECT G.ORG_ID
+				FROM ORG G
+				START WITH 
+		<dynamic>
+			<isEqual property="scope" compareValue="1" open="(" close=")">
+				g.p_id = 2 OR g.p_id = '1070'
+			</isEqual>
+			<isEqual property="scope" compareValue="2" >
+				g.org_id = #top_org_id#
+			</isEqual>
+			<isEqual property="scope" compareValue="3" >
+				g.org_id = #org_id#
+			</isEqual>
+		</dynamic>
+	      CONNECT BY PRIOR G.ORG_ID = G.P_ID)
+	    <dynamic>
+	    	<isNotEmpty prepend="and" property="status">
+	      		<isEqual property="status" compareValue="in_building" >
+	      		FN_GET_LAST_RECORD_STATUS(U.USERID) = 1 
+				</isEqual>
+	      		<isEqual property="status" compareValue="out_of_building" >
+	      		FN_GET_LAST_RECORD_STATUS(U.USERID) = 0 
+				</isEqual>
+	      		<isEqual property="status" compareValue="unkonwn" >
+	      		FN_GET_LAST_RECORD_STATUS(U.USERID) is null
+				</isEqual>
+	      	</isNotEmpty>
+	    </dynamic>  
+		ORDER BY U.USERID -->
+	</select>
+	
+
+
+
+	<!--功能：根据userID 获取最后一次刷卡时间  开发者：ChunJing 时间：2014-05-13 -->
+	<select id="selectLastRecordTimeByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+	
+		select fn_get_last_record_time(#user_id#) as LAST_RECORD_TIME from dual
+	
+	</select>
+
+
+	<!--功能：根据条件获取部门人员考勤信息 开发者：ChunJing 时间：2014-04-11 -->
+	<select id="getDeptAttendancesList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT T.USER_ID,
+		T.USER_NAME,
+		T.MORNING_STAT,
+		T.MORNING_DEAL_STAT,
+		T.AFTERNOON_STAT,
+		T.AFTERNOON_DEAL_STAT,
+		T.ATTEN_MORNING_TYPE,
+		T.ATTEN_AFTERNOON_TYPE,
+		o.name AS department_name,g.name AS org_name
+		FROM T_011_ATTENDANCE_PER_DAY T,
+		ORG O,org g
+		WHERE T.ORG_ID(+) =
+		O.ORG_ID
+		AND g.org_id = o.p_id
+		AND
+		(T.ATTEND_YEAR || T.ATTEND_MONTH ||
+		T.ATTEND_DATE)
+		NOT IN (
+		select
+		hol.hol_year || hol.hol_month ||
+		hol.hol_date from T_014_HOLIDAY hol
+		)
+		AND t.user_id NOT IN (
+		SELECT nue.userid FROM njhw_users_exp nue 
+		WHERE nue.uep_type = '04')
+		<dynamic>
+			<isNotEmpty prepend="and" property="org_id">
+				t.org_id in
+						(SELECT g.org_id FROM org g 
+		       			start with g.org_id = #org_id#
+		         		connect by prior g.org_id = g.p_id)
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					(t.attend_year || t.attend_month || t.attend_date) 
+					>= #start_time#
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					(t.attend_year || t.attend_month ||  t.attend_date)
+					 <= #end_time#
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY t.org_id,t.user_id
+	</select>
+
+
+	<!--功能：根据条件获取单位人员考勤信息 开发者：ChunJing 时间：2014-04-14 -->
+	<select id="getUnitAttendancesList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT t.user_id,
+		t.user_name,
+		T.MORNING_STAT,
+		T.MORNING_DEAL_STAT,
+		T.AFTERNOON_STAT,
+		T.AFTERNOON_DEAL_STAT,
+		T.ATTEN_MORNING_TYPE,
+		T.ATTEN_AFTERNOON_TYPE,
+		V.DEPARTMENT_ID,
+		V.DEPARTMENT_NAME,
+		V.ORG_ID,
+		V.ORG_NAME
+		FROM T_011_ATTENDANCE_PER_DAY T, v_platenum_list v
+		WHERE T.ORG_ID(+) =
+		v.department_id
+		AND t.user_id = v.userid
+		AND t.org_id IN (SELECT
+		o.org_id FROM org o WHERE o.p_id = #top_org_id#)
+		AND (T.ATTEND_YEAR ||
+		T.ATTEND_MONTH || T.ATTEND_DATE) NOT IN
+		(SELECT HOL.HOL_YEAR ||
+		HOL.HOL_MONTH || HOL.HOL_DATE
+		FROM T_014_HOLIDAY HOL)
+		<dynamic>
+			<isNotEmpty prepend="and" property="org_id">
+				t.org_id = #org_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY v.org_order_num,v.order_num
+	</select>
+
+	<!--功能：根据日期获取出勤天数 开发者：ChunJing 时间：2014-04-14 -->
+	<select id="getHolidaysCount" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT COUNT(1) as COUNT FROM t_014_holiday t WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					(t.hol_year || t.hol_month || t.hol_date)
+					>= #start_time#
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					(t.hol_year || t.hol_month || t.hol_date)
+					 <= #end_time#
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：查询底下部门信息 开发者：ChunJing 时间：2014-04-05 -->
+	<select id="getDeptListByOrgId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+<!-- 		SELECT o.org_id,o.name as org_name from org o WHERE o.p_id =
+		#top_org_id#
+		ORDER BY o.order_num -->
+		
+	    SELECT o.org_id,o.name as org_name from org o 
+                start with o.p_id = #top_org_id#
+                connect by prior o.org_id = o.p_id
+                ORDER BY o.order_num
+	</select>
+
+	<!--功能：查询大厦底下单位信息 开发者：ChunJing 时间：2014-04-14 -->
+	<select id="getUnitList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT o.org_id,o.name as org_name from org o WHERE o.p_id
+		= 2
+		ORDER BY o.order_num
+	</select>
+
+
+	<!--功能：获取大厦考勤宏观统计数据 开发者：ChunJing 时间：2014-04-16 -->
+	<select id="getBuildingAttandanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT
+	    sum(decode(T.MORNING_STAT,0,decode(T.Morning_Deal_Stat,0,1,0),0)) as morning_normal,
+	    sum(decode(T.Afternoon_Stat,0,decode(T.afternoon_Deal_Stat,0,1,0),0)) as afternoon_normal,
+	
+	    sum(decode(T.MORNING_STAT,
+	    1,decode(T.Morning_Deal_Stat,1,1,3,1,0),
+	    3,decode(T.Morning_Deal_Stat,1,1,3,1,0),
+	    0)) as morning_late_leave_early,
+	
+	    sum(decode(T.Afternoon_Stat,
+	    1,decode(T.afternoon_Deal_Stat,1,1,3,1,0),
+	    3,decode(T.afternoon_Deal_Stat,1,1,3,1,0),
+	    0)) as afternoon_late_leave_early,
+	
+	    sum(decode(T.MORNING_STAT,2,decode(T.Morning_Deal_Stat,1,1,3,1,0),0)) as morning_absent,
+	    sum(decode(T.Afternoon_Stat,2,decode(T.afternoon_Deal_Stat,1,1,3,1,0),0)) as afternoon_absent,
+	
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,1,1,2,1,0
+	    ),0))) as morning_sick_affair_leave,
+	    
+	    sum(decode(T.Afternoon_Stat,0,0,decode(T.afternoon_Deal_Stat,2,decode(t.atten_morning_type,1,1,2,1,0
+	    ),0))) as afternoon_sick_affair_leave,
+	
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,3,1,0),0)))
+	    as morning_business_leave,
+	    
+	    sum(decode(T.afternoon_stat,0,0,decode(T.Afternoon_Deal_Stat,2,decode(t.atten_afternoon_type,3,1,0),0)))
+	    as afternoon_business_leave,
+	    
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,4,1,0),0))
+	    )as morning_other,
+	    
+	    sum(decode(T.afternoon_stat,0,0,decode(T.Afternoon_Deal_Stat,2,decode(t.atten_afternoon_type,4,1,0),0)))as
+	    afternoon_other,
+	    o.name as org_name
+	    
+	    FROM T_011_ATTENDANCE_PER_DAY T,org o
+	    WHERE 
+	    fn_get_orgid_E(t.org_id) = o.org_id
+		AND
+		(T.ATTEND_YEAR || T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select
+			hol.hol_year || hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		AND t.user_id NOT IN (
+		SELECT nue.userid FROM njhw_users_exp nue 
+		WHERE nue.uep_type = '04')
+		
+		<![CDATA[
+		and fn_get_orgid(t.org_id) != 300
+		and
+		(t.ATTEND_YEAR ||  t.attend_month || t.attend_date ) >= #start_time#
+		and
+		(t.ATTEND_YEAR ||  t.attend_month || t.attend_date ) <= #end_time#
+		]]>
+<!-- 		<dynamic>
+ 			<isNotEmpty prepend="and" property="year_start">
+				 t.ATTEND_YEAR between #year_start# and #year_end#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="month_start">
+				t.attend_month between #month_start# and #month_end#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="day_start">
+				t.attend_date between #day_start# and #day_end#
+			</isNotEmpty> 
+		</dynamic> -->
+		group by o.name ,o.order_num
+	</select>
+	
+	
+	<!--功能：获取单位考勤宏观统计数据 开发者：ChunJing 时间：2014-04-24 -->
+	<select id="getUnitAttandanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT
+	    sum(decode(T.MORNING_STAT,0,decode(T.Morning_Deal_Stat,0,1,0),0)) as morning_normal,
+	    sum(decode(T.Afternoon_Stat,0,decode(T.afternoon_Deal_Stat,0,1,0),0)) as afternoon_normal,
+	
+	    sum(decode(T.MORNING_STAT,
+	    1,decode(T.Morning_Deal_Stat,1,1,3,1,0),
+	    3,decode(T.Morning_Deal_Stat,1,1,3,1,0),
+	    0)) as morning_late_leave_early,
+	
+	    sum(decode(T.Afternoon_Stat,
+	    1,decode(T.afternoon_Deal_Stat,1,1,3,1,0),
+	    3,decode(T.afternoon_Deal_Stat,1,1,3,1,0),
+	    0)) as afternoon_late_leave_early,
+	
+	    sum(decode(T.MORNING_STAT,2,decode(T.Morning_Deal_Stat,1,1,3,1,0),0)) as morning_absent,
+	    sum(decode(T.Afternoon_Stat,2,decode(T.afternoon_Deal_Stat,1,1,3,1,0),0)) as afternoon_absent,
+	
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,1,1,2,1,0
+	    ),0))) as morning_sick_affair_leave,
+	    
+	    sum(decode(T.Afternoon_Stat,0,0,decode(T.afternoon_Deal_Stat,2,decode(t.atten_morning_type,1,1,2,1,0
+	    ),0))) as afternoon_sick_affair_leave,
+	
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,3,1,0),0)))
+	    as morning_business_leave,
+	    
+	    sum(decode(T.afternoon_stat,0,0,decode(T.Afternoon_Deal_Stat,2,decode(t.atten_afternoon_type,3,1,0),0)))
+	    as afternoon_business_leave,
+	    
+	    sum(decode(T.MORNING_STAT,0,0,decode(T.Morning_Deal_Stat,2,decode(t.atten_morning_type,4,1,0),0))
+	    )as morning_other,
+	    
+	    sum(decode(T.afternoon_stat,0,0,decode(T.Afternoon_Deal_Stat,2,decode(t.atten_afternoon_type,4,1,0),0)))as
+	    afternoon_other
+	    FROM T_011_ATTENDANCE_PER_DAY T,org o
+	    
+	    WHERE t.org_id = o.org_id 
+    	AND t.org_id IN (SELECT g.org_id FROM org g 
+                 start with g.org_id = #top_org_id#
+                 connect by prior g.org_id = g.p_id)    
+		AND
+		(T.ATTEND_YEAR || T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select
+			hol.hol_year || hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		AND t.user_id NOT IN (
+		SELECT nue.userid FROM njhw_users_exp nue 
+		WHERE nue.uep_type = '04')
+		<![CDATA[
+		and
+		(t.ATTEND_YEAR ||  t.attend_month || t.attend_date ) >= #start_time#
+		and
+		(t.ATTEND_YEAR ||  t.attend_month || t.attend_date ) <= #end_time#
+		]]>
+<!-- 		<dynamic>
+			<isNotEmpty prepend="and" property="year_start">
+				 t.ATTEND_YEAR between #year_start# and #year_end#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="month_start">
+				t.attend_month between #month_start# and #month_end#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="day_start">
+				t.attend_date between #day_start# and #day_end#
+			</isNotEmpty>
+		</dynamic> -->
+	</select>
+
+	<!--功能：根据 userID 查询缺勤信息 开发者：ChunJing 时间：2014-04-09 -->
+	<!-- morning_stat=2 or afternoon_stat=2 缺勤状态 -->
+	<select id="getUserAbsentList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.morning_stat = '2'
+		or
+		t.afternoon_stat = '2')
+		AND (T.ATTEND_YEAR ||
+		T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select hol.hol_year ||
+		hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="weekends">
+				(t.attend_year || '-' || t.attend_month || '-' || t.attend_date)
+				NOT
+				IN
+				<iterate open="(" close=")" property="weekends" conjunction=",">
+					#weekends[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：根据 userID 查询迟到信息 开发者：ChunJing 时间：2014-04-09 -->
+	<!-- morning_stat=1 or afternoon_stat=1 缺勤状态 -->
+	<select id="getUserLateList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.morning_stat = '1'
+		or
+		t.afternoon_stat = '1')
+		AND (T.ATTEND_YEAR ||
+		T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select hol.hol_year ||
+		hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="weekends">
+				(t.attend_year || '-' || t.attend_month || '-' || t.attend_date)
+				NOT
+				IN
+				<iterate open="(" close=")" property="weekends" conjunction=",">
+					#weekends[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：根据 userID 查询早退信息 开发者：ChunJing 时间：2014-04-09 -->
+	<!-- morning_stat=3 or afternoon_stat=3 缺勤状态 -->
+	<select id="getUserLeaveEarlyList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.morning_stat = '3'
+		or
+		t.afternoon_stat = '3')
+		AND (T.ATTEND_YEAR ||
+		T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select hol.hol_year ||
+		hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="weekends">
+				(t.attend_year || '-' || t.attend_month || '-' || t.attend_date)
+				NOT
+				IN
+				<iterate open="(" close=")" property="weekends" conjunction=",">
+					#weekends[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：普通用户时时考勤 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="selectPersonalAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from T_010_ATTENDANCE_LOG t
+		WHERE t.user_id =
+		#user_id# order by t.record_time desc
+	</select>
+
+	<!--功能：事假列表 atten_morning_type/atten_afternoon_type 字段为 2 开发者：ChunJing 时间：2014-04-02 -->
+	<select id="getUserAffairLeaveList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.atten_morning_type = '2'
+		or
+		t.atten_afternoon_type = '2')
+		<dynamic>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：病假列表 atten_morning_type/atten_afternoon_type 字段为 1 开发者：ChunJing 时间：2014-04-02 -->
+	<select id="getUserSickLeaveList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.atten_morning_type = '1'
+		or
+		t.atten_afternoon_type = '1')
+		<dynamic>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：公出列表 atten_morning_type/atten_afternoon_type 字段为 3 开发者：ChunJing 时间：2014-04-02 -->
+	<select id="getUserBusinessLeaveList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.atten_morning_type = '3'
+		or
+		t.atten_afternoon_type = '3')
+		<dynamic>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：其它请假列表 atten_morning_type/atten_afternoon_type 字段为 4 开发者：ChunJing 
+		时间：2014-04-02 -->
+	<select id="getUserOtherLeaveList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.*,
+		(t.attend_year || '-' || t.attend_month || '-' ||
+		t.attend_date) as time,
+		(select u.display_name from users u where
+		u.userid =
+		t.accept_morning_user_id) as accept_morning_name,
+		(SELECT
+		u.display_name FROM USERS u WHERE
+		u.userid =
+		t.accept_afternoon_user_id) as accept_afternoon_name
+		from
+		T_011_ATTENDANCE_PER_DAY t
+		where
+		t.user_id = #user_id#
+		and
+		(t.atten_morning_type = '4'
+		or
+		t.atten_afternoon_type = '4')
+		<dynamic>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：单位领导查看单位所有员工考勤信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="selectUnitAttendancesList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT T.*,o.name
+		FROM T_011_ATTENDANCE_PER_DAY t,ORG o WHERE
+		(SELECT
+		ORG_ID
+		FROM ORG
+		WHERE P_ID='2' or P_ID='1069' or P_ID='1070' or
+		P_ID='1381' or P_ID='1400'
+		START WITH ORG_ID = (t.org_id)
+		CONNECT BY
+		PRIOR P_ID = ORG_ID)
+		=
+		(SELECT ORG_ID
+		FROM ORG
+		WHERE P_ID='2' or
+		P_ID='1069' or P_ID='1070' or P_ID='1381' or P_ID='1400'
+		START WITH
+		ORG_ID = (SELECT us.org_id FROM USERS us WHERE us.userid =
+		#user_id#)
+		CONNECT BY PRIOR P_ID = ORG_ID)
+		AND t.org_id = o.org_id
+		<dynamic>
+			<isNotEmpty prepend="and" property="user_name">
+				trim(t.user_name) like
+				'%'||#user_name#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="org_id">
+				t.org_id = #org_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by t.org_id,t.user_id
+	</select>
+
+
+	<!--功能：查找单位下面所有部门信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="queryDeptEmpByDeptUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT
+		us.userid,us.display_name,us.org_id from USERS us WHERE us.org_id =
+		(SELECT t.org_id FROM USERS t WHERE t.userid = #user_id#)
+	</select>
+
+
+	<!--功能：部门领导查看本部门所有员工考勤信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="selectDeptAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT T.*,o.name
+		FROM T_011_ATTENDANCE_PER_DAY T,org o where t.org_id
+		= o.org_id and
+		t.org_id = (
+		SELECT u.org_id FROM USERS u WHERE u.userid
+		= #user_id#)
+		<!-- <isNotEmpty prepend="where" property="userIds"> t.user_id in <iterate 
+			property="userIds" open="(" close=")" conjunction=","> #userIds[]# </iterate> 
+			</isNotEmpty> -->
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="user_name">
+				t.user_name like
+				'%'||#user_name#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					> to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 < to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by t.user_id
+	</select>
+
+
+	<!--功能：当前部门人员考勤信息统计总数(针对部门领导) 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="getDeptAttendancesTotalCountByUserId"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap"
+		remapResults="true">
+		SELECT t.*,o.name FROM t_011_attendance_per_day t,org o
+		WHERE t.org_id = o.org_id AND
+		t.org_id =
+		(SELECT u.org_id FROM USERS u
+		WHERE u.userid = #userId#)
+	</select>
+
+
+
+	<!--功能：查找单位人员所有考勤异常信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="queryUnitExcepAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT *
+		FROM
+		T_016_ATTENDANCE_EXCEPTION T, USERS U
+		WHERE U.USERID = T.USER_ID
+		AND
+		FN_GET_ORGID(U.ORG_ID) = #top_org_id#
+	</select>
+
+	<!--功能：查找单位下面所有部门信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="getDeptList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT o.org_id,o.name
+		FROM org o WHERE o.p_id = #top_org_id# order by o.org_id
+	</select>
+
+
+	<!--功能：根据 user_id 查询考勤信息 开发者：ChunJing 时间：2014-04-05 -->
+	<select id="selectEmpAttendanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+
+		<!-- SELECT t.*,v.department_name,v.org_name FROM T_011_ATTENDANCE_PER_DAY 
+			T, v_platenum_list v WHERE T.ORG_ID(+) = v.department_id -->
+		SELECT t.*,o.name AS department_name,g.name AS org_name
+		FROM
+		T_011_ATTENDANCE_PER_DAY T, ORG O,org g
+		WHERE T.ORG_ID(+) = O.ORG_ID
+		AND g.org_id = o.p_id
+		AND T.USER_ID = #user_id#
+		AND (T.ATTEND_YEAR ||
+		T.ATTEND_MONTH || T.ATTEND_DATE)
+		NOT IN (
+		select hol.hol_year ||
+		hol.hol_month || hol.hol_date from T_014_HOLIDAY hol
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="weekends">
+				(t.attend_year || '-' || t.attend_month || '-' || t.attend_date)
+				NOT
+				IN
+				<iterate open="(" close=")" property="weekends" conjunction=",">
+					#weekends[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="user_name">
+				t.user_name like
+				'%'||#user_name#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="org_id">
+				t.org_id = #org_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!--功能：查找我的申请信息 开发者：ChunJing 时间：2014-04-03 -->
+	<!-- 1:病假,2:事假,3:公出,4:其它 -->
+	<select id="queryApplyInfoByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+
+		SELECT U.DISPLAY_NAME AS USER_NAME,t.id,
+		(T.START_DATE ||
+		(DECODE(T.START_TYPE, '0', '上午', '1', '下午'))) AS START_DATE,
+		(T.End_Date || (DECODE(T.End_Type, '0', '上午', '1', '下午'))) AS
+		END_DATE,
+		DECODE(t.type,'1','病假','2','事假','3','公出','4','其它') AS TYPE ,
+		t.user_desc,
+		DECODE(t.status,'0','申请中','1','申请通过','2','申请驳回') AS status
+		FROM T_018_APPROVERS_INFO T, USERS U
+		WHERE U.USERID = T.USER_ID
+		AND
+		T.USER_ID = #user_id#
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="type">
+				t.type = #type#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="status">
+				t.status = #status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+				<isNotEmpty property="end_time">
+					(t.start_date between #start_time#
+					AND #end_time#
+					OR
+					t.end_date between #start_time# AND #end_time#
+					OR
+					#start_time# BETWEEN t.start_date AND t.end_date
+					OR
+					#end_time#
+					BETWEEN t.start_date AND t.end_date)
+				</isNotEmpty>
+			</isNotEmpty>
+			<!-- <isNotEmpty prepend="and" property="startTime"> <![CDATA[ to_date(t.start_date,'yyyy/MM/dd') 
+				>= #startTime# ]]> </isNotEmpty> <isNotEmpty prepend="and" property="endTime"> 
+				<![CDATA[ to_date(t.end_date,'yyyy/MM/dd') <= #endTime# ]]> </isNotEmpty> -->
+		</dynamic>
+	</select>
+
+
+	<!--功能：查找我的申请信息 开发者：ChunJing 时间：2014-03-27 -->
+	<!-- 异常情况处理标志:0:无需处理 1:未处理 2:已处理 3:正在申请 默认查找正在处理中跟已处理 已处理的结果，有可能是审批通过、或者被驳回 -->
+	<select id="queryApplyInfoByUserId_Deprecated" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT t.* FROM t_011_attendance_per_day t WHERE t.user_id = #user_id#
+		<dynamic>
+			<isNotEmpty prepend="and" property="status">
+
+				<!-- 根据状态分类查询 -->
+				<isEqual property="status" compareValue="all">
+					t.MORNING_DEAL_STAT
+					in (2,3) or t.AFTERNOON_DEAL_STAT in (2,3)
+				</isEqual>
+				<isNotEqual property="status" compareValue="all">
+					t.MORNING_DEAL_STAT = #status# or t.AFTERNOON_DEAL_STAT = #status#
+				</isNotEqual>
+			</isNotEmpty>
+
+			<!-- 根据类型分类查询 -->
+			<isNotEmpty prepend="and" property="type">
+				t.ATTEN_MORNING_TYPE =
+				#type# or t.ATTEN_AFTERNOON_TYPE = #type#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					> to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 < to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by t.user_id
+	</select>
+
+	<!--功能：查找申请审批 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="selectAcceptInfoByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT t.*,o.name as org_name,t.user_name AS userName,
+		(t.attend_year
+		|| '-' || t.attend_month || '-' || t.attend_date) AS TIME
+		FROM
+		T_011_ATTENDANCE_PER_DAY T,org o
+		WHERE t.org_id = o.org_id
+		AND
+		T.ACCEPT_MORNING_USER_ID = #userId#
+
+		UNION ALL
+
+		(SELECT T.*,o.name as
+		org_name,t.user_name AS userName,
+		(t.attend_year || '-'
+		||
+		t.attend_month || '-' || t.attend_date) AS TIME
+		FROM
+		T_011_ATTENDANCE_PER_DAY T,org o
+		WHERE t.org_id = o.org_id
+		AND
+		T.ACCEPT_AFTERNOON_USER_ID = #userId#)
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="user_name">
+				t.user_name =
+				#user_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="department">
+				t.org_id = #department#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					>= to_date(#start_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="end_time">
+					<![CDATA[
+					to_date((t.attend_year || '-' || t.attend_month || '-' || t.attend_date),'yyyy-MM-dd') 
+					 <= to_date(#end_time#,'yyyy-MM-dd')
+					 ]]>
+			</isNotEmpty>
+		</dynamic>
+
+	</select>
+
+
+	<!--功能：查找单位下面所有部门信息 开发者：ChunJing 时间：2014-03-27 -->
+	<select id="getPersonalHistoryAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.*
+		FROM T_011_ATTENDANCE_PER_DAY T WHERE T.USER_ID = #user_id#
+		<dynamic>
+			<isNotEmpty prepend="and" property="atten_date">
+				(t.attend_year || '-'
+				|| t.attend_month || '-' || t.attend_date) =
+				#attend_date#
+			</isNotEmpty>
+		</dynamic>
+		order by t.org_id
+	</select>
+
+
+	<!--功能：申请审批总数 开发者：ChunJing 时间：2014-04-03 -->
+	<select id="getAcceptListTotalCountByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.*
+		FROM T_011_ATTENDANCE_PER_DAY T WHERE T.USER_ID = #user_id#
+		<dynamic>
+			<isNotEmpty prepend="and" property="atten_date">
+				(t.atten_year || '-' ||
+				t.atten_month || '-' || t.atten_date) =
+				#atten_date#
+			</isNotEmpty>
+		</dynamic>
+		order by t.org_id
+	</select>
+
+
+
+
+	<!--功能：查询闸机信息 开发者：zh 时间：2013-03-28 -->
+	<select id="zjQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #SearchExtResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in
+				(SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+			</isEqual>
+			<isEqual compareValue="B" property="extResType">
+				<isGreaterEqual compareValue="0" prepend="and"
+					property="pid">
+					t.P_ID = #pid#
+				</isGreaterEqual>
+			</isEqual>
+		</dynamic>
+		order by t.NODE_ID asc
+	</select>
+
+	<!--功能：查询楼梯信息 开发者：cjw 时间：2013-03-28 -->
+	<select id="dtQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #extResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in
+				(SELECT s.NODE_ID from OBJTANK s where s.P_ID = #pid#)
+			</isEqual>
+			<isEqual compareValue="B" property="floor">
+				<isGreaterEqual compareValue="0" prepend="and"
+					property="pid">
+					t.P_ID = #pid#
+				</isGreaterEqual>
+			</isEqual>
+		</dynamic>
+		order by t.NODE_ID asc
+	</select>
+
+	<!-- 分页、分级查询摄像头列表 -->
+	<select id="getLevelSXTPageList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from OBJTANK t where t.EXT_RES_TYPE = #SearchExtResType#
+		<dynamic>
+			<isEqual compareValue="6" prepend="and" property="pid">
+				t.P_ID in
+				(SELECT s.NODE_ID from OBJTANK s where s.P_ID in(SELECT a.NODE_ID
+				from OBJTANK a where a.P_ID = 6))
+			</isEqual>
+			<isEqual compareValue="B" property="extResType">
+				<isGreaterEqual compareValue="0" prepend="and"
+					property="pid">
+					t.P_ID in (SELECT s.NODE_ID from OBJTANK s where s.P_ID =
+					#pid#)
+				</isGreaterEqual>
+			</isEqual>
+			<isEqual compareValue="F" property="extResType">
+				<isGreaterEqual compareValue="0" prepend="and"
+					property="pid">
+					t.P_ID = #pid#
+				</isGreaterEqual>
+			</isEqual>
+		</dynamic>
+		order by t.NODE_ID asc
+	</select>
+
+	<!--功能：加载访客位置点 开发者：zh 时间：2013-05-4 -->
+	<select id="loadVisitorPoints" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		<dynamic>
+			<isNotEmpty prepend="and" property="visitorName">
+
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：加载访客信息 开发者：mzy 时间：2013-08-15 -->
+	<!-- 从访客表中查访客信息(res_bak2：访客照片,res_bak3:无线定位卡号) -->
+	<select id="loadVisitorInfo_visitor" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT
+		v.vi_name, s.vs_id , s.res_bak3 as wireless_card, v.res_bak2,
+		s.user_name,
+		s.org_name, s.res_bak3 ,
+		CASE s.res_bak1
+		WHEN '1'
+		THEN
+		v.res_bak1
+		WHEN '2'
+		THEN v.resident_no
+		WHEN '3'
+		THEN v.res_bak3
+		END card_id
+		,
+		CASE S.RES_BAK1
+		WHEN '1'
+		THEN '市民卡'
+		WHEN '2'
+		THEN '身份证'
+		WHEN '3'
+		THEN '其他'
+		END CARD_TYPE
+		FROM vm_visit s,vm_visitorinfo v
+		where s.vi_id=v.vi_id
+		<isNotEmpty prepend="and" property="visitorName">
+			v.vi_name=#visitorName#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="visitorID">
+			v.vi_id=#visitorID#
+		</isNotEmpty>
+		order by s.vs_id desc
+	</select>
+	<!-- <select id="loadVisitorInfo_visitor" parameterClass="java.util.Map" 
+		resultClass="java.util.HashMap" > ( SELECT v.vi_name as visitorName , v.res_bak2 
+		as visitorPhoto, s.user_name as userName, s.org_name as orgName, s.res_bak3 
+		as cardNum, CASE s.res_bak1 WHEN '1' THEN v.res_bak1 WHEN '2' THEN v.resident_no 
+		WHEN '3' THEN v.res_bak3 END cardId , CASE S.RES_BAK1 WHEN '1' THEN '市民卡' 
+		WHEN '2' THEN '身份证' WHEN '3' THEN '其他' END cardType FROM vm_visit s,vm_visitorinfo 
+		v where s.vi_id=v.vi_id and s.in_out=#in_out# <isNotEmpty prepend="and" property="visitorName"> 
+		v.vi_name=#visitorName# </isNotEmpty> <isNotEmpty prepend="and" property="visitorID"> 
+		v.vi_id=#visitorID# </isNotEmpty> ) union all ( SELECT au.va_bak1 as visiorName,au.va_bak2 
+		as visitorPhoto,v1.user_name as userName,v1.org_name as ogrName,null, CASE 
+		au.card_type WHEN '1' THEN au.card_id WHEN '2' THEN au.resident_no END cardId 
+		, CASE au.card_type WHEN '1' THEN '市民卡' WHEN '2' THEN '身份证' END cardType 
+		FROM vm_visit_auxi au , vm_visit v1 where au.vs_id = v1.vs_id and au.in_out=#in_out# 
+		<isNotEmpty prepend="and" property="visitorName"> v.vi_name=#visitorName# 
+		</isNotEmpty> <isNotEmpty prepend="and" property="visitorID"> v.vi_id=#visitorID# 
+		</isNotEmpty> ) </select> -->
+	<!-- 从随行人员表中查询信息(va_bak1：名称，card_type：证件类型，card_id：证件号，va_bak2：无线定位卡号，vs_id：事务ID，没有照片) -->
+	<select id="loadVisitorInfo_auxi" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT
+		au.va_bak1,au.va_bak2,v1.user_name,v1.org_name,
+		CASE au.card_type
+		WHEN '1'
+		THEN au.card_id
+		WHEN '2'
+		THEN au.resident_no
+		END card_id ,
+		CASE
+		au.card_type
+		WHEN '1'
+		THEN '市民卡'
+		WHEN '2'
+		THEN '身份证'
+		END card_type
+		FROM
+		vm_visit_auxi au , vm_visit v1
+		where au.vs_id = v1.vs_id and
+		au.in_out=#in_out#
+		<isNotEmpty prepend="and" property="visitorName">
+			au.va_bak1=#visitorName#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="visitorID">
+			au.va_id = #visitorID#
+		</isNotEmpty>
+	</select>
+
+	<!--功能：单位某个用户当月考勤信息 开发者：Ptero 时间：2014-03-31 -->
+	<select id="getUserMonthAttendanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.* FROM
+		T_011_ATTENDANCE_PER_DAY t WHERE
+		attend_year = #year# and attend_month
+		= #month#
+		and user_id = #userId#
+		order by ATTEND_DATE asc
+	</select>
+	<!--功能：单位某个用户当日考勤信息 开发者：Ptero 时间：2014-03-31 -->
+
+	<select id="getUserOnedayAttendanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.* FROM
+		T_011_ATTENDANCE_PER_DAY t WHERE
+		attend_year = #year# and attend_month
+		= #month# and
+		attend_date = #date#
+		and user_id = #userId#
+	</select>
+	<!--功能：查询当日第一次打卡记录信息 开发者：Ptero 时间：2014-04-01 -->
+	<select id="getUserFirstAttendanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.* FROM t_010_attendance_log t
+		WHERE attend_year =
+		#year# and attend_month = #month# and
+		attend_date = #date#
+		and user_id =
+		#userId# order by record_time asc
+	</select>
+	<!--功能：查询当日最后一次打卡记录信息 开发者：Ptero 时间：2014-04-01 -->
+	<select id="getUserLastAttendanceList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.* FROM t_010_attendance_log t
+		WHERE attend_year =
+		#year# and attend_month = #month# and
+		attend_date = #date#
+		and user_id =
+		#userId# order by record_time desc
+	</select>
+	<select id="getHolidays" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT HOL_YEAR AS YEAR,
+		HOL_MONTH AS MONTH,
+		HOL_DATE AS
+		FROM_DATE,
+		HOL_DESC
+		FROM T_014_HOLIDAY WHERE hol_month = #month# AND
+		hol_year = #year#
+	</select>
+	<!-- 设置假期 -->
+	<insert id="setHolidays" parameterClass="java.util.Map">
+		INSERT INTO
+		T_014_HOLIDAY (ID, HOL_YEAR, HOL_MONTH, HOL_DATE, HOL_DESC)
+		VALUES
+		(NJHW.SEQ_T014_HOLIDAY.NEXTVAL, #year#, #month#, #date#,
+		#desc#)
+	</insert>
+	<!-- 设置上班时间 -->
+	<insert id="setTimes" parameterClass="java.util.Map">
+		INSERT INTO
+		t_015_work_time_setting (MORNING_START_TIME, MORNING_END_TIME,
+		AFTERNOON_START_TIME, AFTER_END_TIME) VALUES ( #ms#, #me#, #as#, #ae#)
+	</insert>
+	<delete id="delTimes">
+		DELETE FROM t_015_work_time_setting
+	</delete>
+	<select id="getTimes" resultClass="java.util.HashMap">
+		SELECT T.*
+		FROM
+		t_015_work_time_setting t
+	</select>
+	<select id="isHolidayOrNot" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT * FROM T_014_HOLIDAY WHERE HOL_YEAR = #year# AND
+		HOL_MONTH = #month#
+		AND HOL_DATE = #date#
+	</select>
+	<!-- 删除假期 -->
+	<delete id="delHolidays" parameterClass="java.util.Map">
+		DELETE FROM
+		T_014_HOLIDAY WHERE HOL_YEAR= #year# and HOL_MONTH = #month# and
+		HOL_DATE = #date#
+	</delete>
+	<select id="isPrivateDay" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT * FROM t_018_approvers_info 	WHERE START_DATE <= #date# AND #date# <= END_DATE AND user_id = #userId#
+		]]>
+	</select>
+
+	<!-- 驳回考勤申请 -->
+	<update id="rejectApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_018_APPROVERS_INFO
+		SET confirm_time = #confirmTime#,
+		status = 2,
+		approver_desc = #desc#
+		WHERE id = #id#
+	</update>
+
+	<!-- 通过考勤申请 -->
+	<update id="passApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_018_APPROVERS_INFO
+		SET confirm_time = #confirmTime#,
+		status = 1
+		WHERE
+		id = #id#
+	</update>
+
+	<!-- 驳回上午考勤申请 -->
+	<update id="rejectMorningApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_011_ATTENDANCE_PER_DAY
+		SET ACCEPT_MORNING_FLAG = '3',
+		MORNING_DEAL_STAT = '2',
+		ACCEPT_MORNING_USER_ID = #approvePerson#,
+		ACCEPT_MORNING_CONTENT = #desc#
+		WHERE id = #id#
+	</update>
+
+	<!-- 驳回下午考勤申请 -->
+	<update id="rejectAfternoonApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_011_ATTENDANCE_PER_DAY
+		SET ACCEPT_AFTERNOON_FLAG = '3',
+		AFTERNOON_DEAL_STAT = '2',
+		ACCEPT_MORNING_USER_ID = #approvePerson#,
+		ACCEPT_AFTERNOON_CONTENT = #desc#
+		WHERE id = #id#
+	</update>
+
+	<!-- 通过上午考勤申请 -->
+	<update id="passMorningApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_011_ATTENDANCE_PER_DAY
+		SET ACCEPT_MORNING_FLAG = '2',
+		MORNING_DEAL_STAT = '2',
+		ACCEPT_MORNING_USER_ID = #approvePerson#
+		WHERE
+		id = #id#
+	</update>
+
+	<!-- 通过下午考勤申请 -->
+	<update id="passAfternoonApprove" parameterClass="java.util.Map">
+		UPDATE
+		T_011_ATTENDANCE_PER_DAY
+		SET ACCEPT_AFTERNOON_FLAG = '2',
+		AFTERNOON_DEAL_STAT = '2',
+		ACCEPT_MORNING_USER_ID = #approvePerson#
+		WHERE id = #id#
+	</update>
+
+	<insert id="addApproversInfo" parameterClass="java.util.Map">
+		INSERT INTO
+		T_018_APPROVERS_INFO (ID, USER_DESC, USER_ID, STATUS, START_DATE,
+		END_DATE,TYPE,START_TYPE,END_TYPE,APPROVER_TIME,CONFIRM_TIME,APPROVER_ID)
+		VALUES(
+		NJHW.SEQ_T_018_APPROVERS.NEXTVAL, #USER_DESC#, #USER_ID#,
+		#STATUS#, #START_DATE#,
+		#END_DATE#, #TYPE#, #START_TYPE#, #END_TYPE#,
+		#APPROVER_TIME#, #CONFIRM_TIME#,
+		#APPROVER_ID#
+		)
+	</insert>
+
+	<select id="getApproversInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT a.id as id, b.display_name as username,
+		a.start_date ||
+		(DECODE(a.START_TYPE, '0', '上午', '1', '下午')) as startTime,
+		a.end_date
+		|| (DECODE(a.END_TYPE, '0', '上午', '1', '下午')) as endTime,
+		a.type,
+		fn_get_orgid(b.org_id) as orgId,
+		c.name as orgname,
+		DECODE(a.type,'1','病假','2','事假','3','公出','4','其它') as typeStr,
+		a.status as status,
+		DECODE(a.status,'0','申请中','1','申请通过','2','申请驳回') as
+		statusStr
+		FROM T_018_APPROVERS_INFO a, users b, org c
+		WHERE a.user_id =
+		b.userid and
+		c.org_id = b.org_id
+		AND c.p_id = #top_org_id#
+		AND
+		a.approver_id = #userId#
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="user_name">
+				trim(b.display_name)
+				like '%'||#user_name#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="org_id">
+				b.org_id = #org_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="status">
+				a.status = #status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="start_time">
+				<isNotEmpty property="end_time">
+					(a.start_date between #start_time#
+					AND #end_time#
+					OR
+					a.end_date between #start_time# AND #end_time#
+					OR
+					#start_time# BETWEEN a.start_date AND a.end_date
+					OR
+					#end_time#
+					BETWEEN a.start_date AND a.end_date)
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+
+		ORDER BY b.org_id,b.order_num
+	</select>
+
+	<select id="getApproversInfoById" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT a.id as id, b.display_name as
+		username,
+		DECODE(a.START_TYPE, '0', '上午', '1', '下午') s1,
+		DECODE(a.END_TYPE, '0',
+		'上午', '1', '下午') s2,
+		a.user_id,
+		a.start_type,
+		a.end_type,
+		a.approver_id,
+		a.user_desc,
+		a.approver_desc as approverDesc,
+		a.user_desc as userDesc,
+		a.start_date || (DECODE(a.START_TYPE, '0', '上午', '1',
+		'下午')) as
+		startTime,
+		a.end_date || (DECODE(a.END_TYPE, '0', '上午', '1', '下午')) as
+		endTime,
+		a.start_date as startTimeStr,
+		a.end_date as endTimeStr,
+		a.type,
+		fn_get_orgid(b.org_id) as orgId,
+		c.name as orgname,
+		DECODE(a.type,'1','病假','2','事假','3','公出','4','其它') as typeStr,
+		a.status as status,
+		DECODE(a.status,'0','申请中','1','申请通过','2','申请驳回') as
+		statusStr
+		FROM T_018_APPROVERS_INFO a, users b, org c
+		WHERE a.user_id =
+		b.userid and
+		fn_get_orgid(b.org_id) = c.org_id
+		AND a.id = #id#
+	</select>
+
+	<!-- 更新用户的考勤信息 -->
+	<update id="updateApprovePerDay" parameterClass="java.util.Map">
+		UPDATE T_011_ATTENDANCE_PER_DAY
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="ATTEN_MORNING_TYPE">
+				ATTEN_MORNING_TYPE =
+				#ATTEN_MORNING_TYPE#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ATTEN_AFTERNOON_TYPE">
+				ATTEN_AFTERNOON_TYPE =
+				#ATTEN_AFTERNOON_TYPE#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="MORNING_DEAL_STAT">
+				MORNING_DEAL_STAT =
+				#MORNING_DEAL_STAT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_MORNING_FLAG">
+				ACCEPT_MORNING_FLAG =
+				#ACCEPT_MORNING_FLAG#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="AFTERNOON_DEAL_STAT">
+				AFTERNOON_DEAL_STAT =
+				#AFTERNOON_DEAL_STAT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_AFTERNOON_FLAG">
+				ACCEPT_AFTERNOON_FLAG =
+				#ACCEPT_AFTERNOON_FLAG#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_MORNING_CONTENT">
+				ATTEN_MORNING_DESC =
+				#ACCEPT_MORNING_CONTENT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_AFTERNOON_CONTENT">
+				ATTEN_AFTERNOON_DESC =
+				#ACCEPT_AFTERNOON_CONTENT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_MORNING_USER_ID">
+				ACCEPT_MORNING_USER_ID =
+				#ACCEPT_MORNING_USER_ID#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ACCEPT_AFTERNOON_USER_ID">
+				ACCEPT_AFTERNOON_USER_ID
+				= #ACCEPT_AFTERNOON_USER_ID#
+			</isNotEmpty>
+		</dynamic>
+		WHERE USER_ID = #USER_ID#
+		AND ATTEND_YEAR = #ATTEND_YEAR#
+		AND
+		ATTEND_MONTH = #ATTEND_MONTH#
+		AND ATTEND_DATE = #ATTEND_DATE#
+	</update>
+
+	<!-- 新城大厦底下所有单位信息 2014-04-09 -->
+	<select id="getUnitListForNewCityAdmin" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT T.ORG_ID,T.SHORT_NAME as ORG_NAME
+		FROM ORG T
+		WHERE
+		T.P_ID='2'
+		ORDER BY T.ORDER_NUM
+	</select>
+
+	<!-- 查询用户的请假申请是否有时间冲突 -->
+	<select id="getApprovesForTimeCheck" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT * FROM T_018_APPROVERS_INFO
+		<![CDATA[ 
+			WHERE USER_ID = #USERID# AND STATUS <> 2 AND #TIME# BETWEEN START_DATE AND END_DATE
+		]]>
+	</select>
+
+	<!-- 新城大厦底下所有单位员工信息 单位、部门、时间过滤 2014-04-10 -->
+	<select id="selectBuildingAttendancesList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT V.USERID,
+		V.DISPLAY_NAME,
+		V.ORG_ID,
+		V.ORG_NAME,
+		V.DEPARTMENT_ID,
+		V.DEPARTMENT_NAME
+		FROM V_PLATENUM_LIST V
+		WHERE V.ORG_ID IN (SELECT
+		T.ORG_ID FROM ORG T WHERE T.P_ID = '2')
+		<dynamic>
+			<isNotEmpty prepend="and" property="org_id">
+				v.org_id = #org_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="department_id">
+				v.department_id =
+				#department_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="user_name">
+				trim(v.DISPLAY_NAME)
+				like '%'||#user_name#||'%'
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY v.department_order_num,v.org_order_num,v.order_num
+	</select>
+
+</sqlMap>

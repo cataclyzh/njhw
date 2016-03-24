@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/omc" extends="default" namespace="/app/omc">
+   		
+   		<!-- 出事后报表 -->
+        <action name="omcReportInit" class="omcReportAction" method="initReportData"></action>
+        
+        <action name="queryDeviceInfo" class="omcReportAction" method="queryDeviceInfo">
+         <result name="success">/app/omc/deviceInfo.jsp</result>
+        </action>
+        
+        <action name="toVideoSurveillance" class="omcReportAction" method="toVideoSurveillance">
+         <result name="success">/app/omc/videoSurveillance.jsp</result>
+        </action>
+        
+         <action name="queryDeveiceToView" class="omcReportAction" method="queryDeveiceToView" >
+         	<result name="success">/app/omc/deviceInfo.jsp</result>
+         </action>
+         
+         <action name="vehicleAccessInfo" class="omcReportAction" method="vehicleAccessInfo" >
+         	<result name="success">/app/omc/vehicleAccessInfo.jsp</result>
+         </action>
+         
+ 	</package>
+</struts>

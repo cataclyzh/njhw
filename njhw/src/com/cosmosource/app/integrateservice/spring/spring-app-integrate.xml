@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+	
+	<!-- 综合办公首页	  zh	 2013-4-18-->
+	<bean id="integrateAction" class="com.cosmosource.app.integrateservice.action.IntegrateAction" scope="prototype">    
+    	<property name="integrateManager" ref="integrateManager"/>
+    	<!-- 门锁控制	  zh	 2013-4-18-->
+    	<property name="doorControlToAppService" ref="doorControlToAppService"/>
+    	<!-- 楼宇自控【电灯】控制	  zh	 2013-4-18-->
+    	<property name="buildAutoToAppService" ref="buildAutoToAppService"/>
+    	<!-- IP通话	  zh	 2013-4-18-->
+    	<property name="iPPhoneSiteToAppService" ref="iPPhoneSiteToAppService"/>
+    	<!-- 物业公告	 zh	 2013-4-18-->
+    	<property name="msgBoardManager" ref="msgBoardManager"/>
+    	<!-- 调用得到顶级部门	 zh	 2013-4-18-->
+    	<property name="personROManager" ref="personROManager"/>
+    	
+    	<!-- 统计任务数量	 zh	 2013-4-18-->
+    	<property name="appHomeAction" ref="appHomeAction"/>
+    	<property name="appHomeManager" ref="appHomeManager"/>
+    	
+    	<property name="personExpManager" ref="personExpManager"/>
+    	<property name="authorityManager" ref="authorityManager"/>
+    	<property name="e4PersonnelManager" ref="e4PersonnelManager"></property>
+    </bean>
+	<bean id="integrateManager" class="com.cosmosource.app.integrateservice.service.IntegrateManager" parent="manager">
+	</bean>
+	
+	<bean id="personExpManager" class="com.cosmosource.app.personnel.service.PersonnelExpInforManager" parent="manager">
+	</bean>
+	
+	<!-- 个人通讯录管理	  zh	 2013-4-18-->
+	<bean id="pAddressBookAction" class="com.cosmosource.app.integrateservice.action.PAddressBookAction" scope="prototype">    
+    	<property name="pAddressBookManager" ref="pAddressBookManager"/>
+    </bean>
+	<bean id="pAddressBookManager" class="com.cosmosource.app.integrateservice.service.PAddressBookManager" parent="manager">
+	</bean>
+	
+	<!-- 短信发送平台	-->
+	<bean id="messagingPlatformAction" class="com.cosmosource.app.integrateservice.action.MessagingPlatformAction" scope="prototype">    
+    	 <property name="messagingPlatformManager" ref="messagingPlatformManager"/> 
+    	 <property name="smsSendMessage" ref="smsSendMessage"/> 
+    </bean>
+	<bean id="messagingPlatformManager" class="com.cosmosource.app.integrateservice.service.MessagingPlatformManager" parent="manager">
+	</bean>
+	
+	<!-- 短信发送平台  -->
+	<bean id="sendSMSAction" class="com.cosmosource.app.integrateservice.action.SendSMSAction" scope="prototype">    
+    	 <property name="sendSMSManager" ref="sendSMSManager"/>
+    	 <property name="personROManager" ref="personROManager"/>
+    </bean>
+	<bean id="sendSMSManager" class="com.cosmosource.app.integrateservice.service.SendSMSManager" parent="manager">
+		<property name="smsSendMessage" ref="smsSendMessage"/> 
+	</bean>
+</beans>

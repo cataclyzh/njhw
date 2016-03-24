@@ -1,0 +1,17 @@
+body
+{
+	width:100%;
+	height:100%;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.main
+{
+	width:1343px;
+	height:863px;
+	background:url(../images/main_bg.jpg) 0 0 no-repeat;
+	position:absolute;
+	left:50%;
+	margin-left:-671px;
+	top:0;
+}

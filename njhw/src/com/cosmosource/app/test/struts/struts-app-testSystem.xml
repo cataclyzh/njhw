@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/door" extends="default" namespace="/app/door">
+ 
+		<!-- 功能：门锁监控 		作者：QiYanQiang  		时间：2013-04-01-->
+		 <action name="init" class="myDoorAction" method="init">
+			<result name="init">/app/test/myDoor.jsp</result>		
+		 </action>
+		 
+		  <action name="controlDoor" class="myDoorAction" method="controlDoor">
+		      <result name="success">/app/test/myDoor.jsp </result>
+		 </action>
+       
+
+          <action name="queryDoorStatus" class="myDoorAction" method="queryDoorStatus">
+		      <result name="success">/app/test/myDoor.jsp </result>
+		 </action>
+		 
+		  <action name="initDoor" class="myDoorAction" method="initDoor">
+		      <result name="success">/app/test/myDoor.jsp </result>
+		 </action>
+		 
+		 <action name="deleteDoor" class="myDoorAction" method="deleteDoor">
+		      <result name="success">/app/test/myDoor.jsp </result>
+		 </action>
+		 
+	</package>
+	
+	
+	
+	
+	  <package name="/app/sendMessage" extends="default" namespace="/app/sendMessage">
+ 
+		<!-- 功能：短信监控 		作者：QiYanQiang  		时间：2013-04-02-->
+		 <action name="init" class="mySendMessageAction" method="init">
+			<result name="init">/app/test/mySendMessage.jsp</result>		
+		 </action>
+		 
+		  <action name="sendMessage" class="mySendMessageAction" method="send">
+		      <result name="success">/app/test/mySendMessage.jsp </result>
+		 </action>
+      
+	</package>
+	
+	
+	
+	 <package name="/app/gates" extends="default" namespace="/app/gates">
+ 
+		<!-- 功能：闸机监控 		作者：QiYanQiang  		时间：2013-04-02-->
+		 <action name="init" class="myGatesAction" method="init">
+			<result name="init">/app/test/myGates.jsp</result>		
+		 </action>
+		 
+		  <action name="gatesTest" class="myGatesAction" method="controlGates">
+		      <result name="success">/app/test/myGates.jsp </result>
+		 </action>
+      
+	</package>
+	
+	
+	
+	<package name="/app/access" extends="default" namespace="/app/access">
+ 
+		<!-- 功能：门禁监控 		作者：QiYanQiang  		时间：2013-04-02-->
+		 <action name="init" class="myAccessAction" method="init">
+			<result name="init">/app/test/myAccess.jsp</result>		
+		 </action>
+		 
+		  <action name="accessTest" class="myAccessAction" method="controlAccess">
+		      <result name="success">/app/test/myAccess.jsp </result>
+		 </action>
+      
+	</package>
+	
+	
+	
+</struts>

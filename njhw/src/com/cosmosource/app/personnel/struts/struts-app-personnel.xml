@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.obj/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/per" extends="default" namespace="/app/per">
+		<!-- ip电话管理 cjw 2013-3-23 -->
+   		<action name="ipTelInput" class="tcIpTelAction" method="input">
+   			<result name="input">/app/personnel/iptel/iptelInput.jsp</result>
+   		</action>
+   		<action name="saveIpTel" class="tcIpTelAction" method="saveIpTel">
+   			<result name="success">/app/personnel/iptel/iptelInput.jsp</result>
+   		</action>
+   		<action name="listTcIpTels" class="tcIpTelAction" method="listTcIpTels">
+   			<result name="success">/app/personnel/iptel/iptelList.jsp</result>
+   		</action>
+   		<action name="deleteIpTel" class="tcIpTelAction" method="delete">
+   			<result name="success">listTcIpTels.act</result>
+   		</action>
+   		<action name="checkTelNum" class="tcIpTelAction" method="checkTelNum">
+   		</action>
+   		<action name="checkTelMac" class="tcIpTelAction" method="checkTelMac">
+   		</action>
+		<!-- 临时卡管理 sqs 2013-3-19 -->
+   		<action name="initTemporaryCard" class="temporaryCardAction" method="initTemporaryCard">
+   			<result name="init">/app/personnel/temporaryCard/temporaryCardList.jsp</result>
+   		</action>
+   		<action name="temporaryCardInput" class="temporaryCardAction" method="temporaryCardInput">
+   			<result name="input">/app/personnel/temporaryCard/temporaryCardInput.jsp</result>
+   		</action>
+   		<action name="temporaryCardAdd" class="temporaryCardAction" method="temporaryCardAdd">
+   			<result name="success">/app/personnel/temporaryCard/temporaryCardAdd.jsp</result>
+   		</action>
+   		<action name="inputTemporaryCard" class="temporaryCardAction" method="inputTemporaryCard">
+   			<result name="success">/app/personnel/temporaryCard/temporaryCardInput.jsp</result>
+   		</action>
+   		<action name="saveTemporaryCard" class="temporaryCardAction" method="saveTemporaryCard">
+   			<result name="success">/app/personnel/temporaryCard/temporaryCardAdd.jsp</result>
+   		</action>
+   		<action name="queryTcTempcard" class="temporaryCardAction" method="queryTcTempcard">
+   			<result name="success">/app/personnel/temporaryCard/temporaryCardList.jsp</result>
+   			<result name="error">/app/personnel/temporaryCard/temporaryCardList.jsp</result>
+   		</action>
+   		<action name="deleteTemporaryCard" class="temporaryCardAction" method="deleteTemporaryCard">
+   			<result name="success">queryTcTempcard.act</result>
+   		</action>
+   		
+   		<!-- 建筑设备维护  WXJ 2013-3-24 -->
+		<action name="objList" class="objMgrAction" method="list">
+			<result name="success">/app/personnel/objList.jsp</result>
+		</action>
+		
+		<action name="jzjgList" class="objMgrAction" method="jzjgList">
+			<result name="success">/app/personnel/jzjgList.jsp</result>
+		</action>
+		
+		<action name="jzsbList" class="objMgrAction" method="jzsbList">
+			<result name="success">/app/personnel/jzsbList.jsp</result>
+		</action>
+		
+		<action name="jzsbDoorControllerList" class="objMgrAction" method="jzsbDoorControllerList">
+			<result name="success">/app/personnel/jzsbDoorControllerList.jsp</result>
+		</action>
+
+		<action name="jzsbDoorControllerDel" class="objMgrAction" method="jzsbDoorControllerDel">
+			<result name="success">jzsbDoorControllerList.act</result>
+		</action>
+
+		<action name="jzsbDoorControllerInput" class="objMgrAction" method="jzsbDoorControllerInput">
+			<result name="success">/app/personnel/jzsbDoorControllerInput.jsp</result>
+		</action>
+		<action name="jzsbDoorControllerUpload" class="objMgrAction" method="jzsbDoorControllerUpload">
+		</action>
+		<action name="deviceAuthManger" class="objMgrAction" method="deviceAuthList">
+			<result name="success">/app/personnel/deviceAuthList.jsp</result>
+   		</action>
+		<action name="jzsbDoorControllerSaveOrUpdate" class="objMgrAction" method="jzsbDoorControllerSaveOrUpdate">
+			<result name="success">/app/personnel/jzsbDoorControllerInput.jsp</result>
+		</action>
+		
+		<action name="checkCommId" class="objMgrAction" method="checkCommId"></action>
+		<action name="checkCommIp" class="objMgrAction" method="checkCommIp"></action>
+		
+		<action name="jzsbElectronicLockList" class="objMgrAction" method="jzsbElectronicLockList">
+			<result name="success">/app/personnel/jzsbElectronicLockList.jsp</result>
+		</action>
+		
+		<action name="jzsbLightList" class="objMgrAction" method="jzsbLightList">
+			<result name="success">/app/personnel/jzsbLightList.jsp</result>
+		</action>
+		
+		<!-- 照明父节点集合 -->
+		<action name="jzsbLightListFath" class="objMgrAction" method="jzsbLightListFath">
+			<result name="success">/app/personnel/jzsbLightListByFath.jsp</result>
+		</action>
+		<!-- 空调父节点集合 -->
+		<action name="jzsbAirCondListFath" class="objMgrAction" method="jzsbAirCondListFath">
+			<result name="success">/app/personnel/jzsbAirConditionListByFath.jsp</result>
+		</action>
+		<!-- 门禁父节点集合 -->
+		<action name="jzsbLockListFath" class="objMgrAction" method="jzsbLockListFath">
+			<result name="success">/app/personnel/jzsbElectronicLockListByFath.jsp</result>
+		</action>
+		
+		<action name="jzsbAirConditionList" class="objMgrAction" method="jzsbAirConditionList">
+			<result name="success">/app/personnel/jzsbAirConditionList.jsp</result>
+		</action>
+		<!-- 功能菜单 -->
+		<action name="menuList" class="objMgrAction" method="menulist">
+			<result name="success">/app/personnel/objList1.jsp</result>
+		</action>
+		
+		<!-- 菜单管理	开发者：ywl		时间：2013-8-12 -->
+		<action name="objMenuFrame" class="objMgrAction" method="orgFrame">
+			<result name="success">/app/personnel/objMenuFrame.jsp</result>
+		</action>
+		<action name="objMenuList" class="objMgrAction" method="list">
+			<result name="success">/app/personnel/objMenuList.jsp</result>
+		</action>
+		<!-- 查询该权限下的所有用户 -->
+		<action name="objAdminList" class="objMgrAction" method="listAdmin">
+			<result name="success">/app/personnel/objAdminList.jsp</result>
+			<result name="error">/app/personnel/objAdminList.jsp</result>
+		</action>
+		<action name="objAdmin" class="objMgrAction" method="objAdmin">
+			<result name="success">/app/personnel/objAdmin.jsp</result>
+		</action>
+		<!-- 删除该权限下的用户	开发者：ywl		时间：2013-8-9 -->
+		<action name="delObjAdminUser" class="objMgrAction" method="delAdminUserRoot">
+			<result name="success">objAdminList.act</result>
+		</action>
+
+		<action name="jzjgInput" class="objMgrAction" method="input">
+		    <result name="input">/app/personnel/jzjgInput.jsp</result>
+		</action>
+		<action name="jzjgDelete" class="objMgrAction" method="jzjgDelete">
+		    <result name="reload">jzjgList.act?nodeId=${PId}</result>
+		</action>
+		<action name="jzsbInput" class="objMgrAction" method="input">
+		    <result name="input">/app/personnel/jzsbInput.jsp</result>
+		</action>
+
+		<action name="objInput" class="objMgrAction" method="input">
+		    <result name="input">/app/personnel/objInput.jsp</result>
+		</action>
+		<action name="objDelete" class="objMgrAction" method="delete">
+		    <result name="reload">objList.act?nodeId=${PId}</result>
+		</action>
+		<!--	用于合并房间开始	 开发者：ywl		时间：2013-8-7	-->
+		<action name="mergeHomeById" class="objMgrAction" method="mergeHomeById">
+		    <result name="reload">jzjgList.act?nodeId=${PId}</result>
+		</action>
+		<!--	用于合并房间结束	 -->
+		<action name="objSave" class="objMgrAction" method="save">
+			<result name="success">/app/personnel/objInput.jsp</result>
+		</action>
+		
+		<action name="jzjgSave" class="objMgrAction" method="jzjgSave">
+			<result name="success">/app/personnel/jzjgInput.jsp</result>
+		</action>
+		
+		<action name="jzsbSave" class="objMgrAction" method="save">
+			<result name="success">/app/personnel/jzsbInput.jsp</result>
+		</action>
+		
+		<action name="objFrame" class="objMgrAction" method="orgFrame">
+		    <result name="success">/app/personnel/objFrame.jsp</result>
+		</action>
+		
+		<action name="jzjgFrame" class="objMgrAction" method="orgFrame">
+		    <result name="success">/app/personnel/jzjgFrame.jsp</result>
+		</action>
+		
+		<action name="jzsbFrame" class="objMgrAction" method="orgFrame">
+		    <result name="success">/app/personnel/jzsbFrame.jsp</result>
+		</action>
+		<action name="objMenuManager" class="objMgrAction" method="objMenu">
+		    <result name="success">objIndex.act?resType=M</result>
+		</action>
+		<action name="objIndex" class="objMgrAction" method="orgIndex">
+		    <result name="success">/app/personnel/objIndex.jsp</result>
+		</action>
+		
+		<!-- admin 人员管理 -->
+		<action name="objAdminFrame" class="objMgrAction" method="orgAdminFrame">
+		    <result name="success">/app/personnel/objAdminFrame.jsp</result>
+		</action>
+     	<action name="objTreeData" class="objMgrAction" method="objTreeData"></action>
+     	
+     	<action name="jzjgTreeData" class="objMgrAction" method="jzjgTreeData"></action>
+     	<action name="jzsbTreeData" class="objMgrAction" method="jzsbTreeData"></action>
+     	
+     	<!-- 房间和设备管理树 -->
+     	<action name="objTreeDataDev" class="objMgrAction" method="objTreeDataDev"></action>
+     	<action name="menuTreeDataDev" class="objMgrAction" method="menuTreeDataDev"></action>
+     	<action name="objAdminTreeDataDev" class="objMgrAction" method="objAdminTreeDataDev"></action>
+    	<action name="objTree" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/objTree.jsp</result>
+		</action>
+		
+		<action name="jzjgTree" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/jzjgTree.jsp</result>
+		</action>
+		
+		<action name="jzjgLightInput" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/addTreeLightInput.jsp</result>
+		</action>
+		
+		<action name="jzsbLockInput" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/jzsbLockInput.jsp</result>
+		</action>
+		<!-- 调试弹出树 -->
+		<action name="jzsbLockInputTest" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/addTreeLock.jsp</result>
+		</action>
+		<action name="jzsbLockInputTestInput" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/addTreeLockInput.jsp</result>
+		</action>
+		<!-- 设备信息空调 -->
+		<action name="jzsbAirCondInputTestInput" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/addAirCondLock.jsp</result>
+		</action>
+		<action name="jzjgAirCondInput" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/addTreeAirCondInput.jsp</result>
+		</action>
+		
+		
+		
+		<action name="jzjgTreePop" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/jzjgTree.jsp</result>
+		</action>
+		
+		<action name="jzsbTree" class="objMgrAction" method="objTree">
+    		<result name="success" >/app/personnel/jzsbTree.jsp</result>
+		</action>
+		
+		<!-- 管理员功能菜单 -->
+		<action name="objTreeMenu" class="objMgrAction" method="objTreeMenu">
+    		<result name="success" >/app/personnel/objTreeMenu.jsp</result>
+		</action>
+		
+		<!-- 房间和设备管理树Admin -->
+		<action name="objAdminTree" class="objMgrAction" method="objAdminTree">
+			<result name="success" >/app/personnel/objAdminTree.jsp</result>
+		</action>
+		
+		<action name="objTreeSelectData" class="objMgrAction" method="objTreeSelectData"></action>
+		<action name="objTreeSelect" class="objMgrAction" method="objTreeSelect">
+    		<result name="success" >/app/personnel/objTreeSelected.jsp</result>
+		</action>
+			
+		
+		<!-- 组织管理  WXJ 2013-5-2 -->
+		<!--判断是否能着增加 机构     gxh-->
+		<action name="isOrNoaddOrg" class="orgPerMgrAction" method="isOrNoaddOrg"/>
+		<!--模糊查找用户列表    gxh-->
+		<action name="findUsers" class="orgPerMgrAction" method="findUsers"/>
+		<action name="orgList" class="orgPerMgrAction" method="list">
+			<result name="success">/app/personnel/orgList.jsp</result>
+			<result name="input">orgInput.act</result>
+		</action>
+		<!-- 入驻单位 -->
+		<action name="rzdwList" class="orgPerMgrAction" method="list">
+			<result name="success">/app/personnel/rzdwList.jsp</result>
+			<result name="input">rzdwInput.act</result>
+		</action>
+		<action name="rzdwInput" class="orgPerMgrAction" method="input">
+		    <result name="input">/app/personnel/rzdwInput.jsp</result>
+		</action>		
+		<action name="orgInput" class="orgPerMgrAction" method="input">
+		    <result name="input">/app/personnel/orgInput.jsp</result>
+		</action>
+		<!-- 入驻单位 -->
+		<action name="rzdwDelete" class="orgPerMgrAction" method="rzdwDelete">
+<!--		    <result name="reload">rzdwList.act?nodeId=${PId}</result>-->
+		</action>
+		<action name="orgDelete" class="orgPerMgrAction" method="delete">
+		    <result name="reload">orgList.act?nodeId=${PId}</result>
+		</action>
+		<!-- 删除一个组织机构 gxh -->
+		<action name="deleteOneOrg" class="orgPerMgrAction" method="deleteOneOrg"></action>
+		<!-- 给权限分配用户		开发者：ywl		时间：2013-8-10 -->
+		<action name="addOrgAdminRoot" class="objMgrAction" method="addOrgAdminRoot">
+			<result name="success">objAdminList.act</result>
+		</action>
+		<!-- 删除 一个人员 gxh -->
+		<action name="userDelete" class="orgPerMgrAction" method="userDelete">		    
+		</action>
+		<!-- 上移组织  gxh -->
+		<action name="upOrg" class="orgPerMgrAction" method="upOrg">		    
+		</action>
+		<!-- 下移组织  gxh -->
+		<action name="downOrg" class="orgPerMgrAction" method="downOrg"/>		    
+		
+		<!-- 上移人员  gxh -->
+		<action name="upUsers" class="orgPerMgrAction" method="upUsers"/>	
+		<!-- 下移人员  gxh -->
+		<action name="downUsers" class="orgPerMgrAction" method="downUsers"/>
+		<!-- 入驻单位 -->
+		<action name="rzdwSave" class="orgPerMgrAction" method="rzdwSave">
+			<result name="success">/app/personnel/rzdwInput.jsp</result>
+		</action>
+		<action name="orgSave" class="orgPerMgrAction" method="save">
+			<result name="success">/app/personnel/orgInput.jsp</result>
+		</action>
+		
+		<action name="orgIsRepate" class="orgPerMgrAction" method="orgIsRepate">
+		</action>
+		
+		<action name="orgFrame" class="orgPerMgrAction" method="orgFrame">
+		    <result name="success">/app/personnel/orgFrame.jsp</result>
+		</action>
+		<!-- 入驻单位 -->
+		<action name="rzdwFrame" class="orgPerMgrAction" method="orgFrame">
+		    <result name="success">/app/personnel/rzdwFrame.jsp</result>
+		</action>
+     	<action name="orgTreeData" class="orgPerMgrAction" method="orgTreeData"></action>
+     	<action name="orgTreeDataAdmin" class="orgPerMgrAction" method="orgTreeDataAdmin"></action>
+     	<!-- 入驻单位 -->
+     	<action name="rzdwTreeData" class="orgPerMgrAction" method="orgTreeData"></action>
+    	<action name="rzdwTree" class="orgPerMgrAction" method="orgTree">
+    		<result name="success" >/app/personnel/rzdwTree.jsp</result>
+		</action>
+		
+    	<action name="orgTree" class="orgPerMgrAction" method="orgTree">
+    		<result name="success" >/app/personnel/orgTree.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：弹出checkbox -->
+		<action name="orgUserTreeData" class="orgPerMgrAction" method="orgUserTreeData"></action>
+		<action name="orgUserTree" class="orgPerMgrAction" method="orgUserTree">
+    		<result name="success" >/app/personnel/orgUserTree.jsp</result>
+		</action>
+		
+		<action name="orgAdminUserTreeData" class="orgPerMgrAction" method="orgAdminUserTreeData"></action>
+		<action name="orgAdminUserTree" class="orgPerMgrAction" method="orgAdminUserTree">
+    		<result name="success" >/app/personnel/orgAdminUserTree.jsp</result>
+		</action>
+		
+		<action name="orgUserSelectSave" class="orgPerMgrAction" method="orgUserSelectSave">
+			<result name="success">/app/personnel/orgUserTree.jsp</result>
+			<result name="error">/app/personnel/registerOut/attendanceApprovers.jsp</result>
+		</action>
+		
+		<action name="saveBuildingAtts" class="orgPerMgrAction" method="saveBuildingAtts">
+			<result name="success">/app/personnel/registerOut/buildingAtts.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：一级页面左侧checkbox -->
+		<action name="orgTreeSelectData" class="orgPerMgrAction" method="orgTreeSelectData"></action>
+		<action name="orgTreeSelect" class="orgPerMgrAction" method="orgTreeSelect">
+    		<result name="success" >/app/personnel/orgTreeSelected.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：发送消息 -->
+		<action name="getMesOrgUserTreeData" class="orgPerMgrAction" method="getMesOrgUserTreeData"></action>
+		<action name="orgTreeSelect" class="orgPerMgrAction" method="orgTreeSelect">
+    		<result name="success" >/app/personnel/orgUserSelectToMess.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：一级页面左侧显示：人员信息查询-->
+		<action name="orgTreeUserListFrame" class="orgPerMgrAction" method="orgTreeUserListFrame">
+		    <result name="success">/app/personnel/orgUserListFrame.jsp</result>
+		</action>
+		<action name="orgTreeUserListData" class="orgPerMgrAction" method="orgTreeUserListData"></action>
+		<action name="orgTreeUserList" class="orgPerMgrAction" method="orgTreeUserList">
+    		<result name="success" >/app/personnel/orgUserListTree.jsp</result>
+		</action>
+		<!-- 消息收件人弹出框 -->
+		<action name="orgUserSelectToMess" class="orgPerMgrAction" method="orgTreeUserList">
+    		<result name="success" >/app/personnel/orgUserSelectToMess.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：一级页面左侧显示：人员登记-->
+		<action name="orgTreeUserCheckinFrame" class="orgPerMgrAction" method="orgTreeUserCheckinFrame">
+		    <result name="oldPage">/app/personnel/orgUserCheckinFrame.jsp</result>
+		    <result name="e4Page">/app/personnel_e/e4PersonnelPage.jsp</result>
+		</action>
+		
+		<!-- 组织机构用户 Tree：一级页面左侧显示：admin 登陆-->
+		<action name="orgTreeUserCheckinFrameAdmin" class="orgPerMgrAction" method="orgTreeUserCheckinFrameAdmin">
+		    <result name="success">/app/personnel/orgUserCheckinFrameAdmin.jsp</result>
+		</action>
+		
+		<!-- 其他人员Tree：一级页面左侧显示：物业 登陆-->
+		<action name="orgTreeUserCheckinFrameOther" class="orgPerMgrAction" method="orgTreeUserCheckinFrameOther">
+		    <result name="success">/app/personnel/orgUserCheckinFrameOther.jsp</result>
+		</action>
+		<action name="orgTreeUserCheckinFrameOther1" class="orgPerMgrAction" method="orgTreeUserCheckinFrameOther">
+		    <result name="success">/app/personnel/orgUserCheckinFrameOther1.jsp</result>
+		</action>
+		<action name="orgTreeUserCheckinFrameOther2" class="orgPerMgrAction" method="orgTreeUserCheckinFrameOther1">
+		    <result name="success">/app/personnel/orgUserCheckinFrameOther2.jsp</result>
+		</action>
+		
+		<!-- 新城一期 -->
+		<action name="metroOne" class="orgPerMgrAction" method="orgTreeUserCheckinFrameOther1">
+		    <result name="success">/app/personnel/orgUserCheckinFrameMetro.jsp</result>
+		</action>
+		<!-- 政务服务中心 -->
+		<action name="adminService" class="orgPerMgrAction" method="orgTreeUserCheckinFrameOther1">
+		    <result name="success">/app/personnel/orgUserCheckinFrameAdminService.jsp</result>
+		</action>
+		
+		
+		<action name="orgTreeUserCheckinData" class="orgPerMgrAction" method="orgTreeUserCheckinData"></action>
+		<action name="orgOtherUserCheckinData" class="orgPerMgrAction" method="orgOtherUserCheckinData"></action>
+		<action name="orgOtherUserCheckinData1" class="orgPerMgrAction" method="orgOtherUserCheckinData1"></action>
+		
+		<!-- 新城一期 -->
+		<action name="orgOtherUserCheckinDataMetro" class="orgPerMgrAction" method="orgOtherUserCheckinDataMetro"></action>
+		<!-- 政务服务中心 -->
+		<action name="orgOtherUserCheckinDataAdminService" class="orgPerMgrAction" method="orgOtherUserCheckinDataAdminService"></action>
+		
+		
+		<action name="orgTreeUserCheckin" class="orgPerMgrAction" method="orgTreeUserCheckin">
+    		<result name="success" >/app/personnel/orgUserCheckinTree.jsp</result>
+		</action>
+		<action name="orgTreeUserCheckinAdmin" class="orgPerMgrAction" method="orgTreeUserCheckinAdmin">
+    		<result name="success" >/app/personnel/orgUserCheckinTreeAdmin.jsp</result>
+		</action>
+		<action name="orgTreeUserCheckinOther" class="orgPerMgrAction" method="orgTreeUserCheckinOther">
+    		<result name="success" >/app/personnel/orgUserCheckinTreeOther.jsp</result>
+		</action>
+		<action name="orgTreeUserCheckinOther1" class="orgPerMgrAction" method="orgTreeUserCheckinOther">
+    		<result name="success" >/app/personnel/orgUserCheckinTreeOther1.jsp</result>
+		</action>
+		
+		<!-- 新城一期 -->
+		<action name="orgTreeUserCheckinMetro" class="orgPerMgrAction" method="orgTreeUserCheckinOther">
+    		<result name="success" >/app/personnel/orgUserCheckinTreeMetro.jsp</result>
+		</action>
+		<!-- 政务服务中心 -->
+		<action name="orgTreeUserCheckinAdminService" class="orgPerMgrAction" method="orgTreeUserCheckinOther">
+    		<result name="success" >/app/personnel/orgUserCheckinTreeAdminService.jsp</result>
+		</action>
+		
+		
+		<!-- 实现树结点拖动时重新指定父子关系 -->
+		<action name="treeDrag" class="orgPerMgrAction" method="treeDrag"/>
+		
+		<!--进入机构页面     sqs -->
+		<action name="initOrgan" class="personnelOrgAssignAction" method="initOrgan">
+			<result name="success">/app/personnel/organAssign/organList.jsp</result>
+		</action>
+		<!--初始化页面     sqs -->
+		<action name="initDoorBar" class="personnelOrgAssignAction" method="initDoorBar">
+			<result name="success">/app/personnel/doorBarAssign/organAssignDoorList.jsp</result>
+		</action>
+		<!--  查询机构     sqs -->
+		 <action name="queryOrganList" class="personnelOrgAssignAction" method="queryOrganList">
+			<result name="success">/app/personnel/organAssign/organList.jsp</result>		
+		 </action>
+		 <action name="queryOrgan" class="personnelOrgAssignAction" method="queryOrgan">
+			<result name="success">/app/personnel/doorBarAssign/organAssignDoorList.jsp</result>
+		 </action>
+		 
+		 <!--功能：操作电话分配页面  sqs -->
+		<action name="assignPhone" class="personnelOrgAssignAction" method="assignPhone">
+			<result name="success">/app/personnel/organAssign/assignPhonePage.jsp</result>
+		</action>
+		 <!--功能：操作门禁分配页面  sqs -->
+		<action name="assignDoorCard" class="personnelOrgAssignAction" method="assignDoorCard">
+			<result name="success">/app/personnel/doorBarAssign/assignDoorList.jsp</result>
+		</action>
+		 <!--功能：操作门禁分配点击下一页  sqs -->
+		<action name="getPageList" class="personnelOrgAssignAction" method="getPageList">
+			<result name="success">/app/personnel/doorBarAssign/assignDoorList.jsp</result>
+		</action>
+		
+		<!-- 保存门禁到机构成功页面  -->
+		<action name="doorCardSave" class="personnelOrgAssignAction" method="doorCardSave">
+			<result name="success">assignDoorCard.act</result>
+		</action>  
+		
+		<!--功能：列表查询  	开发者：sqs 	  -->
+		<action name="ipTelllist" class="personnelOrgAssignAction" method="ipAssignlist">
+			<result name="success">/app/personnel/organAssign/organList.jsp</result>
+		</action>
+		<!--功能：分配IP电话页面 	开发者：sqs 	  -->
+		<action name="ipTellAssign" class="personnelOrgAssignAction" method="ipTellAssign">
+			<result name="success">/app/personnel/organAssign/assignTellInput.jsp</result>
+		</action>
+		<!--功能：分配IP电话页面 	开发者：sqs 	  -->
+		<action name="ipTellAssignForAdd" class="personnelOrgAssignAction" method="ipTellAssignForAdd">
+			<result name="success">/app/personnel/organAssign/assignTellAddList.jsp</result>
+		</action>
+		<!--功能：异步刷新电话号码 	开发者：sqs 	  -->
+		<action name="ajaxRefreshTell" class="personnelOrgAssignAction" method="ajaxRefreshTell">
+			<result name="success">/app/personnel/organAssign/phoneList.jsp</result>
+		</action>
+		<!--功能：保存分配数据 	开发者：sqs  -->
+		<action name="allotIpSave" class="personnelOrgAssignAction" method="allotIpSave">
+		</action>
+		
+		<action name="allotIpSaveDelete" class="personnelOrgAssignAction" method="allotIpSaveDelete">
+		</action>
+		<!--功能：删除  -->
+		<action name="deleteIpTell" class="personnelOrgAssignAction" method="deleteIpTell">
+			<result name="reload">ipTelllist.act</result>
+		</action>
+		
+		
+		<!--功能：部门房间分配    开发者：sqs -->
+		<action name="initRoomAssignments" class="depRoomAssignmentsAction" method="initRoomAssignments">
+			<result name="success">/app/personnel/depRoomAssignments/depRoomAssignments.jsp</result>
+		</action>
+		<action name="propertyRoomAssign" class="depRoomAssignmentsAction" method="propertyRoomAssign">
+			<result name="success">/app/personnel/depRoomAssignments/yetDepRoomAssignments.jsp</result>
+		</action>
+		
+		<!--功能：批量设置用户为管理员		开发者：zqw	时间：2013年8月13日11:20:43 -->
+		<action name="modifySMAdmin" class="personRO" method="modifySMAdmin"></action>
+		
+		<!--功能：显示登记页面 	开发者：zh 	时间：2013-5-5 -->
+		<action name="inputRegister" class="personRO" method="inputRegister">
+			<result name="success">/app/personnel/registerOut/inputRegister.jsp</result>
+		</action>
+		
+		<!--功能：显示登记页面 	开发者：hj 	时间：2013-9-13 -->
+		<action name="inputRegisterOther" class="personRO" method="inputRegisterOther">
+			<result name="success">/app/personnel/registerOut/inputRegisterOther.jsp</result>
+		</action>
+		
+		<!--功能：显示登记页面 	开发者：张权威 	时间：2013年8月20日9:55:25 -->
+		<action name="inputRegisterAdmin" class="personRO" method="inputRegisterAdmin">
+			<result name="success">/app/personnel/registerOut/inputRegisterAdmin.jsp</result>
+		</action>
+		
+		<!--功能：保存登记信息	开发者：zh 	时间：2013-5-5 -->
+		<action name="saveRegister" class="personRO" method="saveRegister"></action>
+		<!--功能：保存其他人员登记信息	开发者：zh 	时间：2013-5-5 -->
+		<action name="saveRegisterOther" class="personRO" method="saveRegisterOther"></action>
+		<!--功能：取市民卡	开发者：zh 	时间：2013-5-5 -->
+		<action name="loadCityCard" class="personRO" method="loadCityCard"></action>
+		<!--功能：检测用户名和用户编码的唯一性		开发者：zh 	时间：2013-5-5 -->
+		<action name="checkUniqueId" class="personRO" method="checkUniqueId"></action>
+		<!--功能：检测车牌号唯一性	开发者：zh 	时间：2013-5-5 -->
+		<action name="validCarNum" class="personRO" method="validCarNum"></action>
+		<!--功能：检测车牌号唯一性	开发者：zh 	时间：2013-5-5 -->
+		<action name="validTmpCard" class="personRO" method="validTmpCard"></action>
+		<!--功能：挂失市民卡		开发者：zh 	时间：2013-5-5 -->
+		<action name="modifyCardIsLosted" class="personRO" method="modifyCardIsLosted"></action>
+		<!--功能：挂失市民卡		开发者：zh 	时间：2013-5-5 -->
+		<action name="orgIsContainAttendanceAdmin" class="personRO" method="orgIsContainAttendanceAdmin"></action>
+		
+		<!--功能：改变卡类型切换卡号		开发者：zh 	时间：2013-5-5 -->
+		<action name="loadCardNum" class="personRO" method="loadCardNum"></action>
+		<!--功能：根据选择话机ID查询MAC		开发者：zh 	时间：2013-5-5 -->
+		<action name="queryTelMacByTelID" class="personRO" method="queryTelMacByTelID"></action>
+		<!--功能：设置用户为管理员		开发者：zh 	时间：2013-5-5 -->
+		<action name="modifySMA" class="personRO" method="modifySMA"></action>
+		<!--功能：刷新车位数据		开发者：zh 	时间：2013-5-5 -->
+		<action name="refreshCarNum" class="personRO" method="refreshCarNum"></action>
+		<!--功能：刷新其他单位车位数据		开发者：zh 	时间：2013-5-5 -->
+		<action name="refreshCarNumOther" class="personRO" method="refreshCarNumOther"></action>
+		<!--功能：加载车牌		开发者：zh 	时间：2013-5-5 -->
+		<action name="loadPlatenum" class="personRO" method="loadPlatenum"></action>
+		<!--功能：显示迁出页面 	开发者：zh 	时间：2013-5-5 -->
+		<action name="inputOut" class="personRO" method="inputOut">
+			<result name="success">/app/personnel/registerOut/inputOut.jsp</result>
+		</action>
+		<!--功能：修改迁出信息 	开发者：zh 	时间：2013-5-5 -->
+		<action name="updateOut" class="personRO" method="updateOut"></action>
+		
+		<!--功能：给人员分配房间	开发者：zhangqw 	时间：2013年7月3日14:25:16 -->
+		<action name="roomDis" class="personRO" method="roomDis">
+			<result name="success">/app/personnel/registerOut/roomDis.jsp</result>
+		</action>
+		
+		<!--功能：给人员分配房间状况页面	开发者：zhangqw 	时间：2013年7月3日14:25:16 -->
+		<action name="disResultPage" class="personRO" method="disResultPage">
+			<result name="success">/app/personnel/registerOut/disResultPage.jsp</result>
+		</action>
+		
+		<!--功能：分配门锁状况	开发者：zhangqw 	2013年7月13日14:16:25-->
+		<action name="showDisDoor" class="personRO" method="showDisDoor">
+			<result name="success">/app/personnel/registerOut/disResultPage.jsp</result>
+		</action>
+		
+		
+		<!--功能：给人员分配电话	开发者：zhangqw 	时间：2013年7月3日14:25:16 -->
+		<action name="telDis" class="personRO" method="telDis">
+			<result name="success">/app/personnel/registerOut/telDis.jsp</result>
+		</action>
+		
+		<!--功能：分配房间授权	开发者：zhangqw 	2013年7月12日17:03:23 -->
+		<action name="doorDis" class="personRO" method="doorDis">
+			<result name="success">/app/personnel/registerOut/roomDis.jsp</result>
+		</action>
+		
+		<!-- 设备维护添加设备管理功能		开发者：ywl		时间：2013-8-14 -->
+		<action name="jzjgLightInputSave" class="objMgrAction" method="jzjgLightInputSave">
+			<result name="success">/app/per/jzjgLightInput.act</result>
+		</action>
+		<action name="jzsbLockInputSave" class="objMgrAction" method="jzsbLockInputSave">
+			<result name="success">/app/per/jzsbLockInputTestInput.act</result>
+		</action>
+		<!-- 设备信息空调 -->
+		<action name="jzjgAirCondInputSave" class="objMgrAction" method="jzjgAirCondInputSave">
+			<result name="success">/app/per/jzjgAirCondInput.act</result>
+		</action>
+		<!-- 删除设备维护 -->
+		<action name="delJzsbCheck" class="objMgrAction" method="delJzsbCheck"></action>
+		<action name="delJzsbLockCheck" class="objMgrAction" method="delJzsbLockCheck"></action>
+		<!-- JSON 返回该ID 的ext类型 -->
+		<action name="queryExtTypeById" class="objMgrAction" method="queryExtTypeJSON"></action>
+		<action name="queryLockCountJSON" class="objMgrAction" method="queryLockCountJSON"></action>
+		
+		<!-- 修改设备详细信息 -->
+		<action name="queryInfoLightInput" class="objMgrAction" method="queryInfoLightInput">
+			<result name="success">/app/personnel/jzsbInfoLightInput.jsp</result>
+		</action>
+		<!-- 设备信息空调 -->
+		<action name="queryInfoAirCondInput" class="objMgrAction" method="queryInfoAirCondInput">
+			<result name="success">/app/personnel/jzsbInfoAirCondInput.jsp</result>
+		</action>
+		<action name="queryInfoLockInput" class="objMgrAction" method="queryInfoLockInput">
+			<result name="success">/app/personnel/jzsbInfoLockInput.jsp</result>
+		</action>
+		
+		<action name="jzsbInfoLightUpdate" class="objMgrAction" method="jzsbInfoLightUpdate">
+			<result name="input">queryInfoLightInput.act</result>
+		</action>
+		
+		<action name="jzsbInfoLockUpdate" class="objMgrAction" method="jzsbInfoLockUpdate">
+			<result name="input">queryInfoLockInput.act</result>
+		</action>
+		
+		<!-- 设备信息空调 -->
+		<action name="jzsbInfoAirCondUpdate" class="objMgrAction" method="jzsbInfoAirCondUpdate">
+			<result name="input">queryInfoAirCondInput.act</result>
+		</action>
+		<!-- 设备信息空调 -->
+		<action name="delJzsbAirCondCheck" class="objMgrAction" method="delJzsbCheck"></action>
+		<action name="queryNjhwDoorCommJSON" class="objMgrAction" method="queryNjhwDoorCommJSON"></action>
+		
+		<!-- 单位管理员门禁闸机授权管理 -->
+		<action name="queryUserAccess" class="accessMgrAction" method="queryUserAccess">
+			<result name="success">/app/personnel/applyAccess.jsp</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请添加，修改 -->
+		<action name="accessApplyInput" class="accessMgrAction" method="accessApplyInput">
+			<result name="success">/app/personnel/applyAccessInput.jsp</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请添加，修改(人员管理页面) -->
+		<action name="accessApplyInputForUser" class="accessMgrAction" method="accessApplyInputForUser">
+			<result name="success">/app/personnel/registerOut/applyAccessInput.jsp</result>
+		</action>
+		<!-- 考勤审核人员选择-->
+		<action name="attendanceApprovers" class="orgPerMgrAction" method="attendanceApprovers">
+			<result name="success">/app/personnel/registerOut/attendanceApprovers.jsp</result>
+		</action>
+		
+		<!-- 考勤审核人员选择-->
+		<action name="buildingAtts" class="orgPerMgrAction" method="buildingAtts">
+			<result name="success">/app/personnel/registerOut/buildingAtts.jsp</result>
+		</action>
+		<action name="buildingAttsData" class="orgPerMgrAction" method="buildingAttsData"></action>
+		<action name="attendanceApproversData" class="orgPerMgrAction" method="attendanceApproversData"></action>
+		<!-- 单位管理员门禁闸机申请注销 -->
+		<action name="deleteAccess" class="accessMgrAction" method="deleteAccess">
+			<result name="success">queryUserAccess.act</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请保存 -->
+		<action name="saveAccessForUser" class="accessMgrAction" method="saveAccessForUser">
+		</action>
+		<!-- 单位管理员门禁闸机申请保存(人员管理) -->
+		<action name="saveAccess" class="accessMgrAction" method="saveAccess">
+			<result name="success">queryUserAccess.act</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请人员选择树画面 -->
+		<action name="allotAccessUserTree" class="accessMgrAction" method="allotAccessUserTree">
+			<result name="success">/app/personnel/property/allotAccessUserTree.jsp</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请人员选择树数据画面 -->
+		<action name="allotAccessUserTreeData" class="accessMgrAction" method="allotAccessUserTreeData"></action>
+		<!-- 单位管理员门禁闸机申请闸机选择树画面 -->
+		<action name="allotGuardTree" class="accessMgrAction" method="allotGuardTree">
+			<result name="success">/app/personnel/property/allotGuardTree.jsp</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请闸机选择树数据画面 -->
+		<action name="allotGuardTreeData" class="accessMgrAction" method="allotGuardTreeData"></action>
+		<!-- 单位管理员门禁闸机申请门禁选择树画面 -->
+		<action name="allotAccessTree" class="accessMgrAction" method="allotAccessTree">
+			<result name="success">/app/personnel/property/allotAccessTree.jsp</result>
+		</action>
+		<!-- 单位管理员门禁闸机申请门禁选择树数据画面 -->
+		<action name="allotAccessTreeData" class="accessMgrAction" method="allotAccessTreeData"></action>
+		<action name="test" class="objMgrAction" method="objTree">
+			<result name="success">/app/personnel/test.jsp</result>
+		</action>
+		<!--功能：分配IP电话页面 	开发者：zhangquanwei 2013年9月10日15:04:52 	  -->
+		<action name="ipTellAssignAll" class="personnelOrgAssignAction" method="ipTellAssignAll">
+			<result name="success">/app/personnel/organAssign/assignTellInputAll.jsp</result>
+		</action>
+		
+		<!--功能：异步刷新电话号码 	开发者：sqs 	  -->
+		<action name="ajaxRefreshTellAll" class="personnelOrgAssignAction" method="ajaxRefreshTellAll">
+			<result name="success">/app/personnel/organAssign/phoneListAll.jsp</result>
+		</action>
+ 	</package>
+ 	
+ 	<package name="/app/per/json" extends="json-default" namespace="/app/per/json">
+ 		<!-- 初始化人员门禁闸机信息 -->
+		<action name="initUserAccessInfo" class="accessMgrAction" method="initUserAccessInfo">
+			<result type="json" name="success">
+                <param name="contentType">text/html</param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">text/html</param>
+            </result>
+		</action>
+	</package>
+ 	
+</struts>

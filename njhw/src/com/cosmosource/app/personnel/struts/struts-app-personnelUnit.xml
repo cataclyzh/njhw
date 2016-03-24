@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/personnel/unit" extends="default" namespace="/app/personnel/unit">
+		<!-- 初始化管理局人员管理主页  -->
+		<action name="index" class="unitAdminIndexAction" method="index">
+			<result name = "success">/app/personnel/unit/index.jsp</result>
+		</action>
+		<!-- 房间分配页 -->
+		<action name="roomDistribute" class="unitAdminIndexAction" method="roomDistribute">
+			<result name = "success">/app/personnel/unit/roomDistribute.jsp</result>
+		</action>
+		
+		<!-- 新的房间分配页 -->
+		<action name="roomDistributeNew" class="unitAdminIndexAction" method="roomDistributeNew">
+			<result name = "success">/app/personnel/unit/roomDistributeNew.jsp</result>
+			<result name = "noRoom">/app/personnel/unit/noRoomPage.jsp</result>
+		</action>
+		
+		<action name="light" class="unitAdminIndexAction" method="resourceDistribute">
+			<result name = "success">/app/personnel/unit/light.jsp</result>
+		</action>
+		<!-- 调用人员机构树 -->
+		<action name="orgUserTree" class="unitAdminIndexAction" method="getOrgUserTree">
+			<result name = "success">/app/personnel/unit/orgUserTree.jsp</result>
+		</action>
+		<!-- 修改房间信息 -->
+		<action name="editRoomInfo" class="unitAdminIndexAction" method="editRoomInfo">
+			<result name = "success">/app/personnel/unit/editRoomInfo.jsp</result>
+		</action>
+		<!-- 保存修改房间信息 -->
+		<action name="roomEditSave" class="unitAdminIndexAction" method="roomEditSave">
+			<result name = "success">/app/personnel/unit/editRoomInfo.jsp</result>
+		</action>
+		
+		<!-- 显示房间门锁分配 -->
+		<action name="showDistributeLock" class="unitAdminIndexAction" method="showDistributeLock">
+		</action>
+		
+		<!-- 显示房间ID取得房间信息 -->
+		<action name="getRoomById" class="unitAdminIndexAction" method="getRoomById">
+		</action>
+		
+		<!-- 显示远程开门是否成功   zhangqw  2013年6月22日17:39:00-->
+		<action name="showDisLockStatus" class="unitAdminIndexAction" method="showDisLockStatus">
+		</action>
+		
+		<!-- 显示ip电话接入 -->
+		<action name="showIPPhoneInner" class="unitAdminIndexAction" method="showIPPhoneInner">
+		</action>
+		
+		<!-- 显示房间人员分配 -->
+		<action name="showDistributeRoom" class="unitAdminIndexAction" method="showDistributeRoom">
+		</action>
+		<!--房间分配及授权管理清单导出  -->
+		<action name="exportRoomInfo" class="unitAdminIndexAction" method="exportRoomInfo">
+		</action>
+		
+		 <!-- 读取卡的权限     开发者： qiyanqiang  时间:2013-05-12-->
+        <action name="readCardPrivileges" class="unitAdminIndexAction" method="readCardPrivileges">        	
+            <result name="success">/app/personnel/unit/readCardPrivileges.jsp</result>
+        </action>
+        
+        <!-- 制作通卡 -->
+        <action name="playCardInit" class="unitAdminIndexAction" method="playCardInit">
+			<result name="success">/app/personnel/property/playCard.jsp</result>
+		</action>
+		<action name="playCardAllIndex" class="unitAdminIndexAction" method="playCardAllIndex">
+			<result name="success">/app/personnel/property/playCardIndex.jsp</result>
+		</action>
+		<action name="playCardInit2" class="unitAdminIndexAction" method="playCardInit2">
+			<result name="success">/app/personnel/unit/playCard2.jsp</result>
+		</action>
+		<action name="playCardData" class="unitAdminIndexAction" method="playCardData">
+			<result name="success">/app/personnel/unit/authRoomInfo.jsp</result>
+		</action>
+		<action name="playCardIndex" class="unitAdminIndexAction" method="playCardIndex">
+			<result name="success">/app/personnel/unit/playCardIndex.jsp</result>
+		</action>
+		<action name="showPubCardInfo" class="unitAdminIndexAction" method="showPubCardInfo">
+			<result name="success">/app/personnel/unit/showPubCardInfo.jsp</result>
+		</action>
+		<action name="showPubCardAllInfo" class="unitAdminIndexAction" method="showPubCardAllInfo">
+			<result name="success">/app/personnel/property/showPubCardAllInfo.jsp</result>
+		</action>
+		<action name="delPubCard" class="unitAdminIndexAction" method="delPubCard">
+			<result name="success">/app/personnel/unit/delPubCard.jsp</result>
+		</action>
+		
+		<action name="deletePubCardAll" class="unitAdminIndexAction" method="deletePubCardAll">
+			<result name="success">/app/personnel/property/delPubCard.jsp</result>
+		</action>
+		
+		<action name="retryPubCard" class="unitAdminIndexAction" method="retryPubCard">
+			<result name="success">/app/personnel/property/retryPubCard.jsp</result>
+		</action>
+		<action name="deletePubCard" class="unitAdminIndexAction" method="deletePubCard"></action>
+		<action name="checkPubCardNo" class="unitAdminIndexAction" method="checkPubCardNo"></action>
+		
+		<action name="checkPubCardNoAll" class="unitAdminIndexAction" method="checkPubCardNoAll"></action>
+		<action name="checkAdminCard" class="unitAdminIndexAction" method="checkAdminCard"></action>
+		<action name="checkAdminCardForAll" class="unitAdminIndexAction" method="checkAdminCardForAll"></action>
+		
+		<action name="showPubCardConfirm" class="unitAdminIndexAction" method="showPubCardConfirm"></action>
+		<action name="showPubCardConfirmForAll" class="unitAdminIndexAction" method="showPubCardConfirmForAll"></action>
+		<action name="showDeletePubCardConfirmForAll" class="unitAdminIndexAction" method="showDeletePubCardConfirmForAll"></action>
+		
+		<action name="playCard" class="unitAdminIndexAction" method="playCard">
+			<result name="success">/app/personnel/unit/playCardDetail.jsp</result>
+		</action>
+		<action name="autoCreateUser" class="unitAdminIndexAction" method="autoCreateUser"></action>
+		<action name="checkCardId" class="unitAdminIndexAction" method="checkCardId"></action>
+		<action name="playCardSave" class="unitAdminIndexAction" method="playCardSave">
+			<result name="success">playCard.act</result>
+		</action>
+		
+		<action name="retryPlayCardSave" class="unitAdminIndexAction" method="retryPlayCardSave"></action>
+		<action name="deleteCardSave" class="unitAdminIndexAction" method="deleteCardSave"></action>
+		
+		<action name="playCardSaveForAll" class="unitAdminIndexAction" method="playCardSaveForAll"></action>
+		<action name="playCardSaveForAuth" class="unitAdminIndexAction" method="playCardSaveForAuth"></action>
+		<action name="disResultPage" class="unitAdminIndexAction" method="disResultPage">
+			<result name="success">/app/personnel/unit/disResultPage.jsp</result>
+		</action>
+		<!-- 远程开门 -->
+		<action name="checkOpenDoorResult" class="unitAdminIndexAction" method="checkOpenDoorResult">
+		</action>
+ 	</package>
+ 	
+ 	<package name="/app/personnel/unit/manage" extends="json-default" namespace="/app/personnel/unit/manage">
+		<!--功能 :进入查询组织人员的Iframe  gxh  时间：2013-5-6 -->
+		<action name="intoperOrgQuery" class="PersonnelManagAction" method="intoperOrgQuery">
+			<result name="success">/app/personnel/perOrgQueryIframe.jsp</result>		
+		</action>		
+			<!--功能 :查询组织  gxh  时间：2013-5-6 -->
+		<action name="getSonOrgs" class="PersonnelManagAction" method="getSonOrgs">
+			<result name="success">/app/personnel/getSonOrgs.jsp</result>		
+		</action>
+		<!--功能 :查询组织人员  gxh  时间：2013-5-6 -->
+		<action name="getAllPerByOrg" class="PersonnelManagAction" method="getAllPerByOrg">
+			<result name="success">/app/personnel/getAllPerByOrg.jsp</result>		
+		</action>
+			 
+		<!-- 功能：进入员管理(扩展)页面 gxh  -->
+		<action name="infoPersManage" class="PersonnelManagAction" method="infoPersManage">
+			<result name="input">/app/personnel/personnelExinfo.jsp</result>	
+		</action>
+		<!--功能：保存扩展信息  gxh  -->
+		<action name="savePersonnelExinfo" class="PersonnelManagAction" method="savePersonnelExinfo">
+			<result name="success">/app/personnel/personnelExinfo.jsp</result>		
+		</action>
+		<!--功能：挂失市名卡  gxh  -->
+		<action name="lossCityCardId" class="PersonnelManagAction" method="lossCityCardId"/>
+		<!--功能：市名卡验证  gxh  -->
+		<action name="checkCityCar" class="PersonnelManagAction" method="checkCityCar"/>
+		<!--功能 :修改组织  gxh   时间：2013-5-6 -->
+		<action name="modOrgByid" class="PersonnelManagAction" method="modOrgByid">
+			<result name="success">/app/personnel/modOrg.jsp</result>		
+		</action>
+		<!--功能 :保存修改组织  gxh   时间：2013-5-6 -->
+		<action name="saveModOrg" class="PersonnelManagAction" method="saveModOrg">
+			<result name="success">/app/personnel/modOrg.jsp</result>		
+		</action>
+		
+		<!--功能 ：重置密码  gxh   时间：2013-5-9 -->
+		<action name="resetPwd" class="PersonnelManagAction" method="resetPwd">
+			
+		</action>
+		<!--功能 ：设置管理员  gxh   时间：2013-5-9 -->
+		<action name="isSystem" class="PersonnelManagAction" method="isSystem">
+			
+		</action>
+	</package>
+	
+ 	<!-- 委办局机构人员管理 --> 
+ 	<package name="/app/personnel/orguser" extends="default" namespace="/app/personnel/orguser">
+		<!-- 委办局人员机构管理.net跳转处理 -->
+		<action name="index" class="unitOrgUserAction" method="index">
+			<result name="orgUserList" type="redirect">/app/personnel/unit/manage/intoperOrgQuery.act?orgId=${orgId}</result>
+			<result name="userEdit" type="redirect">/app/personnel/unit/manage/infoPersManage.act?userId=${userId}</result>
+			<result name="userAdd" type="redirect">/app/personnel/unit/manage/infoPersManage.act?orgId=${orgId}</result>
+		</action>
+				
+		<!-- 委办局人员机构管理Java -->
+		<action name="orgIndex" class="orgPerMgrAction" method="indexFrame">
+			<result name="success">/app/personnel/orgIndexframe.jsp</result>		
+		</action>
+		<action name="orgList" class="orgPerMgrAction" method="chechinList">
+			<result name="success">/app/personnel/orgCheckinList.jsp</result>
+		</action>
+		
+		<!-- 人员权限清单初始化页面      开发者 ：cjw  -->
+		<action name="usersLimitInit" class="orgPerMgrAction" method="usersLimitInit">
+			<result name="success">/app/personnel/unit/usersLimitList.jsp</result>		
+		</action>
+		<!-- 人员权限清单查询页面      开发者 ：cjw  -->
+		<action name="usersLimitList" class="orgPerMgrAction" method="usersLimitList">
+			<result name="success">/app/personnel/unit/usersLimitList.jsp</result>
+		</action>
+		
+ 	</package> 
+ 	
+ 	<package name="/app/personnel/cusservice" extends="default" namespace="/app/personnel/cusservice">
+		<!-- 委办局人员机构管理.net跳转处理 -->
+		<action name="index" class="cusServiceIndexAction" method="index">
+			<result name = "success">/app/personnel/cusservice/index.jsp</result>
+		</action>
+		<action name="refreshWorkSheet" class="cusServiceIndexAction" method="refreshWorkSheet">
+			<result name = "success">/app/personnel/cusservice/workSheet.jsp</result>
+		</action>
+		<action name="queryArticleJSON" class="cusServiceIndexAction" method="queryArticleJSON"></action>
+ 	</package> 
+ 	<package name="/app/personnel/telAndNumber" extends="default" namespace="/app/personnel/telAndNumber">
+ 		<action name="telAndNumber" class="telAndNumAction" method="telAndNumber">
+			<result name = "success">/app/personnel/telAndNumber/telAndNumber.jsp</result>
+			<result name = "newPage">/app/personnel_e/telAndNumber/telAndNumberE.jsp</result>
+		</action>
+		<action name="telAndNumberList" class="telAndNumAction" method="telAndNumberList">
+			<result name = "success">/app/personnel/telAndNumber/telAndNumberList.jsp</result>
+			<result name = "E-buildingTelAndNumberList">/app/personnel_e/telAndNumber/telAndNumberListE.jsp</result>
+		</action>
+		<action name="distribute" class="telAndNumAction" method="distribute">
+			<result name = "success">/app/personnel/telAndNumber/distribute.jsp</result>
+			<result name = "E-buildingTelAndNumberDistribute">/app/personnel_e/telAndNumber/distributeE.jsp</result>
+		</action>
+		<action name="modifyDistrbute" class="telAndNumAction" method="modifyDistrbute">
+			<result name = "success">/app/personnel/telAndNumber/modifyDistribute.jsp</result>
+		</action>
+		<action name="revertDistrbute" class="telAndNumAction" method="revertDistrbute">
+		</action>
+		<!-- 首页 -->
+		<action name="index" class="telAndNumAction" method="index">
+			<result name = "success">/app/personnel/telAndNumber/index.jsp</result>
+		</action>
+		<action name="orgTreeUser" class="telAndNumAction" method="orgTreeUser">
+			<result name = "success">/app/personnel/telAndNumber/orgUserTree.jsp</result>
+		</action>
+		<action name="orgTreeUserData" class="telAndNumAction" method="orgTreeUserData">
+		</action>
+		<action name="refreshUser" class="telAndNumAction" method="refreshUser">
+		</action>
+		<action name="saveTelDisChange" class="telAndNumAction" method="saveTelDisChange">
+		</action>
+		<action name="saveTelDis" class="telAndNumAction" method="saveTelDis">
+		</action>
+		<action name="unitDistribute" class="telAndNumAction" method="unitDistribute">
+			<result name = "success">/app/personnel/telAndNumber/unitDistribute.jsp</result>
+		</action>
+		<!--  导出电话清单    作者:qiyanqiang    时间：2013 - 05-19 -->
+		<action name="exportPhoneInfo"  class="telAndNumAction"  method="exportPhoneInfo"  >
+		</action>
+		
+		
+		
+ 	</package> 
+</struts>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<title>登录页面</title>
+		<link type="text/css" rel="stylesheet" href="css/login.css" />
+		<link type="image/x-icon" rel="shortcut icon" href="Logo.ico" />
+		<script language="JavaScript" src="js/login.js" type="text/JavaScript"></script>
+		<script type="text/javascript" src="js/util.js"></script>
+		<!--[if IE 6]> 
+		<script type="text/javascript" src="js/ie_png.js"></script>
+		<script type="text/javascript">
+		ie_png.fix('div, img');  //EvPNG.fix('包含透明PNG图片的标签'); 多个标签之间用英文逗号隔开。
+		</script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="bg_01" id="bg_01">
+			<img src="images/login_logo.png" alt="" class="logo" />
+			<div class="login_box">
+				<span class="error_tip" id="error_tip"></span>
+				<ul class="title">
+					<li>
+						用户名<input id="username" class="wid" type="text" value="" name="username" tabindex="1" autocomplete="off"
+							disableautocomplete="" onblur="leave(this)" onfocus="inner(this)">
+						<span >用户名不能为空</span>
+					</li>
+					<li>
+						密 码 <input id="password" class="wid" type="password" value="" name="password" tabindex="1"
+							autocomplete="off" disableautocomplete="" onblur="leave(this)" onfocus="inner(this)">
+						<span>密码不能为空</span>
+					</li>
+					<li>
+						验证码<input id="proving" class="wid" type="text" value="" name="proving" tabindex="1" autocomplete="off"
+							disableautocomplete="" onblur="leave(this)" onfocus="inner(this)"> 
+							<img id="vail" class="vail" onclick="change_vil()" onmouseover="img_in()" onmouseout="img_out()" onload="load(this)" title="看不清,请点击图片"/>
+							<img id="Img1"  src="images/login/loading.gif"/>
+						<span>验证码不能为空</span>
+						<span>验证码错误</span>
+					</li>
+				</ul>
+				<div class="login_img">
+					<input type="submit" onclick="login_clk()" value="登 录"  class="bottom_01" ID="Button1" onmouseover="btn1_over(this, 0)" onmouseout="btn1_over(this, 1)" hidefocus/>
+					<input type="submit"  class="bottom_02" value="重 置" onclick="login_reset()" ID="Button2" onmouseover="btn2_over(this, 0)" onmouseout="btn2_over(this, 1)" hidefocus/>
+				</div>
+			</div>
+		</div>
+		<div class="bg_02">
+			<img src="images/main_bg.jpg" alt="" />
+		</div>
+		<div class="login_loading" id="login_loading">请等待...</div>
+	</body>
+</html>

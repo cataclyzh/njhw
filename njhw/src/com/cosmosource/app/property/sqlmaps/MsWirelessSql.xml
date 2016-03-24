@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MsWirelessSql">
+	<select id="getPositionHistory" parameterClass="map" resultClass="hashmap">
+		SELECT A.TAGMAC, B.WRITETIME, C.COORDINATESNAME 
+		FROM DEVICE_TAG A, HISTORY_TAGPOSITIONLOG B, MAP_COORDINATES C
+		WHERE A.ID = B.TAGID AND B.COORDINATESID = C.ID
+		<dynamic>
+			<isNotEmpty property="tagMac" prepend="and">
+				a.tagMac = #tagMac#
+			</isNotEmpty>
+			<isNotEmpty property="startTime" prepend="and" >
+			<![CDATA[	
+				b.writetime >= #startTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="endTime" prepend="and" >
+			<![CDATA[
+				b.writetime <= #endTime#
+			]]>				
+			</isNotEmpty>
+		</dynamic>
+		order by b.WriteTime desc
+	</select>
+	
+</sqlMap>

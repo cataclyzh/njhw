@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+       
+	    <!-- 物业房间分配  sqs -->
+		<bean id="depRoomAssignmentsAction" class="com.cosmosource.app.personnel.action.DepRoomAssignmentsAction" scope="prototype">    
+	    	<property name="depRoomAssignmentsManager" ref="depRoomAssignmentsManager"/>
+	    </bean>
+		<bean id="depRoomAssignmentsManager" class="com.cosmosource.app.personnel.service.DepRoomAssignmentsManager" parent="manager">
+		</bean>
+		
+	    <!-- 部门机构查询  sqs -->
+		<bean id="personnelOrgAssignAction" class="com.cosmosource.app.personnel.action.PersonnelOrgAssignAction" scope="prototype">    
+	    	<property name="personnelOrgAssignManager" ref="personnelOrgAssignManager"/>
+	    </bean>
+		<bean id="personnelOrgAssignManager" class="com.cosmosource.app.personnel.service.PersonnelOrgAssignManager" parent="manager">
+		</bean>
+		
+       	<!-- 分配车牌号码  zh-->
+		<bean id="allotInfo" class="com.cosmosource.app.personnel.action.AllotAction" scope="prototype">    
+	    	<property name="allotManager" ref="allotManager"/>
+	    </bean>
+		<bean id="allotManager" class="com.cosmosource.app.personnel.service.AllotManager" parent="manager"></bean>
+		
+		<!-- 分配Ip电话号码  zh-->
+		<bean id="allotIpPhone" class="com.cosmosource.app.personnel.action.AllotIpPhoneAction" scope="prototype">    
+	    	<property name="allotIpPhoneManager" ref="allotIpPhoneManager"/>
+	    </bean>
+		<bean id="allotIpPhoneManager" class="com.cosmosource.app.personnel.service.AllotIpPhoneManager" parent="manager"></bean>
+			
+		<!-- 分配房间  zh-->
+		<bean id="allotRoomInfo" class="com.cosmosource.app.personnel.action.AllotRoomAction" scope="prototype">    
+	    	<property name="allotRoomManager" ref="allotRoomManager"/>
+	    </bean>
+		<bean id="allotRoomManager" class="com.cosmosource.app.personnel.service.AllotRoomManager" parent="manager">
+			<property name="doorControlToAppService" ref="doorControlToAppService"/>
+		</bean>
+		
+		<!-- 人员登记/迁出  zh-->
+		<bean id="personRO" class="com.cosmosource.app.personnel.action.PersonRegOutAction" scope="prototype">    
+	    	<property name="personROManager" ref="personROManager"/>
+	    	<property name="accessMgrManager" ref="accessMgrManager"/>
+    		<property name="personCardQueryToAppService" ref="personCardQueryToAppService"/>
+	    </bean>
+		<bean id="personROManager" class="com.cosmosource.app.personnel.service.PersonRegOutManager" parent="manager">
+			<property name="commonManager" ref="commonManager"/>
+			<property name="doorControlToAppService" ref="doorControlToAppService"/>
+			<property name="unitAdminManager" ref="unitAdminManager"></property>
+			<property name="accessMgrManager" ref="accessMgrManager"></property>
+		</bean>
+		
+		<!-- 人员分配房间——三维  cjw-->
+		<bean id="swPersonAllotRoomAction" class="com.cosmosource.app.personnel.action.SWPersonAllotRoomAction" scope="prototype">    
+	    	<property name="swAllotRoomManager" ref="swAllotRoomManager"/>
+	    </bean>
+		
+		<!-- 分配房间——三维  zh-->
+		<bean id="swAllotRoom" class="com.cosmosource.app.personnel.action.SWAllotRoomAction" scope="prototype">    
+	    	<property name="swAllotRoomManager" ref="swAllotRoomManager"/>
+	    </bean>
+		<bean id="swAllotRoomManager" class="com.cosmosource.app.personnel.service.SWAllotRoomManager" parent="manager"></bean>
+		
+		<!-- 委办局房间分配查询  —— 三维  sqs-->
+		<bean id="seeAssignRoom" class="com.cosmosource.app.personnel.action.SeeAssignRoomAction" scope="prototype">    
+	    	<property name="seeAssignRoomManager" ref="seeAssignRoomManager"/>
+	    </bean>
+		<bean id="seeAssignRoomManager" class="com.cosmosource.app.personnel.service.SeeAssignRoomManager" parent="manager"></bean>
+		
+	    <!-- ip电话管理 cjw  时间 2013-3-23-->
+	    <bean id="tcIpTelAction" class="com.cosmosource.app.personnel.action.TcIpTelAction" scope="prototype">
+	    	<property name="tcIpTelManager" ref="tcIpTelManager"></property>
+	    </bean>
+	    <bean id="tcIpTelManager" class="com.cosmosource.app.personnel.service.TcIpTelManager" parent="manager"></bean>
+	   
+	    <!-- 临时卡管理 sqs  时间 2013-3-19-->
+	    <bean id="temporaryCardAction" class="com.cosmosource.app.personnel.action.TemporaryCardAction" scope="prototype">
+	    	<property name="temporaryCardManager" ref="temporaryCardManager"></property>
+	    </bean>
+	    <bean id="temporaryCardManager" class="com.cosmosource.app.personnel.service.TemporaryCardManager" parent="manager"></bean>
+    	
+    	<!-- 对象资源树管理Manager WXJ 2013-3-23-->
+    	<bean id="objMgrManager" class="com.cosmosource.app.personnel.service.ObjMgrManager" parent="manager"></bean>         
+    	<!-- 对象资源树管理Action WXJ 2013-3-23-->
+    	<bean id="objMgrAction" class="com.cosmosource.app.personnel.action.ObjMgrAction" scope="prototype">    
+    		<property name="objMgrManager" ref="objMgrManager"/>
+    		<property name="doorControlToAppService" ref="doorControlToAppService"/>
+   		</bean>  
+   		
+   		<!-- 组织机构管理Manager WXJ 2013-5-2-->
+    	<bean id="orgPerMgrManager" class="com.cosmosource.app.personnel.service.OrgMgrManager" parent="manager">
+    		<property name="unitAdminManager" ref="unitAdminManager"/>
+    		<property name="accessMgrManager" ref="accessMgrManager"/>
+    		<property name="doorControlToAppService" ref="doorControlToAppService"></property>
+    		<property name="e4PersonnelManager" ref="e4PersonnelManager"></property>
+    	</bean>         
+    	<!-- 组织机构管理Action WXJ 2013-5-2-->
+    	<bean id="orgPerMgrAction" class="com.cosmosource.app.personnel.action.OrgMgrAction" scope="prototype">    
+    		<property name="orgMgrManager" ref="orgPerMgrManager"/>
+    		<property name="personROManager" ref="personROManager"/>
+    		<property name="doorControlToAppService" ref="doorControlToAppService"></property>
+    		<property name="e4PersonnelManager" ref="e4PersonnelManager"></property>
+   		</bean>  
+   		
+        <!--人员扩展信息Manage  gxh-->
+        <bean id="personnelExpInforManager" class="com.cosmosource.app.personnel.service.PersonnelExpInforManager" parent="manager"></bean>
+         <!--人员扩展信息action  gxh-->
+       <bean id="PersonnelManagAction" class="com.cosmosource.app.personnel.action.PersonnelManagAction" scope="prototype">    
+    		<property name="personnelExpInforManager" ref="personnelExpInforManager"/>
+    	
+   	   </bean>
+   	   <!--人员查询  manage-->
+   	    <bean id="perInfoQueManager" class="com.cosmosource.app.personnel.service.PerInfoQueManager" parent="manager"></bean>
+   	     <!--人员查询  action-->
+   	    <bean id="perInfoQueAction" class="com.cosmosource.app.personnel.action.PerInfoQueAction" scope="prototype">    
+    		<property name="perInfoQueManager" ref="perInfoQueManager"/>
+    		
+   	   </bean>
+   	   
+   	   <!-- 单位门禁闸机管理Action HJ 2013-8-16-->
+       <bean id="accessMgrAction" class="com.cosmosource.app.personnel.action.AccessMgrAction" scope="prototype">    
+    		<property name="accessMgrManager" ref="accessMgrManager"/>
+   	   </bean>
+   	   <!-- 单位门禁闸机管理Manager HJ 2013-8-16-->
+    	<bean id="accessMgrManager" class="com.cosmosource.app.personnel.service.AccessMgrManager" parent="manager">
+    		<property name="accessAndGateService" ref="accessAndGateService"/>
+    	</bean>  
+</beans>

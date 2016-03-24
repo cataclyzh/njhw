@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<!-- CMS内容管理 qiyanqiang  2013-05-04  -->
+	<package name="/app/cms" extends="struts-default" namespace="/app/cms">
+		<!-- 初始化页面 -->
+		<action name="article" class="cmsAction" method="init">
+			<result name="init">/app/cms/contentManagement.jsp</result>
+		</action>
+		<!-- 内容管理页面的查询操作 -->
+		<action name="listArticle" class="cmsAction" method="listArticle">
+			<result name="success">/app/cms/contentManagement.jsp</result>
+		</action>
+		<!-- 修改 新增页面 -->
+		<action name="inputArticle" class="cmsAction" method="inputArticle">
+			<result name="input">/app/cms/contentEditor.jsp</result>
+		</action>
+		<!-- 保存操作 -->
+		<action name="saveArticle" class="cmsAction" method="saveArticle">
+			<result name="success">/app/cms/contentEditor.jsp</result>
+		</action>
+		<!-- 删除操作完成之后返回列表 -->
+		<action name="deleteArticle" class="cmsAction" method="deleteArticle">
+			<result name="reload">listArticle.act</result>
+		</action>
+		<!-- 当点击详情的时候弹出来的页面 -->
+		<action name="searchCmsDetail" class="cmsAction" method="searchCmsDetail">
+			<result name="success">/app/cms/contentDetail.jsp</result>
+		</action>
+		
+		
+	</package>
+	
+	<package name="/app/cms/channelcms" extends="struts-default" namespace="/app/cms/channelcms">
+		<!-- 初始化页面 -->
+		<action name="article" class="channelCmsArticleAction" method="init">
+			<result name="init">/app/cms/channelcms/contentManagement.jsp</result>
+		</action>
+		<!-- 内容管理页面的查询操作 -->
+		<action name="listArticle" class="channelCmsArticleAction" method="listArticle">
+			<result name="success">/app/cms/channelcms/contentManagement.jsp</result>
+		</action>
+		<action name="newListArticle" class="channelCmsArticleAction" method="newListArticle">
+			<result name="success">/app/integrateservice/lost/list_lostmore.jsp</result>
+		</action>
+		<!-- 修改 新增页面 -->
+		<action name="inputArticle" class="channelCmsArticleAction" method="inputArticle">
+			<result name="input">/app/cms/channelcms/contentEditor.jsp</result>
+		</action>
+		<!-- 保存操作 -->
+		<action name="saveArticle" class="channelCmsArticleAction" method="saveArticle">
+			<result name="success">/app/cms/channelcms/contentEditor.jsp</result>
+		</action>
+		<!-- 删除操作完成之后返回列表 -->
+		<action name="deleteArticle" class="channelCmsArticleAction" method="deleteArticle">
+			<result name="reload">listArticle.act</result>
+		</action>
+				
+		<!-- ip电话帮助 -->
+		<action name="ipHelpFrame" class="channelCmsArticleAction" method="inputHelp">
+		    <result name="success">/app/personnel/ipHelpFrame.jsp</result>
+		</action>
+   		<action name="ipHelp" class="channelCmsArticleAction" method="ipPhoneHelp">
+   			<result name="input">/app/personnel/ipPhoneHelp.jsp</result>
+   		</action>
+   		<action name="ipHelpSave" class="channelCmsArticleAction" method="ipHelpSave">
+			<result name="input">/app/personnel/contentEditor.jsp</result>
+		</action>
+		<action name="ipHelpUpdate" class="channelCmsArticleAction" method="ipHelpUpdate">
+			<result name="input">/app/personnel/contentEditor.jsp</result>
+		</action>
+		<action name="ipHelpQuery" class="channelCmsArticleAction" method="ipHelpQuery">
+			<result name="input">/app/personnel/ipHelpInfo.jsp</result>
+		</action>
+		<action name="ipHelpInputArticle" class="channelCmsArticleAction" method="inputHelp">
+			<result name="success">/app/personnel/contentEditor.jsp</result>
+		</action>
+		<action name="deleteIpHelp" class="channelCmsArticleAction" method="deleteIpHelp">
+			<result name="reload">ipHelp.act</result>
+		</action>
+		<action name="ipHelpInput" class="channelCmsArticleAction" method="ipHelpInput">
+			<result name="success">/app/personnel/ipHelpInput.jsp</result>
+		</action>
+		
+		<!-- 当点击详情的时候弹出来的页面 -->
+		<action name="searchCmsDetail" class="channelCmsArticleAction" method="searchCmsDetail">
+			<result name="success">/app/cms/channelcms/contentDetail.jsp</result>
+		</action>
+		<!-- 保存认领信息 -->
+		<action name="saveClaim" class="channelCmsArticleAction" method="saveClaim"> </action>
+	</package>
+</struts>

@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<!-- 功能：机构管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/orgMgr" extends="default" namespace="/common/orgMgr">
+		<action name="list" class="orgMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/orgList.jsp</result>
+		</action>
+		<action name="input" class="orgMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/orgInput.jsp</result>
+		</action>
+		<action name="delete" class="orgMgrAction" method="delete">
+			<result name="reload">list.act?nodeId=${parentid}</result>
+		</action>
+		<action name="save" class="orgMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/orgInput.jsp</result>
+		</action>
+		<action name="orgFrame" class="orgMgrAction" method="orgFrame">
+			<result name="success">/common/pages/acmgr/orgFrame.jsp</result>
+		</action>
+		<action name="orgTreeData" class="orgMgrAction" method="orgTreeData"></action>
+		<action name="orgTree" class="orgMgrAction" method="orgTree">
+			<result name="success">/common/pages/acmgr/orgTree.jsp
+			</result>
+		</action>
+		<action name="orgTypeSelect" class="orgMgrAction" method="orgTypeSelect">
+			<result name="success">/common/pages/acmgr/orgTypeSelect.jsp
+			</result>
+		</action>
+		<action name="getJson" class="orgMgrAction" method="getJson"></action>
+		<action name="checkTaxnoInput" class="orgMgrAction" method="checkTaxnoInput"></action>
+
+	</package>
+
+	<package name="/common/code" extends="default" namespace="/common/code">
+		<action name="validationcaptchaAction" class="validationcaptchaActionService"
+			method="validationcaptcha">
+		</action>
+	</package>
+
+	<!-- 功能：用户管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/userMgr" extends="default" namespace="/common/userMgr">
+		<action name="list" class="userMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/userList.jsp</result>
+		</action>
+		<action name="input" class="userMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/userInput.jsp</result>
+		</action>
+		<action name="delete" class="userMgrAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="userMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/userInput.jsp</result>
+		</action>
+		<action name="userFrame" class="userMgrAction" method="userFrame">
+			<result name="success">/common/pages/acmgr/userFrame.jsp</result>
+		</action>
+		<action name="orgTreeData" class="userMgrAction" method="orgTreeData"></action>
+		<action name="orgTree" class="userMgrAction" method="orgTree">
+			<result name="success">/common/pages/acmgr/userOrgTree.jsp
+			</result>
+		</action>
+		<action name="checkLoginname" class="userMgrAction" method="checkLoginname"></action>
+		<action name="orgFrame" class="userMgrAction" method="orgFrame">
+			<result name="success">/common/pages/acmgr/userOrgFrame.jsp</result>
+		</action>
+		<action name="orgList" class="userMgrAction" method="orgList">
+			<result name="success">/common/pages/acmgr/userOrgList.jsp</result>
+		</action>
+		<action name="initResetPwd" class="userMgrAction" method="initResetPwd">
+			<result name="success">/common/pages/acmgr/userResetPwd.jsp
+			</result>
+		</action>
+		<action name="resetPwd" class="userMgrAction" method="resetPwd">
+			<result name="success">initResetPwd.act</result>
+		</action>
+		<action name="unlock" class="userMgrAction" method="unlock"></action>
+	</package>
+
+	<!-- 功能：角色管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/roleMgr" extends="default" namespace="/common/roleMgr">
+		<action name="list" class="roleMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/roleList.jsp</result>
+		</action>
+		<action name="input" class="roleMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/roleInput.jsp</result>
+		</action>
+		<action name="delete" class="roleMgrAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="roleMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/roleInput.jsp</result>
+		</action>
+		<action name="roleFrame" class="roleMgrAction" method="roleFrame">
+			<result name="success">/common/pages/acmgr/roleFrame.jsp</result>
+		</action>
+		<action name="orgTreeData" class="roleMgrAction" method="orgTreeData"></action>
+		<action name="orgTree" class="roleMgrAction" method="orgTree">
+			<result name="success">/common/pages/acmgr/roleOrgTree.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- 功能：功能菜单管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/menuMgr" extends="default" namespace="/common/menuMgr">
+		<action name="list" class="menuMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/menuList.jsp</result>
+		</action>
+		<action name="input" class="menuMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/menuInput.jsp</result>
+		</action>
+		<action name="delete" class="menuMgrAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="menuMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/menuInput.jsp</result>
+		</action>
+		<action name="menuFrame" class="menuMgrAction" method="menuFrame">
+			<result name="success">/common/pages/acmgr/menuFrame.jsp</result>
+		</action>
+		<action name="orgTreeData" class="menuMgrAction" method="orgTreeData"></action>
+		<action name="orgTree" class="menuMgrAction" method="orgTree">
+			<result name="success">/common/pages/acmgr/menuOrgTree.jsp
+			</result>
+		</action>
+		<action name="menuSubFrame" class="menuMgrAction" method="menuSubFrame">
+			<result name="success">/common/pages/acmgr/menuSubFrame.jsp</result>
+		</action>
+		<action name="menuTree" class="menuMgrAction" method="menuTree">
+			<result name="success">/common/pages/acmgr/menuTree.jsp
+			</result>
+		</action>
+		<action name="menuTreeData" class="menuMgrAction" method="menuTreeData"></action>
+	</package>
+
+	<!-- 功能：权限管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/rightMgr" extends="default" namespace="/common/rightMgr">
+		<action name="rightFrame" class="rightMgrAction" method="rightFrame">
+			<result name="success">/common/pages/acmgr/rightFrame.jsp</result>
+			<result name="company">/common/pages/acmgr/rightFrameCompany.jsp
+			</result>
+		</action>
+		<action name="roleList" class="rightMgrAction" method="roleList">
+			<result name="success">/common/pages/acmgr/rightRoleList.jsp</result>
+		</action>
+		<action name="deleteUsersFromRole" class="rightMgrAction"
+			method="deleteUsersFromRole">
+			<result name="success">userList.act</result>
+		</action>
+		<action name="userList" class="rightMgrAction" method="userList">
+			<result name="success">/common/pages/acmgr/rightUserList.jsp</result>
+		</action>
+		<action name="userListNoRight" class="rightMgrAction" method="userListNoRight">
+			<result name="success">/common/pages/acmgr/rightUserListNoRight.jsp
+			</result>
+		</action>
+		<action name="saveUsersToRole" class="rightMgrAction" method="saveUsersToRole">
+			<result name="success">userListNoRight.act</result>
+		</action>
+		<action name="input" class="rightMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/roleInput.jsp</result>
+		</action>
+		<action name="saveRights" class="rightMgrAction" method="saveRights">
+			<result name="success">/common/pages/acmgr/rightMenuTree.jsp</result>
+		</action>
+		<action name="orgTreeData" class="rightMgrAction" method="orgTreeData"></action>
+		<action name="menuTreeData" class="rightMgrAction" method="menuTreeData"></action>
+		<action name="orgTree" class="rightMgrAction" method="orgTree">
+			<result name="success">/common/pages/acmgr/rightOrgTree.jsp
+			</result>
+		</action>
+		<action name="menuTree" class="rightMgrAction" method="menuTree">
+			<result name="success">/common/pages/acmgr/rightMenuTree.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- 功能：业务字典管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/dictMgr" extends="default" namespace="/common/dictMgr">
+		<action name="dictFrame">
+			<result name="success">/common/pages/acmgr/dictFrame.jsp</result>
+		</action>
+		<action name="dicttypeinput" class="dicttypeMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/dicttypeInput.jsp</result>
+		</action>
+		<action name="dicttypeList" class="dicttypeMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/dicttypeList.jsp</result>
+		</action>
+		<action name="saveType" class="dicttypeMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/dicttypeInput.jsp</result>
+		</action>
+		<action name="deleteType" class="dicttypeMgrAction" method="delete">
+			<result name="success">dicttypeList.act</result>
+		</action>
+		<action name="refreshCache" class="dicttypeMgrAction" method="refreshCache">
+			<result name="success">dicttypeList.act</result>
+		</action>
+		<action name="checkDicttypecode" class="dicttypeMgrAction"
+			method="checkDicttypecode"></action>
+		<action name="dicttypeIndex" class="dicttypeMgrAction" method="Index">
+			<result name="success">/common/pages/acmgr/dicttypeIndex.jsp</result>
+		</action>
+		<action name="list" class="dicttypeMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/dicttypeList1.jsp</result>
+		</action>
+		<action name="dictdetainput" class="dictdetaMgrAction" method="input">
+			<result name="input">/common/pages/acmgr/dictdetaInput.jsp</result>
+		</action>
+		<action name="dictdetaList" class="dictdetaMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/dictdetaList.jsp</result>
+		</action>
+		<action name="dictdetaDia" class="dictdetaMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/dictdetaDia.jsp</result>
+		</action>
+		<action name="dictdetaDiaList" class="dictdetaMgrAction" method="list">
+			<result name="success">/common/pages/acmgr/dictdetaDiaList.jsp</result>
+		</action>
+		<action name="saveDeta" class="dictdetaMgrAction" method="save">
+			<result name="success">/common/pages/acmgr/dictdetaInput.jsp</result>
+		</action>
+		<action name="deleteDeta" class="dictdetaMgrAction" method="delete">
+			<result name="success">dictdetaList.act</result>
+		</action>
+	</package>
+
+	<!-- 功能：公告与消息管理 开发者：ls 时间：2010-11-20 -->
+	<package name="/common/bulletinMessage" extends="default"
+		namespace="/common/bulletinMessage">
+		<action name="msgBoardAction_*" class="msgBoardAction" method="{1}">
+			<result name="input">/common/pages/bulletin/bulletinInput.jsp</result>
+			<result name="error">/common/pages/bulletin/bulletinDeleteList.jsp</result>
+			<result name="success">/common/pages/bulletin/bulletinDeleteList.jsp</result>
+			<result name="list">/common/pages/bulletin/bulletinQryListtwo.jsp
+			</result>
+			<result name="detail">/common/pages/bulletin/bulletinInfo.jsp
+			</result>
+			<result name="reload">/common/pages/bulletin/bulletinDeleteList.jsp
+			</result>
+			<result name="deleteList">/common/pages/bulletin/bulletinQryListtwo.jsp
+			</result>
+			<result name="notiMoveList">/common/pages/bulletin/bulletinQryListtwo.jsp
+			</result>
+			<result name="save1">/common/pages/bulletin/bulletinDeleteList1.jsp</result>
+		</action>
+
+		<action name="index">
+			<result>/common/pages/message/index.jsp</result>
+		</action>
+        
+		<action name="msgIndex" class="msgBoardAction" method="msgIndex">
+			<result>/common/pages/bulletin/bulletinQryList.jsp</result>
+		</action>
+		
+			<action name="msgModify" class="msgBoardAction" method="msgModify">
+			<result>/common/pages/bulletin/bulletinModify.jsp</result>
+		</action>
+	<action name="updateMsg" class="msgBoardAction" method="updateMsg">
+			<result>msgBoardAction_save.act</result>
+		</action>
+
+		
+		<action name="msgBoxAction_*" class="msgBoxAction" method="{1}">
+			<result name="input">/common/pages/message/messageInput.jsp</result>
+			<result name="error">/common/pages/message/messageInput.jsp</result>
+			<result name="success">/common/pages/message/messageInput.jsp</result>
+			<result name="rcvlist">/common/pages/message/receiverboxQryList.jsp
+			</result>
+			<result name="rcvdetail">/common/pages/message/receiverboxDetail.jsp
+			</result>
+			<result name="sdrlist">/common/pages/message/senderboxQryList.jsp
+			</result>
+			<result name="sdrdetail">/common/pages/message/senderboxDetail.jsp
+			</result>
+			<result name="reply">/common/pages/message/receiverboxDetail.jsp
+			</result>
+			<result name="msgBox">/common/pages/message/msgBox.jsp</result>
+			
+			<result name="delMess">/common/pages/message/receiverboxQryList.jsp
+			</result>
+			<result name="sendMsgDetail">/common/pages/message/receiverMsgDetail.jsp
+			</result>
+		</action>
+
+
+	</package>
+
+	<!-- 功能：文件处理 开发者：WXJ 时间：2010-12-16 -->
+	<package name="/common/files" extends="default" namespace="/common/files">
+		<action name="getOrgJson" class="filesAction" method="getTaxnoJson"></action>
+		<action name="getMenusJson" class="filesAction" method="getMenusJson"></action>
+	</package>
+
+	<!-- 功能：修改个人信息 开发者:sjy 时间2010-12-23 -->
+	<package name="/common/userOrgMgr" extends="default" namespace="/common/userOrgMgr">
+		<!-- 修改用户初始页面 -->
+		<action name="init" class="userOrgAction" method="init">
+			<result name="success">/common/pages/main/userOrginfoEdit.jsp</result>
+		</action>
+		<!-- 加载用户车辆信息 -->
+		<action name="loadPlatenum" class="userOrgAction" method="loadPlatenum">
+		</action>
+		<!--保存修改用户信息页面 -->
+		<action name="update" class="userOrgAction" method="update">
+			<result name="success">/common/pages/main/userOrginfoEdit.jsp</result>
+		</action>
+		<!-- 个人信息的查询 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="personInfoChreach" class="userOrgAction" method="personInfoChreach">
+			<result name="success">/common/pages/main/userPwdEdit.jsp</result>
+		</action>
+		<!-- 管理员确认页面 开发者： hejun 时间:2013-07-26 -->
+		<action name="adminConfirm" class="userOrgAction" method="adminConfirm">
+			<result name="success">/common/pages/main/adminConfirm.jsp</result>
+		</action>
+		<!-- 管理员刷卡确认 开发者： hejun 时间:2013-07-26 -->
+		<action name="checkAdmin" class="userOrgAction" method="checkAdmin">
+		</action>
+
+		<!-- 个人信息保存的操作 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="savePersonInfo" class="userOrgAction" method="savePersonInfo">
+
+		</action>
+		<!--手机号码变更的页面 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="sendIphoneVerificationCode" class="userOrgAction"
+			method="sendIphoneVerificationCode">
+			<result name="success">/common/pages/main/phoneNumberModify.jsp   </result>
+		</action>
+		<!-- 更新手机号码 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="upDatePhoneNumber" class="userOrgAction" method="upDatePhoneNumber">
+		</action>
+		<!-- 发送手机验证码 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="sendPhoneNumberVerificationCode" class="userOrgAction"
+			method="sendPhoneNumberVerificationCode">
+		</action>
+		<!-- 更新登录名字 开发者： qiyanqiang 时间:2013-05-12 -->
+		<action name="upDateLoginUserName" class="userOrgAction"
+			method="upDateLoginUserName">
+		</action>
+
+		<!--功能：市名卡验证 开发者： qiyanqiang 时间:2013-05-17 -->
+		<action name="checkCityCar" class="userOrgAction" method="checkCityCar" />
+		<!--功能：挂失市民卡 开发者：qiyanqiang 时间：2013-5-17 -->
+		<action name="modifyCardIsLosted" class="userOrgAction" method="modifyCardIsLosted"></action>
+
+
+
+		<!--保存修改用户密码页面 -->
+		<action name="updatePwd" class="userOrgAction" method="updatePwd">
+
+		</action>
+		<action name="checkLoginId" class="userOrgAction" method="checkLoginId"></action>
+		<action name="checkPassword" class="userOrgAction" method="checkPassword"></action>
+	</package>
+	<!-- 功能：生成注册码 开发者：WXJ 时间：2011-01-26 -->
+	<package name="/common/regKey" extends="default" namespace="/common/regKey">
+		<action name="list" class="registerKeyAction" method="list">
+			<result name="success">/common/pages/acmgr/regKeyList.jsp</result>
+		</action>
+		<action name="input" class="registerKeyAction" method="input">
+			<result name="input">/common/pages/acmgr/regKeyInput.jsp</result>
+		</action>
+		<action name="delete" class="registerKeyAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="registerKeyAction" method="save">
+			<result name="success">/common/pages/acmgr/regKeyInput.jsp</result>
+		</action>
+	</package>
+
+	<!-- 功能：软件下载管理 开发者：WXJ 时间：2011-03-04 -->
+	<package name="/common/filesMgr" extends="default" namespace="/common/filesMgr">
+		<action name="list" class="filesMgrAction" method="list">
+			<result name="success">/common/pages/misc/filesList.jsp</result>
+		</action>
+		<action name="input" class="filesMgrAction" method="input">
+			<result name="input">/common/pages/misc/filesInput.jsp</result>
+		</action>
+		<action name="delete" class="filesMgrAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="filesMgrAction" method="save">
+			<result name="success">/common/pages/misc/filesInput.jsp</result>
+		</action>
+		<action name="download" class="filesMgrAction" method="download"></action>
+		<action name="queryDown" class="filesMgrAction" method="queryDown">
+			<result name="success">/common/pages/misc/filesQryList.jsp</result>
+		</action>
+		<action name="downFile" class="filesMgrAction" method="downFile"></action>
+	</package>
+	<package name="/common/quartz" extends="default" namespace="/common/quartz">
+		<action name="list" class="quartzAction" method="list">
+			<result name="success">/common/pages/misc/quartzList.jsp</result>
+		</action>
+		<action name="input" class="quartzAction" method="input">
+			<result name="input">/common/pages/misc/quartzInput.jsp</result>
+		</action>
+		<action name="save" class="quartzAction" method="save">
+			<result name="success">/common/pages/misc/quartzInput.jsp</result>
+		</action>
+		<action name="doCmd" class="quartzAction" method="doCmd">
+			<result name="reload">list.act</result>
+		</action>
+	</package>
+	<package name="/common/welcome" extends="default" namespace="/common/welcome">
+		<action name="init" class="welcomeAction" method="init" />
+	</package>
+
+	<!-- 功能：机构管理 开发者：WXJ 时间：2010-09-06 -->
+	<package name="/common/constants" extends="default" namespace="/common/constants">
+		<action name="index" class="cttMgrAction" method="index">
+			<result name="success">/common/pages/misc/cttIndex.jsp</result>
+		</action>
+		<action name="list" class="cttMgrAction" method="list">
+			<result name="success">/common/pages/misc/cttList.jsp</result>
+		</action>
+		<action name="input" class="cttMgrAction" method="input">
+			<result name="input">/common/pages/misc/cttInput.jsp</result>
+		</action>
+		<action name="delete" class="cttMgrAction" method="delete">
+			<result name="reload">list.act</result>
+		</action>
+		<action name="save" class="cttMgrAction" method="save">
+			<result name="success">/common/pages/misc/cttInput.jsp</result>
+		</action>
+		<action name="refreshCache" class="cttMgrAction" method="refreshCache">
+			<result name="success">list.act</result>
+		</action>
+	</package>
+
+	<!-- 功能：购方CA查询功能 开发者：yc 时间：2011-11-22 -->
+	<package name="/common/buyCaQuery" extends="default" namespace="/common/buyCaQuery">
+		<action name="init" class="caQueryAction" method="init">
+			<result name="init">/common/pages/ca/buyCaQueryList.jsp</result>
+		</action>
+		<action name="query" class="caQueryAction" method="query">
+			<result name="list">/common/pages/ca/buyCaQueryList.jsp</result>
+		</action>
+	</package>
+	<!-- 功能：销方CA查询功能 开发者：yc 时间：2011-11-22 -->
+	<package name="/common/sellCaQuery" extends="default"
+		namespace="/common/sellCaQuery">
+		<action name="init" class="caQueryAction" method="init">
+			<result name="init">/common/pages/ca/sellCaQueryList.jsp</result>
+		</action>
+		<action name="query" class="caQueryAction" method="query">
+			<result name="list">/common/pages/ca/sellCaQueryList.jsp</result>
+		</action>
+		<action name="detail" class="caQueryAction" method="detail">
+			<result name="detail">/common/pages/ca/caapplyDetail.jsp</result>
+		</action>
+	</package>
+
+	<!-- 功能：购方CA删除功能 开发者：yc 时间：2011-11-22 -->
+	<package name="/common/buyCaDelete" extends="default"
+		namespace="/common/buyCaDelete">
+		<action name="init" class="caDeleteAction" method="init">
+			<result name="init">/common/pages/ca/buyCaDeleteList.jsp</result>
+		</action>
+		<action name="query" class="caDeleteAction" method="query">
+			<result name="list">/common/pages/ca/buyCaDeleteList.jsp</result>
+		</action>
+		<action name="delete" class="caDeleteAction" method="delete">
+			<result name="success">query.act</result>
+		</action>
+	</package>
+	<!-- 功能：销方CA删除功能 开发者：yc 时间：2011-11-22 -->
+	<package name="/common/sellCaDelete" extends="default"
+		namespace="/common/sellCaDelete">
+		<action name="init" class="caDeleteAction" method="init">
+			<result name="init">/common/pages/ca/sellCaDeleteList.jsp</result>
+		</action>
+		<action name="query" class="caDeleteAction" method="query">
+			<result name="list">/common/pages/ca/sellCaDeleteList.jsp</result>
+		</action>
+		<action name="delete" class="caDeleteAction" method="delete">
+			<result name="success">query.act</result>
+		</action>
+	</package>
+
+	<!-- 功能：CA资料审核 -->
+	<package name="/common/caapplyAudit" extends="default"
+		namespace="/common/caapplyAudit">
+		<action name="init" class="tAcCaapplyAuditAction" method="init">
+			<result name="init">/common/pages/ca/caapplyAuditList.jsp</result>
+		</action>
+		<action name="query" class="tAcCaapplyAuditAction" method="query">
+			<result name="list">/common/pages/ca/caapplyAuditList.jsp</result>
+		</action>
+		<action name="detail" class="tAcCaapplyAuditAction" method="detail">
+			<result name="detail">/common/pages/ca/caapplyDetail.jsp</result>
+		</action>
+		<action name="edit" class="tAcCaapplyAuditAction" method="edit">
+			<result name="edit">/common/pages/ca/caapplyAuditDetail.jsp</result>
+		</action>
+		<action name="update" class="tAcCaapplyAuditAction" method="update">
+			<result name="success">/common/pages/ca/caapplyAuditDetail.jsp</result>
+		</action>
+		<action name="getImgById" class="tAcCaapplyAuditAction" method="getImgById">
+		</action>
+		<action name="downloadImgById" class="tAcCaapplyAuditAction"
+			method="downloadImgById">
+		</action>
+	</package>
+
+	<package name="/common/caLicense" extends="default" namespace="/common/caLicense">
+		<action name="init" class="caLicenseAction" method="init">
+			<result name="init">/common/pages/ca/caApply4LicenseList.jsp</result>
+		</action>
+		<action name="query" class="caLicenseAction" method="query">
+			<result name="list">/common/pages/ca/caApply4LicenseList.jsp</result>
+		</action>
+		<action name="license" class="caLicenseAction" method="license">
+			<result name="license">/common/pages/ca/caLicense.jsp</result>
+		</action>
+		<action name="update" class="caLicenseAction" method="update">
+			<result name="success">/common/pages/ca/caLicense.jsp</result>
+		</action>
+		<action name="getImg" class="caLicenseAction" method="getImg">
+		</action>
+	</package>
+
+	<!-- 功能: CA 开发者:csq 时间: 2011-11-24 -->
+	<package name="/common/ca/apply" extends="default" namespace="/common/ca/apply">
+		<action name="initApply" class="caApplyAction" method="initApply">
+			<result name="init">/common/pages/ca/applyInput.jsp</result>
+			<result name="stampInput">/common/pages/ca/stampInput.jsp</result>
+			<result name="relationInput">/common/pages/ca/relationInput.jsp</result>
+		</action>
+		<action name="initStamp" class="caApplyAction" method="initStamp">
+			<result name="stampInput">/common/pages/ca/stampInput.jsp</result>
+		</action>
+		<action name="initRelation" class="caApplyAction" method="initRelation">
+			<result name="init">/common/pages/ca/relationInput.jsp</result>
+		</action>
+		<action name="saveApply" class="caApplyAction" method="saveApply">
+			<result name="next">/common/pages/ca/stampInput.jsp</result>
+		</action>
+		<action name="saveStamp" class="caApplyAction" method="saveStamp">
+			<result name="next">/common/pages/ca/relationInput.jsp</result>
+		</action>
+		<action name="saveRelation" class="caApplyAction" method="saveRelation">
+			<result name="next">/common/pages/ca/applySuccess.jsp</result>
+		</action>
+		<action name="downloadAuthorityBook" class="caApplyAction"
+			method="downloadAuthorityBook">
+		</action>
+		<action name="exportApplyPDF" class="caApplyAction" method="exportApplyPDF">
+		</action>
+	</package>
+
+	<!-- 是否使用签章,签章序列号是否正确 -->
+	<package name="/common/verdictIsUseCa" extends="default"
+		namespace="/common/verdictIsUseCa">
+		<action name="isUseCa" class="verdictIsUseCaAction" method="isUseCa"></action>
+		<action name="isRightCa" class="verdictIsUseCaAction" method="isRightCa"></action>
+	</package>
+
+	<!-- CA用户操作 开发者:csq 时间: 2011-12-14 -->
+	<package name="/common/caUserActionAction" extends="default"
+		namespace="/common/caUserActionAction">
+		<action name="init" class="caUserActionAction" method="init">
+			<result name="init">/common/pages/ca/caUserActionList.jsp</result>
+		</action>
+		<action name="query" class="caUserActionAction" method="query">
+			<result name="list">/common/pages/ca/caUserActionList.jsp</result>
+		</action>
+		<action name="deleteCaUserAction" class="caUserActionAction"
+			method="deleteCaUserAction">
+			<result name="success">/common/pages/ca/caUserActionList.jsp</result>
+		</action>
+		<action name="edit" class="caUserActionAction" method="edit">
+			<result name="input">/common/pages/ca/caUserActionInput.jsp</result>
+		</action>
+		<action name="save" class="caUserActionAction" method="save">
+			<result name="success">/common/pages/ca/caUserActionInput.jsp</result>
+		</action>
+		<action name="input" class="caUserActionAction" method="input">
+			<result name="input">/common/pages/ca/caUserActionUpdate.jsp</result>
+		</action>
+		<action name="update" class="caUserActionAction" method="update">
+			<result name="success">/common/pages/ca/caUserActionUpdate.jsp</result>
+		</action>
+		<action name="getUserNotHaveActionList" class="caUserActionAction"
+			method="getUserNotHaveActionList" />
+		<action name="isUserExist" class="caUserActionAction" method="isUserExist" />
+		<action name="refreshUserActionListCache" class="caUserActionAction"
+			method="refreshUserActionListCache">
+			<result name="success">/common/pages/ca/caUserActionList.jsp</result>
+		</action>
+	</package>
+	<!-- 功能: causer用户关联 开发者:yc 时间: 2011-11-24 -->
+	<package name="/common/causer" extends="default" namespace="/common/causer">
+		<action name="init" class="caUserAction" method="init">
+			<result name="init">/common/pages/ca/causerList.jsp</result>
+		</action>
+		<action name="query" class="caUserAction" method="query">
+			<result name="list">/common/pages/ca/causerList.jsp</result>
+		</action>
+		<action name="delete" class="caUserAction" method="delete">
+			<result name="success">query.act</result>
+		</action>
+		<action name="update" class="caUserAction" method="update">
+			<result name="success">/common/pages/ca/causerUpdate.jsp</result>
+		</action>
+		<action name="detail" class="caUserAction" method="detail">
+			<result name="detail">/common/pages/ca/causerUpdate.jsp</result>
+		</action>
+		<action name="refreshCaUserCache" class="caUserAction" method="refreshCaUserCache">
+			<result name="success">/common/pages/ca/causerList.jsp</result>
+		</action>
+	</package>
+
+	<!-- 功能: ca功能维护 开发者:ffj 时间: 2011-11-24 -->
+	<package name="/common/cafunction" extends="default" namespace="/common/cafunction">
+		<action name="init" class="caFunctionAction" method="init">
+			<result name="init">/common/pages/ca/caFunctionList.jsp</result>
+		</action>
+		<action name="query" class="caFunctionAction" method="query">
+			<result name="list">/common/pages/ca/caFunctionList.jsp</result>
+		</action>
+		<action name="input" class="caFunctionAction" method="input">
+			<result name="input">/common/pages/ca/caFunctionInput.jsp</result>
+		</action>
+		<action name="save" class="caFunctionAction" method="save">
+			<result name="success">/common/pages/ca/caFunctionInput.jsp</result>
+		</action>
+		<action name="update" class="caFunctionAction" method="update">
+			<result name="success">/common/pages/ca/caFunctionInput.jsp</result>
+		</action>
+		<action name="detail" class="caFunctionAction" method="detail">
+			<result name="detail">/common/pages/ca/caFunctionDetail.jsp</result>
+		</action>
+		<action name="delete" class="caFunctionAction" method="delete">
+			<result name="success">query.act</result>
+		</action>
+		<action name="actioncodeValidate" class="caFunctionAction"
+			method="actioncodeValidate" />
+
+	</package>
+
+	<!-- 功能:知识维护 开发者:csq 时间:2012-02-09 -->
+	<package name="/common/knowledge" extends="default" namespace="/common/knowledge">
+		<action name="init" class="knowledgeAction" method="init">
+			<result name="init">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="initQuery" class="knowledgeAction" method="initQuery">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="initSellQuery" class="knowledgeAction" method="initSellQuery">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="initBuyQuery" class="knowledgeAction" method="initBuyQuery">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="initEditList" class="knowledgeAction" method="initEditList">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="initPublishList" class="knowledgeAction" method="initPublishList">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="query" class="knowledgeAction" method="query">
+			<result name="list">/common/pages/knowledge/knowledgeList.jsp
+			</result>
+		</action>
+		<action name="publish" class="knowledgeAction" method="publish">
+			<result name="list">query.act</result>
+		</action>
+		<action name="input" class="knowledgeAction" method="input">
+			<result name="input">/common/pages/knowledge/knowledgeInput.jsp
+			</result>
+		</action>
+		<action name="save" class="knowledgeAction" method="save">
+			<result name="success">/common/pages/knowledge/knowledgeInput.jsp
+			</result>
+			<result name="next">/common/pages/knowledge/knowledgeFileUpload.jsp
+			</result>
+		</action>
+		<action name="update" class="knowledgeAction" method="update">
+			<result name="success">/common/pages/knowledge/knowledgeInput.jsp
+			</result>
+		</action>
+		<action name="delete" class="knowledgeAction" method="delete">
+			<result name="success">query.act</result>
+		</action>
+		<action name="detail" class="knowledgeAction" method="detail">
+			<result name="detail">/common/pages/knowledge/knowledgeDetail.jsp
+			</result>
+		</action>
+		<action name="fileList" class="knowledgeAction" method="fileList">
+			<result name="list">/common/pages/knowledge/knowledgeFileList.jsp
+			</result>
+		</action>
+		<action name="upload" class="knowledgeAction" method="upload" />
+		<action name="download" class="knowledgeAction" method="download" />
+		<action name="getJsonFileList" class="knowledgeAction" method="getJsonFileList" />
+		<action name="deleteKnowledgeFile" class="knowledgeAction"
+			method="deleteKnowledgeFile" />
+		<action name="homeKnowledgeList" class="knowledgeAction"
+			method="homeKnowledgeList" />
+		<action name="detailNotice" class="knowledgeAction" method="detail">
+			<result name="detail">/common/pages/knowledge/knowledgeDetailNotice.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- 功能：首页 开发者： WXJ 时间：2012-4-19 -->
+	<package name="/common/home" extends="default" namespace="/common/home">
+		<action name="loadMenu" class="homeAction" method="loadMenu" />
+		<action name="loadRootMenu" class="homeAction" method="loadRootMenu" />
+		<action name="loadSubMenu" class="homeAction" method="loadSubMenu" />
+		<action name="countOnlineUser" class="homeAction" method="countOnlineUser" />
+	</package>
+
+	<package name="/common/monitor" extends="default" namespace="/common/monitor">
+		<action name="getDBTime" class="monitorAction" method="getDBTime" />
+	</package>
+
+	<!-- 功能：数据级别管理 开发者：WXJ 时间：2012-08-02 -->
+	<package name="/common/levelMgr" extends="default" namespace="/common/levelMgr">
+		<action name="levelFrame">
+			<result name="success">/common/pages/acmgr/levelFrame.jsp</result>
+		</action>
+		<action name="input" class="levelAction" method="input">
+			<result name="input">/common/pages/acmgr/levelInput.jsp</result>
+		</action>
+		<action name="updateLevel" class="levelAction" method="updateLevel">
+			<result name="success">/common/pages/acmgr/levelInput.jsp</result>
+		</action>
+		<action name="levelList" class="levelAction" method="levelList">
+			<result name="list">/common/pages/acmgr/levelList.jsp</result>
+		</action>
+		<action name="levelVendorList" class="levelAction" method="levelVendorList">
+			<result name="list">/common/pages/acmgr/levelVendorList.jsp</result>
+		</action>
+		<action name="showUpdateVendorLevel" class="levelAction"
+			method="showUpdateVendorLevel">
+			<result name="edit">/common/pages/acmgr/levelVendorInput.jsp</result>
+		</action>
+		<action name="getLevelList" class="levelAction" method="getLevelList" />
+		<action name="updateVendorLevel" class="levelAction" method="updateVendorLevel">
+			<result name="success">/common/pages/acmgr/levelVendorInput.jsp</result>
+		</action>
+		<action name="deleteLevels" class="levelAction" method="deleteLevels">
+			<result name="success">levelList.act</result>
+		</action>
+		<action name="queryUsedLevelCodeList" class="levelAction"
+			method="queryUsedLevelCodeList" />
+	</package>
+
+
+	<!-- 功能：问题贴的新建,删除,查询。 开发者：xie xin ren 。 时间：2012-7-9 -->
+	<package name="/common/ques" extends="default" namespace="/common/ques">
+		<action name="input" class="vendorQuestionAction" method="input">
+			<result name="input">/common/pages/venquestion/createProblem.jsp
+			</result>
+		</action>
+		<action name="save" class="vendorQuestionAction" method="save">
+			<result name="success" type="redirectAction">list.act</result>
+		</action>
+		<action name="list" class="vendorQuestionAction" method="list">
+			<result name="success">/common/pages/venquestion/deleteProblem.jsp
+			</result>
+		</action>
+		<action name="listClose" class="vendorQuestionAction" method="listClose">
+			<result name="success">/common/pages/venquestion/listClose.jsp</result>
+		</action>
+		<action name="delete" class="vendorQuestionAction" method="delete">
+			<result name="success">list.act</result>
+		</action>
+		<action name="showProblem" class="vendorQuestionAction" method="showProblem">
+			<result name="success">/common/pages/venquestion/showProblem.jsp
+			</result>
+		</action>
+		<action name="download" class="vendorQuestionAction" method="download">
+			<result name="success">/common/pages/venquestion/showProblem.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- 功能：查询待审批的所有问题贴以及审批某个问题贴。 开发者：ycw。 时间：2012-7-9 -->
+	<package name="/common/question" extends="default" namespace="/common/question">
+		<action name="init" class="commonApproveQuestionAction" method="init">
+			<result name="init">/common/pages/venquestion/approveQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="queryApprovingQuestions" class="commonApproveQuestionAction"
+			method="queryApprovingQuestions">
+			<result name="approvingQuestionsList">/common/pages/venquestion/approveQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="approveQuestionDetail" class="commonApproveQuestionAction"
+			method="approveQuestionDetail">
+			<result name="approveQuestionDetail">/common/pages/venquestion/approveQuestionDetail.jsp
+			</result>
+		</action>
+		<action name="download" class="commonApproveQuestionAction"
+			method="download"></action>
+		<action name="approveInit" class="commonApproveQuestionAction"
+			method="approveInit">
+			<result name="approveQuestionInit">/common/pages/venquestion/approveQuestionInit.jsp
+			</result>
+		</action>
+		<action name="approveQuestion" class="commonApproveQuestionAction"
+			method="approveQuestion">
+			<result name="approvingQuestionsList">/common/pages/venquestion/approveQuestionInit.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- 功能：回复问题贴。 开发者：ycw。 时间：2012-7-10 -->
+	<package name="/common/answerQuestion" extends="default"
+		namespace="/common/answerQuestion">
+		<action name="init" class="commonAnswerQuestionAction" method="init">
+			<result name="answerQuestionInit">/common/pages/venquestion/answerQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="queryAllQuestions" class="commonAnswerQuestionAction"
+			method="queryAllQuestions">
+			<result name="allQuestionsList">/common/pages/venquestion/answerQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="detail" class="commonAnswerQuestionAction"
+			method="detail">
+			<result name="answerQuestionDetail">/common/pages/venquestion/answerQuestionDetail.jsp
+			</result>
+		</action>
+		<action name="answer" class="commonAnswerQuestionAction"
+			method="answer">
+			<result name="answerQuestionDetail">detail.act</result>
+		</action>
+		<action name="toTescoDeal" class="commonAnswerQuestionAction"
+			method="toTescoDeal">
+			<result name="answerQuestionDetail">detail.act</result>
+		</action>
+	</package>
+
+	<!-- 功能：结贴处理。 开发者：ycw。 时间：2012-7-10 -->
+	<package name="/common/dealQuestion" extends="default"
+		namespace="/common/dealQuestion">
+		<action name="init" class="commonDealQuestionAction" method="init">
+			<result name="dealQuestionInit">/common/pages/venquestion/dealQuestionIndex.jsp
+			</result>
+			<result name="dealingQuestionInit">/common/pages/venquestion/dealingQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="query" class="commonDealQuestionAction" method="query">
+			<result name="allDealQuestionsList">/common/pages/venquestion/dealQuestionIndex.jsp
+			</result>
+			<result name="allDealingQuestionsList">/common/pages/venquestion/dealingQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="detail" class="commonDealQuestionAction" method="detail">
+			<result name="dealQuestionDetail">/common/pages/venquestion/dealQuestionDetail.jsp
+			</result>
+		</action>
+		<action name="deal" class="commonDealQuestionAction" method="deal">
+			<result name="allDealQuestionsList">query.act</result>
+		</action>
+		<action name="dealAnswer" class="commonDealQuestionAction"
+			method="dealAnswer">
+			<result name="dealQuestionDetail">detail.act</result>
+		</action>
+		<action name="dealtoTescoDeal" class="commonDealQuestionAction"
+			method="dealtoTescoDeal">
+			<result name="dealQuestionDetail">detail.act</result>
+		</action>
+	</package>
+
+	<!-- 功能：已回复问题贴查询。 开发者：ycw。 时间：2012-7-10 -->
+	<package name="/common/answeredQuestion" extends="default"
+		namespace="/common/answeredQuestion">
+		<action name="init" class="commonAnsweredQuestion" method="init">
+			<result name="answeredQuestionInit">/common/pages/venquestion/answeredQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="queryAllQuestions" class="commonAnsweredQuestion"
+			method="queryAllQuestions">
+			<result name="allQuestionsList">/common/pages/venquestion/answeredQuestionIndex.jsp
+			</result>
+		</action>
+		<action name="detail" class="commonAnsweredQuestion" method="detail">
+			<result name="answeredQuestionDetail">/common/pages/venquestion/answeredQuestionDetail.jsp
+			</result>
+		</action>
+		<action name="answer" class="commonAnsweredQuestion" method="answer">
+			<result name="answeredQuestionDetail">detail.act</result>
+		</action>
+		<action name="closeQuestion" class="commonAnsweredQuestion"
+			method="closeQuestion">
+			<result name="answeredQuestionDetail">detail.act</result>
+		</action>
+	</package>
+	<!--功能：模板导入 开发者 cjw 2013-4-8 -->
+	<package name="/common/excel" extends="default" namespace="/common/excel">
+		<action name="excelInit" class="excelImportAction" method="init">
+			<result name="init">/common/excel/userImp.jsp</result>
+		</action>
+		<action name="userImportexl" class="excelImportAction" method="userImportexl">
+			<result name="success">/common/excel/userImpSuccess.jsp</result>
+		</action>
+
+	</package>
+</struts>

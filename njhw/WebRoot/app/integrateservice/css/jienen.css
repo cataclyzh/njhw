@@ -1,0 +1,23 @@
+.main_left_x1 a{
+	cursor: pointer;
+}
+/***************节能START***********************/
+.jienen_titie{
+	font-size:12px;
+	width:39%;
+	color:#7a7a7a;
+}
+.jienen_titie_unit{
+	font-size:12px;
+	width:29%;
+	color:#7a7a7a;
+}
+.jienen_text{
+	font-size:16px;
+	color:#7d93bc;
+	font-weight:bold;
+}
+.table_css{
+	margin:5px 20px;
+}
+/***************节能END***********************/

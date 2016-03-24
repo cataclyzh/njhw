@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+ 	<package name="/app/paddressbook" extends="default" namespace="/app/paddressbook">
+ 		<!--功能：初始化通讯录	开发者：zh 	时间：2013-05-1  -->
+		<action name="init" class="pAddressBookAction" method="init">
+			<result name="success">/app/integrateservice/paddressbook/groupList.jsp</result>
+		</action>
+ 		<!--功能：加载用户的通讯录分组	开发者：zh 	时间：2013-05-1  -->
+		<action name="loadGroupList" class="pAddressBookAction" method="loadGroupList"> </action>
+		<!--功能：显示编辑页面	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupInput" class="pAddressBookAction" method="groupInput">
+			<result name="input">/app/integrateservice/paddressbook/groupInput.jsp</result>
+		</action>
+		<!--功能：删除指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupDelete" class="pAddressBookAction" method="groupDelete">
+			<result name="reload">init.act</result>
+		</action>
+		<!--功能：保存通讯录详情	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupSave" class="pAddressBookAction" method="groupSave">
+			<result name="success">/app/integrateservice/paddressbook/groupInput.jsp</result>
+		</action>
+		
+		<!--功能：加载指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="addressList" class="pAddressBookAction" method="addressList">
+			<result name="success">/app/integrateservice/paddressbook/addressList.jsp</result>
+		</action>
+		<!--功能：显示编辑页面	开发者：zh 	时间：2013-05-1  -->
+		<action name="addressInput" class="pAddressBookAction" method="addressInput">
+			<result name="input">/app/integrateservice/paddressbook/addressInput.jsp</result>
+		</action>
+		<action name="editressInput" class="pAddressBookAction" method="addressInput">
+			<result name="input">/app/integrateservice/paddressbook/editressInput.jsp</result>
+		</action>
+		<!--功能：查看联系人信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="addressShow" class="pAddressBookAction" method="addressShow">
+			<result name="success">/app/integrateservice/paddressbook/addressShow.jsp</result>
+		</action>
+		<!--功能：删除指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="addressDelete" class="pAddressBookAction" method="addressDelete">
+			<result name="reload">init.act</result>
+			<result name="success">init.act</result>
+		</action>
+		<!--功能：保存通讯录详情	开发者：zh 	时间：2013-05-1  -->
+		<action name="addressSave" class="pAddressBookAction" method="addressSave"></action>
+		
+ 	</package>
+</struts>

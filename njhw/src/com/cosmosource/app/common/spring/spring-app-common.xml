@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+    
+    <!-- 功能：首页      开发者： WXJ 时间：2011-10-27 -->
+	<bean id="appHomeAction" class="com.cosmosource.app.common.action.HomeAction" scope="prototype">	
+		<property name="devicePermissionToApp" ref="devicePermissionToApp"/>
+    	<property name="homeManager" ref="appHomeManager"/>
+    	<property name="navigationCfgPath">
+    	    <value>/app/common/navigation.xml</value>
+    	</property>
+    	<property name="bulletinCount" value="3"></property>
+    	<property name="messageCount" value="3"></property>
+    	<property name="knowledgeCount" value="5"></property>
+    </bean>
+    <!-- 任务清单  -->
+	<bean id="appHomeManager" class="com.cosmosource.app.common.service.HomeManager" parent="manager">
+		<property name="taskListStructure">
+			<bean class="com.cosmosource.app.common.service.tasklist.TaskListStructure">
+				<property name="taskLists">
+					<list>						
+						<bean class="com.cosmosource.app.common.service.tasklist.OnlineUserTaskList"></bean>	
+						<bean class="com.cosmosource.app.common.service.tasklist.VisitConfirmTaskList"></bean>					
+						<bean class="com.cosmosource.app.common.service.tasklist.ProList"></bean>
+						<bean class="com.cosmosource.app.common.service.tasklist.MyPro"></bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- 运营管理中心(大楼管理人员)  cjw  -->
+	<bean id="operationAction" class="com.cosmosource.app.common.action.OperationAction" scope="prototype">
+		<property name="operationManager" ref="operationManager"></property>
+		<property name="callCenterManager" ref="callCenterManager"></property>
+    	<property name="authorityManager" ref="authorityManager"></property>
+	</bean>
+	<bean id="operationManager" class="com.cosmosource.app.common.service.OperationManager" parent="manager">
+		<!--  智慧南京信息查询service -->
+		<property name="wisdomNjToAppService" ref="wisdomNjToAppService"></property>
+		<!--  闸机操作service -->
+		<property name="gatesControlToAppService" ref="gatesControlToAppService"></property>
+	</bean>
+	<!--功能：主要是针对transfer层操作的公用方法       作者：hp   时间：2013-05-20	-->	
+	<bean id="commonManager" class="com.cosmosource.app.common.service.CommonManager" parent="manager">
+		<property name="doorControlToAppService" ref="doorControlToAppService"></property>
+	</bean>
+	
+	<!--目的：门锁功能模块      开发者：hp  时间：2013-3-23    -->
+    <bean id="doorControlClient" class="com.cosmosource.base.util.Client">
+    	<property name="logControlRecord" ref="logControlRecord"></property>
+    	<property name="unitAdminManager" ref="unitAdminManager"></property>
+    	<property name="commonManager" ref="commonManager"></property>
+    	<property name="orgMgrManager" ref="orgPerMgrAction"></property>
+    </bean>
+</beans>

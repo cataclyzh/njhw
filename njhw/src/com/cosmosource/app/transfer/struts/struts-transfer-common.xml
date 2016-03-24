@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!--**************************test******************** 	-->
+ 	<package name="/app/sms" extends="default" namespace="/app/sms">
+        <action name="init" class="appSmsAction" method="init">
+			<result name="init">/app/buildingmon/message.jsp</result>		
+		</action>
+		<action name="test" class="appSmsAction" method="test">
+			<result name="success">/app/buildingmon/message.jsp</result>		
+		</action>
+		
+		<action name="testDeivce" class="appSmsAction" method="testDeivce">
+			<result name="list">/app/buildingmon/message.jsp</result>		
+		</action>
+ 	</package>
+</struts>

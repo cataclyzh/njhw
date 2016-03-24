@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PABSQL">
+	<!--功能：加载用户通讯录分组并统计组内用户数	开发者：zh 	时间：2013-5-3  -->
+	<select id="loadGroupListAndCount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select a.nag_id,a.nag_name, a.nag_type,count(b.nua_group) group_num  
+		from njhw_adlist_group a,njhw_users_alist b
+		where a.nag_id = b.nua_group(+) and (b.userid = #userId# or a.nag_user = #userId#)
+		group by a.nag_id,a.nag_name,a.nag_type
+		ORDER BY a.nag_type
+	</select>
+	
+	<!--功能：加载用户通讯录分组	开发者：zh 	时间：2013-5-3  -->
+	<!-- 预防数据太多导致数据查询卡死，页面无法显示，特显示100条数据。如有需要，请手动更改查询数据 -->
+	<select id="loadGroupList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from NJHW_ADLIST_GROUP  where NAG_TYPE = #typeCus# and NAG_USER = #userId#
+	</select>
+	
+	<!--功能：加载指定通讯录信息	开发者：zh 	时间：2013-5-3  -->
+	<select id="loadAddListByGId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from NJHW_USERS_ALIST where nua_group = #gid# and userid = #userId#
+		<dynamic>
+			<isNotEmpty property="searchVal" prepend="and">
+				(nua_phone like '%' || #searchVal# || '%' 
+				or nua_tel1 like '%' || #searchVal# || '%' 
+				or nua_tel2 like '%' || #searchVal# || '%' 
+				or nua_tel3 like '%' || #searchVal# || '%' 
+				or nua_name like '%' || #searchVal# || '%' 
+				or nua_name1 like '%' || #searchVal# || '%')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+</sqlMap>

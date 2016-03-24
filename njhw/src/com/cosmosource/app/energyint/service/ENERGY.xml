@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Schema name="Energy">
+
+	<!-- Cube: Water Meter -->
+	<Cube name="Water Meter" defaultMeasure="Water Meter Measures">
+		<Table name="EI_WATER_CONSUME_ANALYSIS" />
+
+		<Dimension name="Time" foreignKey="TIME_ENERGY_ID" caption="Time">
+			<Hierarchy hasAll="true" allMemberName="All Times"
+				allMemberCaption="All Times" primaryKey="TIME_ENERGY_ID">
+				<Table name="EI_TIME_ENERGY" />
+				<Level name="Year" column="TIME_ENERGY_YEAR" uniqueMembers="true" />
+				<Level name="Month" column="TIME_ENERGY_MONTH" uniqueMembers="false" />
+				<Level name="Day" column="TIME_ENERGY_DAY" uniqueMembers="false" />
+				<Level name="Hour" column="TIME_ENERGY_HOUR" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Location" foreignKey="METER_ID" caption="Location">
+			<Hierarchy hasAll="true" allMemberName="All Locations"
+				allMemberCaption="All Locations" primaryKey="WATER_ID">
+				<Table name="EI_WATER_METER" />
+				<Level name="Seat" column="WATER_SEAT" uniqueMembers="true" />
+				<Level name="Floor" column="WATER_FLOOR" uniqueMembers="false" />
+				<Level name="Name" column="WATER_NAME" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Organization" foreignKey="ORG_ID" caption="Organization">
+			<Hierarchy hasAll="true" allMemberName="All Organizations"
+				allMemberCaption="All Organizations" primaryKey="ORG_ID">
+				<Table name="EI_ORG" />
+				<Level name="Bureau" column="BUREAU" uniqueMembers="true" />
+			</Hierarchy>
+		</Dimension>
+
+		<Measure name="Water Meter Measures" column="MEASURE"
+			aggregator="sum" datatype="Numeric" />
+
+	</Cube>
+
+	<!-- Cube: Kwh Meter -->
+	<Cube name="Kwh Meter" defaultMeasure="Kwh Meter Measures">
+		<Table name="EI_KWH_CONSUME_ANALYSIS" />
+
+		<Dimension name="Time" foreignKey="TIME_ENERGY_ID" caption="Time">
+			<Hierarchy hasAll="true" allMemberName="All Times"
+				allMemberCaption="All Times" primaryKey="TIME_ENERGY_ID">
+				<Table name="EI_TIME_ENERGY" />
+				<Level name="Year" column="TIME_ENERGY_YEAR" uniqueMembers="true" />
+				<Level name="Month" column="TIME_ENERGY_MONTH" uniqueMembers="false" />
+				<Level name="Day" column="TIME_ENERGY_DAY" uniqueMembers="false" />
+				<Level name="Hour" column="TIME_ENERGY_HOUR" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Location" foreignKey="METER_ID" caption="Location">
+			<Hierarchy hasAll="true" allMemberName="All Locations"
+				allMemberCaption="All Locations" primaryKey="KWH_ID">
+				<Table name="EI_KWH_METER" />
+				<Level name="Seat" column="KWH_SEAT" uniqueMembers="true" />
+				<Level name="Floor" column="KWH_FLOOR" uniqueMembers="false" />
+				<Level name="Room" column="KWH_ROOM" uniqueMembers="false" />
+				<Level name="Name" column="KWH_NAME" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Organization" foreignKey="ORG_ID" caption="Organization">
+			<Hierarchy hasAll="true" allMemberName="All Organizations"
+				allMemberCaption="All Organizations" primaryKey="ORG_ID">
+				<Table name="EI_ORG" />
+				<Level name="Bureau" column="BUREAU" uniqueMembers="true" />
+			</Hierarchy>
+		</Dimension>
+
+		<Measure name="Kwh Meter Measures" column="MEASURE"
+			aggregator="sum" datatype="Numeric" />
+
+	</Cube>
+
+	<!-- Cube: Flow Meter -->
+	<Cube name="Flow Meter" defaultMeasure="Flow Meter Heat Measures">
+		<Table name="EI_FLOW_CONSUME_ANALYSIS" />
+
+		<Dimension name="Time" foreignKey="TIME_ENERGY_ID" caption="Time">
+			<Hierarchy hasAll="true" allMemberName="All Times"
+				allMemberCaption="All Times" primaryKey="TIME_ENERGY_ID">
+				<Table name="EI_TIME_ENERGY" />
+				<Level name="Year" column="TIME_ENERGY_YEAR" uniqueMembers="true" />
+				<Level name="Month" column="TIME_ENERGY_MONTH" uniqueMembers="false" />
+				<Level name="Day" column="TIME_ENERGY_DAY" uniqueMembers="false" />
+				<Level name="Hour" column="TIME_ENERGY_HOUR" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Location" foreignKey="METER_ID" caption="Location">
+			<Hierarchy hasAll="true" allMemberName="All Locations"
+				allMemberCaption="All Locations" primaryKey="FLOW_ID">
+				<Table name="EI_FLOW_METER" />
+				<Level name="Seat" column="FLOW_SEAT" uniqueMembers="true" />
+				<Level name="Floor" column="FLOW_FLOOR" uniqueMembers="false" />
+				<Level name="Name" column="FLOW_NAME" uniqueMembers="false" />
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="Organization" foreignKey="ORG_ID" caption="Organization">
+			<Hierarchy hasAll="true" allMemberName="All Organizations"
+				allMemberCaption="All Organizations" primaryKey="ORG_ID">
+				<Table name="EI_ORG" />
+				<Level name="Bureau" column="BUREAU" uniqueMembers="true" />
+			</Hierarchy>
+		</Dimension>
+
+		<Measure name="Flow Meter Flow Measures" column="MEASURE_FLOW"
+			aggregator="sum" datatype="Numeric" />
+
+		<Measure name="Flow Meter Heat Measures" column="MEASURE_HEAT"
+			aggregator="sum" datatype="Numeric" />
+
+	</Cube>
+
+</Schema>

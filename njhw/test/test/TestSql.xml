@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TestSql">
+	<!-- 历史轨迹查询-->
+	<select id="selectHistoryList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<isNotEmpty property="TagMac">
+			select history_T.WriteTime,history_T.CoordinatesId
+	        from device_Tag device_t
+	        left join history_TagPositionLog history_T
+	          on device_t.Id = history_T.TagId
+	       where device_t.TagMac = #TagMac#
+	       <isNotEmpty property="beginTime">
+	       	 <![CDATA[
+	       	 and history_T.WriteTime>=#beginTime#
+	       	 ]]>
+	       </isNotEmpty>
+	       <isNotEmpty property="endTime">
+	         <![CDATA[
+	       	 and history_T.WriteTime<=#endTime#
+	       	 ]]>
+	       </isNotEmpty>
+	       order by history_T.WriteTime desc
+		</isNotEmpty>
+	</select>
+	
+	<!-- 即时位置查询-->
+	<select id="selectMonitorList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<isNotEmpty property="idCradNum">
+			select monitor_T.X, monitor_T.Y, monitor_T.Z
+			  from Vis_RFIDAndID vis_r
+			  left join device_Tag device_t
+			    on vis_r.TagMac = device_t.TagMac
+			  left join monitor_TagStatus monitor_T
+			    on device_t.Id = monitor_T.TagId
+			 where vis_r.IDCradNum = #idCradNum#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 根据证件号查询TagMac-->
+	<select id="selectTagMacByIDCradNum" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select vis_r.TagMac from Vis_RFIDAndID vis_r where vis_r.IDCradNum = #iDCradNum#
+	</select>
+	<!-- 根据坐标查询楼层-->
+	<select id="selectFloorByCoordinates" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from beacon where placeId = #placeId#
+	</select>
+	
+	<insert id="insertVisCardIdMac" parameterClass="java.util.Map" >
+		INSERT INTO VIS_RFIDANDID (
+			VISID,
+			TAGMAC,
+			IDCRADNUM,
+			STATUS,
+			TAGNICKNAME
+		) VALUES (
+			SEQ_VIS_RFIDANDID.nextval,
+			#mac#,
+			#cardId#,
+			#status#,
+			#name#
+		)
+	</insert>
+	
+	<select id="selectAllBeacon" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from beacon
+	</select>
+	
+	<update id="updateBeacon" parameterClass="java.util.Map">
+	<![CDATA[
+		UPDATE beacon SET PLACEID = #placeId# WHERE id = #id#
+	]]>
+	</update>
+	
+	<!-- 修改灯设备信息 -->
+	<select id="getObjNodeIdByRoomName" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT node_id, name FROM objtank 
+		WHERE NAME = #name# AND ext_res_type = 'R'
+	</select>
+	
+	<insert id="insertLight" parameterClass="java.util.Map" >
+		INSERT INTO OBJTANK(NODE_ID,NAME,TITLE,KEYWORD,IS_SYSTEM,P_ID,OBJ_TYPE,CREATOR,CREATE_DATE,EXT_RES_TYPE,EXT_IS_BOTTOM,LEVEL_NUM) 
+		VALUES 
+		(SEQ_OBJTANK.NEXTVAL,#name#,#title#,#obix#,0,#roomId#,'F',1,sysdate,6,1,7)
+	</insert>
+	
+	<select id="getAllLightInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from objtank where ext_res_type = '6' order by node_id desc
+		]]>
+	</select>
+	
+	<update id="updateOneLightInfo">
+		UPDATE OBJTANK SET keyword = #keyword# where node_id = #nodeId#
+	</update>
+</sqlMap>

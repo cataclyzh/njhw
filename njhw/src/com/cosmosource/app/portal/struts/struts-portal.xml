@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+ 	<package name="/app/portal" extends="default" namespace="/app/portal">
+        <action name="portal" class="portalAction" method="portal">
+            <result name="success">/app/portal/portal.jsp</result>
+        </action>
+        
+        <action name="index" class="portalAction" method="index">
+            <result name="success">/app/portal/main1.jsp</result>
+        </action>
+        <action name="building" class="portalAction" method="building">
+            <result name="success">/app/portal/building.jsp</result> 
+        </action> 
+ 	</package>
+ 	
+ 	<package name="/app/auth/index" extends="default" namespace="/app/auth/index">
+        <action name="mainMenu" class="navAction" method="mainMenu">
+        </action>
+        <action name="ajaxQueryNavMenu" class="navAction" method="ajaxQueryNavMenu">
+        </action>
+        <action name="userInfo" class="navAction" method="userInfo">
+        </action>
+        <action name="shortcut" class="navAction" method="shortcut">
+        </action>
+        <action name="logout" class="navAction" method="logout">
+        	<result name="success">/security/login.act</result>
+        </action>
+        <action name="queryAdminUserByIdJSON" class="navAction" method="queryAdminUserByIdJSON"></action>
+        <action name="queryPasswordByUserID" class="navAction" method="queryPasswordByUserID"></action>
+ 	</package>
+ 	<package name="/app/portal/citynav" extends="default" namespace="/app/portal/citynav">
+        <action name="citynav" class="cityNavAction" method="citynav">
+        	<result name="success">/app/portal/citynav/citynav.jsp</result>
+        </action>
+ 	</package>
+ 	
+</struts>

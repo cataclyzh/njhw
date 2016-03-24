@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+	   
+	    <!-- 菜肴类别管理 hj  时间 2013-08-09-->
+	    <bean id="menuManagementAction" class="com.cosmosource.app.dining.action.MenuManagementAction" scope="prototype">
+	    	<property name="menuManagementManager" ref="menuManagementManager"></property>
+	    </bean>
+	    <bean id="menuManagementManager" class="com.cosmosource.app.dining.service.MenuManagementManager" parent="manager"></bean>
+	    
+	    <!-- 菜肴管理 sqs  时间 2013-3-19-->
+	    <bean id="foodManagementAction" class="com.cosmosource.app.dining.action.FoodManagementAction" scope="prototype">
+	    	<property name="foodManagementManager" ref="foodManagementManager"></property>
+	    </bean>
+	    <bean id="foodManagementManager" class="com.cosmosource.app.dining.service.FoodManagementManager" parent="manager"></bean>
+	    
+	    <!-- 菜单管理 sqs  时间 2013-3-19-->
+	    <bean id="theMenuAction" class="com.cosmosource.app.dining.action.TheMenuAction" scope="prototype">
+	    	<property name="theMenuManager" ref="theMenuManager"></property>
+	    </bean>
+	    <bean id="theMenuManager" class="com.cosmosource.app.dining.service.TheMenuManager" parent="manager"></bean>
+	    
+	    <!-- 新的菜单管理 sqs  时间 2013-3-19-->
+	    <bean id="newTheMenuAction" class="com.cosmosource.app.dining.action.NewTheMenuAction" scope="prototype">
+	    	<property name="newTheMenuManager" ref="newTheMenuManager"></property>
+	    	<property name="integrateManager" ref="integrateManager"/>
+	    </bean>
+	    <bean id="newTheMenuManager" class="com.cosmosource.app.dining.service.NewTheMenuManager" parent="manager"></bean>
+	    
+</beans>
+
+	    	

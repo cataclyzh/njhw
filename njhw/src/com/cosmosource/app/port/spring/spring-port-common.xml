@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+       
+    <!--目的：和app交互的短信功能         开发者：hp  时间：2013-3-17   -->
+    <bean id="smsSendMessage" class="com.cosmosource.app.port.serviceimpl.SmsSendMessageService" parent="manager">
+    	<property name="smsMessage" ref="smsMessage"/>
+    </bean>
+       
+    <!--目的：设备权限（资源权限）归属          开发者：hp   时间：2013-3-25-->
+	<bean id="devicePermissionToApp" class="com.cosmosource.app.port.serviceimpl.DevicePermissionToAppService" parent="manager">
+		<property name="doorControlToAppService" ref="doorControlToAppService"></property>    
+    </bean>
+    
+	<!--目的：门锁控制service     开发者：hp  时间：2013-3-26   -->
+    <bean id="doorControlToAppService" class="com.cosmosource.app.port.serviceimpl.DoorControlToAppService" parent="manager">
+    	<property name="doorControlToSystemService" ref="doorControlToSystemService"></property>
+    	<property name="commonManager" ref="commonManager"></property>
+    	<property name="unitAdminManager" ref="unitAdminManager"></property>
+    	<property name="personROManager" ref="personROManager"></property>
+    	<property name="orgPerMgrManager" ref="orgPerMgrManager"></property>
+    	<property name="csvUtil" ref="csvUtil"></property>
+    </bean>
+    
+    <!--目的：市民卡查询service     开发者：hp  时间：2013-3-26   -->
+    <bean id="personCardQueryToAppService" class="com.cosmosource.app.port.serviceimpl.PersonCardQueryToAppService" parent="manager">
+    	<property name="personCardQueryToSystemService" ref="personCardQueryToSystemService"></property>
+    </bean>
+    
+    <!--目的：智慧南京信息查询service     开发者：hp  时间：2013-3-26   -->
+    <bean id="wisdomNjToAppService" class="com.cosmosource.app.port.serviceimpl.WisdomNjToAppService" parent="manager">
+    	<property name="wisdomNjToSystemService" ref="wisdomNjToSystemService"></property>
+    </bean>
+    
+    <!--目的：闸机操作service     开发者：hp  时间：2013-3-26   -->
+    <bean id="gatesControlToAppService" class="com.cosmosource.app.port.serviceimpl.GatesControlToAppService" parent="manager">
+    </bean>
+    
+    <!--目的：楼宇自控service     开发者：hp  时间：2013-3-26   -->
+    <bean id="buildAutoToAppService" class="com.cosmosource.app.port.serviceimpl.BuildAutoToAppService" parent="manager">
+    </bean>
+    
+     <!--目的：门禁操作service     开发者：hp  时间：2013-3-26   -->
+    <bean id="accessControlToAppService" class="com.cosmosource.app.port.serviceimpl.AccessControlToAppService" parent="manager">
+    </bean>
+    
+    
+    <!--目的：设备权限操作service     开发者：hp  时间：2013-3-26   -->
+     <bean id="devicePermissionToAppService" class="com.cosmosource.app.port.serviceimpl.DevicePermissionToAppService" parent="manager">
+    </bean>
+    
+    <!--目的：无线定位操作service     开发者：QiYanQiang 时间：2013-04-10   -->
+    <bean id=" wirelessLocationToAppService" class="com.cosmosource.app.port.serviceimpl.WirelessLocationToAppService" parent="manager">
+    	<property name="wirelessLocationToSystemService" ref="wirelessLocationToSystemService"></property>
+    </bean>
+    
+     <!--目的：多登陆service     开发者：hp 时间：2013-04-10   -->
+     <bean id="cAAccessToLoginService" class="com.cosmosource.app.port.serviceimpl.CAAccessToLoginService" parent="manager">
+     	<property name="smsSendMessage" ref="smsSendMessage"></property>
+    </bean>
+    
+    <!--目的  : 交通信息  service     开发者：QiYanQiang 时间：2013-05-01   -->
+    <bean id="travelInformationToAppService" class="com.cosmosource.app.port.serviceimpl.TravelInformationToAppService" parent="manager">
+    	<property name="travelInformationToSystemService" ref="travelInformationToSystemService"></property>
+    </bean>
+    
+    <!--目的  : 传真  service     开发者：cjw 时间：2013-05-06   -->
+    <bean id="faxToAppService" class="com.cosmosource.app.port.serviceimpl.FaxToAppService" parent="manager">
+    	<property name="faxToSystemService" ref="faxToSystemService"></property>
+    </bean>
+     <!--目的  : ip电话网页拨号  service  开发者：cjw 时间：2013-05-06   -->
+    <bean id="iPPhoneSiteToAppService" class="com.cosmosource.app.port.serviceimpl.IPPhoneSiteToAppService" parent="manager">
+    </bean>
+	<!--目的：上传文件管理类        开发者：hp    时间：2013-05-24    -->
+	<bean id="uploadManager" class="com.cosmosource.app.port.service.UploadManager" parent="manager"/>
+	<!--目的：上传文件的action    开发者：hp    时间：2013-05-24	-->
+	<bean id="uploadOaUsersAction" class="com.cosmosource.app.port.action.UploadOaUsersAction" scope="prototype">
+		<property name="uploadManager" ref="uploadManager"></property>
+	</bean>
+	<!--目的：日志操作manager        开发者：hp    时间：2013-05-24    -->
+	<bean id="operationLogManager" class="com.cosmosource.app.port.service.OperationLogManager" parent="manager"/>
+	<!--目的：日志操作action    开发者：hp    时间：2013-05-24	-->
+	<bean id="operationLogAction" class="com.cosmosource.app.port.action.OperationLogAction" scope="prototype">
+		<property name="operationManager" ref="operationLogManager"></property>
+	</bean>
+	
+	<!--目的：门禁操作service     开发者：hp  时间：2013-3-26   -->
+    <bean id="iPPhoneManager" class="com.cosmosource.app.port.service.IPPhoneManager" parent="manager">
+    </bean>
+</beans>
+
+

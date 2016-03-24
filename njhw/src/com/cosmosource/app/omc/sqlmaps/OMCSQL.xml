@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="OMC_SQL">
+
+   <typeAlias alias="OMCDeviceInfo" type="com.cosmosource.app.omc.model.OMCDeviceInfo" />
+   <typeAlias alias="OMCRepairInfo" type="com.cosmosource.app.omc.model.OMCRepairInfo" />
+   <typeAlias alias="OMCSluiceFlowInfo" type="com.cosmosource.app.omc.model.OMCSluiceFlowInfo" />
+   <typeAlias alias="OMCVisitorInfo" type="com.cosmosource.app.omc.model.OMCVisitorInfo" />
+   
+
+   <resultMap class="OMCDeviceInfo" id="EQUIPMENT_STATUS">
+	   <!-- 门锁 -->
+	   <result property="allLock" column="ALLLOCK" javaType="java.lang.Integer" nullValue="0"/>
+	   <result property="badLock" column="BADLOCK" javaType="java.lang.Integer" nullValue="0"/>
+	   <!-- 通信机 -->
+	   <result property="allTelegraph" column="ALLTELEGRAPH" javaType="java.lang.Integer" nullValue="0"/>
+	   <result property="badTelegraph" column="BADTELEGRAPH" javaType="java.lang.Integer" nullValue="0"/>
+	   <!-- 闸机 -->
+	   <result property="allGate" column="ALLGATE" javaType="java.lang.Integer" nullValue="0"/>
+	   <result property="badGate" column="BADGATE" javaType="java.lang.Integer" nullValue="0"/>
+	   <!-- 门禁 --> 
+	   <result property="allDoorcontrol" column="ALLDOORCONTROL" javaType="java.lang.Integer" nullValue="0"/>
+	   <result property="badDoorcontrol" column="BADDOORCONTROL" javaType="java.lang.Integer" nullValue="0"/>
+   </resultMap>
+   <select id="QUERY_GATE_LOCK_STATUS"  resultMap ="EQUIPMENT_STATUS" >
+  select 
+    (select count(1) from NJHW_DOORCONTROL_SET) allLock,
+      (select count(1)  from NJHW_DOORCONTROL_SET where adrs_num = 2) badLock, 
+      (select count(1) from (select distinct adrs_comm from NJHW_DOORCONTROL_SET)) allTelegraph,
+      (select sum(badTelegraph) from (select adrs_comm,count(adrs_comm)  badTelegraph   from NJHW_DOORCONTROL_SET where adrs_num = 1 group by adrs_comm)) badTelegraph,
+       (select count(1) from (       
+   select b.door_id, a.recordtime
+     from vm_equip_status a, vm_machine_door_set b
+    where a.set_no = b.door_id
+      and b.id in
+          ((select id from vm_machine_door_set where EQUIP_TYPE = 1))
+      and a.recordtime = (select max(recordtime)
+                            from vm_equip_status
+                           where set_no = a.set_no)
+      and to_char(a.recordtime, 'yyyy-mm-dd') =
+          to_char(sysdate, 'yyyy-mm-dd')
+    group by b.door_id, a.recordtime) )allGate ,
+	    (select count(1)   from (select b.door_id,a.recordtime from vm_equip_status a,vm_machine_door_set b where a.set_no = b.door_id and b.id in 
+	    ((select id from vm_machine_door_set where EQUIP_TYPE = 1)) and a.run_status is  not null and a.recordtime = (select max(recordtime) from vm_equip_status where set_no =  a.set_no  )  and to_char(a.recordtime,'yyyy-mm-dd') =  to_char(sysdate,'yyyy-mm-dd')  group by b.door_id ,a.recordtime)) badGate ,
+	    (select count(1) from (select b.door_id
+                              from vm_equip_status a, vm_machine_door_set b
+                             where a.set_no = b.door_id
+                               and b.id in ((select id
+                                              from vm_machine_door_set
+                                             where EQUIP_TYPE = 2))
+                               and a.recordtime =
+                                   (select max(recordtime)
+                                      from vm_equip_status
+                                     where set_no = a.set_no)
+                             group by b.door_id, a.recordtime)) allDoorcontrol,
+	    (select count(1)  from (select b.door_id
+                              from vm_equip_status a, vm_machine_door_set b
+                             where a.set_no = b.door_id
+                               and b.id in ((select id
+                                              from vm_machine_door_set
+                                             where EQUIP_TYPE = 2))
+                               and a.run_status is not null
+                               and a.recordtime =
+                                   (select max(recordtime)
+                                      from vm_equip_status
+                                     where set_no = a.set_no)
+                             group by b.door_id, a.recordtime )) badDoorcontrol
+      from dual
+   </select>
+	
+	<resultMap class="OMCSluiceFlowInfo" id="SLUICE_FLOW_MAP">
+		<!-- 今日总量 -->
+		<result property="todayTotal" column="todayTotal" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 出闸 -->
+		<result property="outTotal" column="outTotal" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 进闸 -->
+		<result property="enterTotal" column="enterTotal" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 内部人员 -->
+		<result property="insiderTotal" column="insiderTotal" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 外部人员 -->
+		<result property="outsiderTotal" column="outsiderTotal" nullValue="0"  javaType="java.lang.Integer"/>
+	</resultMap>
+	<select id="QUERY_SLUICE_FLOW"  resultMap="SLUICE_FLOW_MAP" >
+		select 
+		(select count(1) from vm_punch_record where  to_char(vm_punch_record.recordtime,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')) todayTotal,
+		(select count(1) from vm_punch_record where  to_char(vm_punch_record.recordtime,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and flag = 0) outTotal,
+		(select count(1) from vm_punch_record where  to_char(vm_punch_record.recordtime,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and flag = 1) enterTotal,
+		(select count(1) from njhw_tscard a,vm_punch_record b where a.card_id = b.card_no and  to_char(b.recordtime,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')) insiderTotal,
+		(select count(1) from vm_punch_record b where  b.card_no not in (select card_id from njhw_tscard) and to_char(b.recordtime,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')) outsiderTotal
+		from dual
+	</select>
+	
+	<resultMap class="OMCRepairInfo" id="STATISTICAL_REPAIR">
+		<!-- 保修总数 -->
+		<result property="allCount" column="ALLCOUNT" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 已经解决 -->
+		<result property="accomplishCount" column="ACCOMPLISHCOUNT" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 已派单 -->
+		<result property="dispatchedCount" column="DISPATCHEDCOUNT" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 已回访 -->
+		<result property="returnVisitCount" column="RETURNVISITCOUNT" nullValue="0"  javaType="java.lang.Integer"/>
+	</resultMap>
+	<select id="QUERY_STATISTICAL_REPAIR" resultMap="STATISTICAL_REPAIR">
+		select (select count(1) from gr_repair where repair_state in (0,1,2,3)) allCount,
+		(select count(1) from gr_repair where repair_state = 2) accomplishCount,
+		(select count(1) from gr_repair where repair_state = 1) dispatchedCount,
+		(select count(1) from gr_repair where repair_state = 3) returnVisitCount 
+		from dual
+	</select>
+	
+	<!-- 访客统计 -->
+	<resultMap class="OMCVisitorInfo" id="OMC_VISITOR_MAP">
+		<!-- 今天总共上访人数 -->
+		<result property="visitorCount" column="visitorCount" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 公网预约 -->
+		<result property="outerNetVisitorCount" column="outerNetVisitorCount" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 前台登记 -->
+		<result property="receptionVisitorCount" column="receptionVisitorCount" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 目前访客数 -->
+		<result property="nowVisitorCount" column="nowVisitorCount" nullValue="0"  javaType="java.lang.Integer"/>
+		<!-- 主动约访 -->
+		<result property="accordVisitorCount" column="accordVisitorCount" nullValue="0"  javaType="java.lang.Integer"/>
+	</resultMap>
+	<select id="QUERY_VISITOR_IFNO" resultMap="OMC_VISITOR_MAP">
+		select 
+    (select count(1) from vm_visit a, vm_visitorinfo b where a.vi_id = b.vi_id and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd') 
+    and to_char(a.vs_et,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and a.vs_flag in ('04','05','06')) visitorCount,
+    (select count(1) from vm_visit a, vm_visitorinfo b where a.vi_id = b.vi_id and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd') 
+    and to_char(a.vs_et,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and a.vs_flag in ('04','05','06') and a.vs_type =1) accordVisitorCount,
+      (select count(1) from vm_visit a, vm_visitorinfo b where a.vi_id = b.vi_id and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd') 
+      and to_char(a.vs_et,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and a.vs_flag in ('04','05','06') and a.vs_type =2) outerNetVisitorCount,
+      (select count(1) from vm_visit a, vm_visitorinfo b where a.vi_id = b.vi_id and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd') 
+      and to_char(a.vs_et,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')  and a.vs_flag in ('04','05','06') and a.vs_type =3) receptionVisitorCount,
+      (select count(1) from vm_visit a, vm_visitorinfo b where a.vi_id = b.vi_id  and a.vs_flag = '04' and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd'))  nowVisitorCount
+      from dual
+	</select>
+	
+	
+	<select id="QUERY_TOP_VISITOR" parameterClass="int" resultClass="OMCVisitorInfo">
+	<![CDATA[
+	 	 select * from (select  a.vi_name,a.user_name,card_id,a.org_name,b.res_bak2,a.vs_st　
+	 from vm_visit a,vm_visitorinfo b where a.vi_id = b.vi_id and a.vs_flag in ('04','05','06') and to_char(a.vs_st,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd') order by a.vs_st desc)
+	 where rownum <=  #top#
+	]]>
+	</select>
+	
+	<!-- 查询设备状态信息 -->
+	<select id="QUERY_DEVEICE_TO_VIEW" resultClass="java.util.HashMap" parameterClass="java.util.Map" remapResults="true">
+		<!-- 门锁 -->
+		<isEqual property="type" compareValue="1">
+			<isEqual property="status" compareValue="1">
+			select  name as typename  from NJHW_DOORCONTROL_SET where adrs_num is null order by name
+			</isEqual>
+			<isEqual property="status" compareValue="2">
+			select  name as typename  from NJHW_DOORCONTROL_SET where adrs_num = 2 order by name
+			</isEqual>
+		</isEqual>
+
+		<!-- 通讯机 -->
+		<isEqual property="type" compareValue="2">
+			<isEqual property="status" compareValue="1">
+			select typename from (select distinct  adrs_comm as typename from NJHW_DOORCONTROL_SET where adrs_num is null or adrs_num = 2   order by adrs_comm)   
+			</isEqual>
+			<isEqual property="status" compareValue="2">
+			select typename from (select  adrs_comm as typename from NJHW_DOORCONTROL_SET where adrs_num = 1 group by adrs_comm order by adrs_comm)
+			</isEqual>
+		</isEqual>
+		
+		<!-- 闸机 -->
+		<isEqual property="type" compareValue="3">
+			<isEqual property="status" compareValue="1">
+			select t.typename from (
+			select door_name as typename
+			  from vm_equip_status a, vm_machine_door_set b
+			 where a.set_no = b.door_id
+			   and b.id in ((select id from vm_machine_door_set where equip_type = 1))
+			   and a.run_status is null
+			   and a.recordtime =
+			       (select max(recordtime) from vm_equip_status where set_no = a.set_no)
+			   and to_char(a.recordtime, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+			 group by door_name
+			 order by door_name) t
+			</isEqual>
+			<isEqual property="status" compareValue="2">
+			select t.typename from (
+			 select door_name as typename
+	         from vm_equip_status a, vm_machine_door_set b
+	        where a.set_no = b.door_id
+	          and b.id in
+	              ((select id from vm_machine_door_set where equip_type = 1))
+	          and a.run_status is not null
+	          and a.recordtime = (select max(recordtime)
+	                                from vm_equip_status
+	                               where set_no = a.set_no)
+	          and to_char(a.recordtime, 'yyyy-mm-dd') =
+	             to_char(sysdate, 'yyyy-mm-dd')
+	        group by door_name                      
+	        order by door_name )t
+			</isEqual>
+		</isEqual>
+		
+		<!-- 门禁 -->
+		<isEqual property="type" compareValue="4">
+			<isEqual property="status" compareValue="1">
+			select door_name as typename  from vm_machine_door_set where door_id not in (select door_id  from (select b.door_id,a.recordtime,count(1) bad from vm_equip_status a,vm_machine_door_set b where a.set_no = b.door_id and b.id in 
+	    	((select id from vm_machine_door_set where EQUIP_TYPE = 2)) and a.run_status is  not null and a.recordtime = (select max(recordtime) from vm_equip_status where set_no =  a.set_no  ) group by b.door_id ,a.recordtime))
+     		and EQUIP_TYPE = 2
+			</isEqual>
+			<isEqual property="status" compareValue="2">
+         	select door_name as typename
+           	from vm_machine_door_set
+          	where door_id in (select b.door_id
+                              from vm_equip_status a, vm_machine_door_set b
+                             where a.set_no = b.door_id
+                               and b.id in ((select id
+                                              from vm_machine_door_set
+                                             where EQUIP_TYPE = 2))
+                               and a.run_status is not null
+                               and a.recordtime =
+                                   (select max(recordtime)
+                                      from vm_equip_status
+                                     where set_no = a.set_no)
+                             group by b.door_id, a.recordtime)
+			</isEqual>
+		</isEqual>
+	</select>
+</sqlMap>

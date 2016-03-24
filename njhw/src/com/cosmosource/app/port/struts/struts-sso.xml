@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	
+	<!-- 功能：SSO 开发者：wxj 时间：2013-3-22 -->
+    <package name="/sso/login" extends="default" namespace="/sso/login">
+		<action name="index">		
+			<result>mainLogon.act</result>	
+		</action>
+	</package>	
+	<!--功能：上传文件的action   开发者：hp   时间：2014-05-24	-->
+	<package name="/app/upload" extends="default" namespace="/app/upload">
+		<action name="init" class="uploadOaUsersAction" method="init">
+			<result name="init">/app/upload/upload.jsp</result>
+		</action>
+		<action name="upload" class="uploadOaUsersAction" method="upload">
+			<result name="success">/app/upload/upload.jsp</result>
+		</action>
+	</package>
+	
+	<!--功能：日志查询     开发者：hp   时间：2014-05-24	-->
+	<package name="/app/log/query" extends="default" namespace="/app/log/query">
+		<action name="init" class="operationLogAction" method="init">
+			<result name="init">/app/upload/logMessageList.jsp</result>
+		</action>
+		<action name="query" class="operationLogAction" method="query">
+			<result name="success">/app/upload/logMessageList.jsp</result>
+		</action>
+		<action name="delete" class="operationLogAction" method="delete">
+			<result name="success">/app/upload/logMessageList.jsp</result>
+		</action>
+		<action name="logIndex" class="operationLogAction" method="index">
+			<result name="success">/app/upload/logIndex.jsp</result>
+		</action>
+		<action name="list" class="operationLogAction" method="query">
+			<result name="success">/app/upload/logMessageList1.jsp</result>
+		</action>
+		<!-- 导出excel -->
+		<action name="exportLog" class="operationLogAction" method="exportLog">
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.obj/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/din" extends="default" namespace="/app/din">
+   		
+		<!-- 菜肴管理 sqs 2013-3-19 -->
+   		<action name="initFoodManagement" class="foodManagementAction" method="initFoodManagement">
+   			<result name="init">/app/dining/foodManagement/foodManagementList.jsp</result>
+   		</action>
+   		<action name="queryDishes" class="foodManagementAction" method="queryDishes">
+   			<result name="success">/app/dining/foodManagement/foodManagementList.jsp</result>
+   			<result name="error">/app/dining/foodManagement/foodManagementList.jsp</result>
+   		</action>
+   		<action name="queryPublishDishes" class="foodManagementAction" method="queryPublishDishes">
+   			<result name="success">/app/dining/foodManagement/foodPublishManagementList.jsp</result>
+   			<result name="error">/app/dining/foodManagement/foodPublishManagementList.jsp</result>
+   		</action>
+   		<action name="queryMenus" class="menuManagementAction" method="queryMenus">
+   			<result name="success">/app/dining/menuManagement/menuManagementList.jsp</result>
+   		</action>
+   		<action name="foodManagementInput" class="foodManagementAction" method="foodManagementInput">
+   			<result name="success">/app/dining/foodManagement/foodManagementInput.jsp</result>
+   		</action>
+   		<action name="menuManagementInput" class="menuManagementAction" method="menuManagementInput">
+   			<result name="success">/app/dining/menuManagement/menuManagementInput.jsp</result>
+   		</action>
+   		<action name="inputDishes" class="foodManagementAction" method="inputDishes">
+   			<result name="success">queryDishes.act</result>
+   		</action>
+   		<action name="inputMenus" class="menuManagementAction" method="inputMenus">
+   			<result name="success">/app/dining/menuManagement/menuManagementInput.jsp</result>
+   		</action>
+   		<action name="dishesAdd" class="foodManagementAction" method="dishesAdd">
+   			<result name="success">/app/dining/foodManagement/foodManagementAdd.jsp</result>
+   		</action>
+   		<action name="saveDishes" class="foodManagementAction" method="saveDishes">
+   			<result name="success">/app/dining/foodManagement/foodManagementAdd.jsp</result>
+   		</action>
+   		<action name="deleteDishes" class="foodManagementAction" method="deleteDishes">
+   			<result name="success">queryDishes.act</result>
+   		</action> 
+   		<action name="deleteMenus" class="menuManagementAction" method="deleteMenus">
+   			<result name="success">queryMenus.act</result>
+   		</action>
+   		<!--功能：刷新菜肴信息 	开发者：hj 	  -->
+		<action name="ajaxRefreshMenu" class="foodManagementAction" method="ajaxRefreshMenu">
+			<result name="success">/app/dining/foodManagement/menuList.jsp</result>
+		</action>
+		<!--功能：预览菜单发布	开发者：hj 	  -->
+		<action name="showMenuPreview" class="foodManagementAction" method="showMenuPreview">
+			<result name="success">/app/dining/foodManagement/showMenuPreview.jsp</result>
+		</action>
+   		
+   		<!-- 菜单管理 sqs 2013-3-19 -->
+   		<action name="initTheMenu" class="theMenuAction" method="initTheMenu">
+   			<result name="init">/app/dining/theMenu/theMenuList.jsp</result>
+   		</action>
+   		
+   		<action name="queryTheMenu" class="theMenuAction" method="queryTheMenu">
+   			<result name="success">/app/dining/theMenu/theMenuList.jsp</result>
+   			<result name="error">/app/dining/theMenu/theMenuList.jsp</result>
+   		</action>
+   		<action name="theMenuInput" class="theMenuAction" method="theMenuInput">
+   			<result name="input">/app/dining/theMenu/theMenuInput.jsp</result>
+   		</action>
+   		
+   		<!--功能：保存分配数据  -->
+		<action name="theMenuSave" class="theMenuAction" method="theMenuSave"/>
+		<!--功能：异步刷新  -->
+		<action name="ajaxRefreshTheMenu" class="theMenuAction" method="ajaxRefreshTheMenu">
+			<result name="success">/app/dining/theMenu/theMenuInput.jsp</result>
+		</action>
+		
+		<!-- 菜单发布(新)  -->
+		<action name="initNewTheMenu" class="newTheMenuAction" method="initNewTheMenu">
+   			<result name="success">/app/dining/theMenu/newTheMenuList.jsp</result>
+   			<result name="error">/app/dining/theMenu/newTheMenuList.jsp</result>
+   		</action>
+   		<action name="initNewWeekMenu" class="newTheMenuAction" method="initNewWeekMenu">
+   			<result name="success">/app/dining/theMenu/weekMenusQuery.jsp</result>
+   			<result name="error">/app/dining/theMenu/weekMenusQuery.jsp</result>
+   		</action>
+   		<action name="ajaxInitNewWeekMenu" class="newTheMenuAction" method="ajaxInitNewWeekMenu" >
+			<result name="success">/app/dining/theMenu/weekMenus.jsp</result>
+		</action>
+		<action name="addOrUpdateNewTheMenu" class="newTheMenuAction" method="addOrUpdateNewTheMenu">
+   			<!-- <result name="success">/app/din/initNewTheMenu.act</result> -->
+   			<result name="success">/app/dining/theMenu/addOrUpdateNewMenu.jsp</result>
+   		</action>
+   		<!--功能：发布按钮  -->
+		<action name="theNewMenuSave" class="newTheMenuAction" method="theNewMenuSave">
+		    <!-- <result name="success">/app/dining/theMenu/addOrUpdateNewMenu.jsp</result> -->
+		    <result name="success">/app/din/initNewTheMenu.act</result>
+		</action>
+		<!--菜单上移 gxh -->
+		<action name="upMenu" class="newTheMenuAction" method="upMenu"/>		
+		<!--菜单下移  gxh-->
+		<action name="downMenu" class="newTheMenuAction" method="downMenu"/>
+ 	</package> 
+ 	
+ 	<!--功能 :文件上传  -->
+ 	<package name="/app/din/fileupload" extends="json-default" namespace="/app/din/fileupload">
+		<action name="saveImg" class="foodManagementAction" method="saveImg">
+			<result type="json" name="success">
+                <param name="contentType">text/html</param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">text/html</param>
+            </result>
+		</action>
+		
+ 		<!--功能 :修改文件上传  -->
+		<action name="updateImg" class="foodManagementAction" method="updateImg">
+			<result type="json" name="success">
+                <param name="contentType">text/html</param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">text/html</param>
+            </result>
+		</action>
+	</package>
+	
+</struts>

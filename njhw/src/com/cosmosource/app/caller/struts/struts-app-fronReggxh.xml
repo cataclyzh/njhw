@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/visitor/frontReg" extends="default" namespace="/app/visitor/frontReg">
+        <!--功能： 访客前台预约 gxh -->
+		<action name="noOrderInput" class="noOrderAction" method="initOrd">
+			<result name="init">/app/caller/frontReg/reception.jsp</result>	
+		</action>
+		<action name="noOrderInputSimple" class="frontRegAction" method="visitorList">
+			<result name="success">/app/caller/frontReg/visitorListSimple.jsp</result>	
+		</action>
+		 <action name="visitorListSimple" class="frontRegAction" method="visitorList">
+			<result name="success">noOrderInputSimple.act</result>
+		</action>
+		<!-- 功能：根据条件查询未访问的访客列表 gxh-->
+		 <action name="visitorList" class="frontRegAction" method="visitorList">
+			<result name="success">/app/caller/frontReg/visitorList.jsp</result>
+		</action>
+	   <!-- 功能：根据市民卡号刷 列表 gxh-->
+		<action name="refreshCardVmList" class="frontRegAction" method="refreshCardVmList">
+			<result name="success">/app/caller/frontReg/visitorList.jsp</result>
+		</action>
+		<!-- 功能：取消访客预约 gxh-->
+		 <action name="cancelVistor" class="frontRegAction" method="cancelVistor">
+			<result name="success">visitorList.act</result>
+		</action>
+		<!-- 根据事务id 查询事务 暂时不用 -->
+		<action name="getAllInfor" class="frontRegAction" method="getAllInfor">
+			<result name="success">/app/caller/frontReg/vmReg.jsp</result>
+		</action>
+	 	<!-- 刷卡查询操作区域内容 -->
+	    <action name="refreshVmOpeContent" class="frontRegAction" method="refreshVmOpeContent">
+			<result name="success">/app/caller/frontReg/vmReg.jsp</result>
+			<result name="input">/app/caller/frontReg/vmReg.jsp</result>
+		</action>
+		<!--功能：验证市民卡		开发者：zh 	时间：2013-03-19  -->
+		<action name="validCityCard" class="myVisitAction" method="validCityCard"></action>
+		
+		
+		<!-- 查询每天访客统计信息 -->
+		<action name="dailyVMCountInfo" class="frontRegAction" method="findDailyVmList">
+			<result name="success">/app/caller/frontReg/dailyVMCountInfo.jsp</result>
+		</action>
+		<!-- 拍照   qyq -->
+		<action name="photograph" class="frontRegAction" method="photograph">
+			<result name="success">/app/caller/frontReg/photograph.jsp</result>
+		</action>
+		<!-- 获取拍照片的字节流  qyq-->
+		<action name="getBytesPic" class="frontRegAction" method="getBytesPic">
+			
+		</action>
+		
+		<action name="fatherCardIdDis" class="frontRegAction" method="fatherCardIdDis">
+			<result name="success">/app/caller/frontReg/fatherCardIdDis.jsp</result>
+		</action>
+		
+		<!-- 未预约登记 保存 -->
+		<action name="saveUnBeforeVM" class="frontRegAction" method="saveUnBeforeVM">
+		</action>
+			<!-- 通过机构名称得到受访者名称  gxh -->
+		<action name="ajaxGetUserByOrgId" class="frontRegAction" method="ajaxGetUserByOrgId"/>
+			
+	   <!--功能： 根据省份证加载基本信息 gxh -->
+	   <action name="loadVisiInfo" class="frontRegAction" method="loadVisiInfo"/>
+	   <!-- 预约登记 保存 -->
+	   <action name="saveVMVisit" class="frontRegAction" method="saveVMVisit">
+		</action>
+		<!--  退卡 -->
+	   <action name="giveBackCards" class="frontRegAction" method="giveBackCards">
+	   
+		</action>
+		<!--  退卡 gxh  -->
+		 <action name="giveBackCards1" class="frontRegAction" method="giveBackCards1"/>
+		 <!--  判断卡是否归还  -->
+		 <action name="giveBack" class="frontRegAction" method="giveBack"/>
+		<!--查找被访者是否存在  gxh-->
+		 <action name="getUsersByComeUserName" class="frontRegAction" method="getUsersByComeUserName">
+		</action>
+	    <!-- 受访人弹出框  树结构 gxh -->
+		<action name="selectRespondents" class="frontRegAction" method="selectRespondents"></action>
+		<action name="respondentsTreeSelect" class="frontRegAction" method="respondentsTreeSelect">
+    		<result name="success">/app/caller/frontReg/selectRespondents.jsp</result>
+		</action>
+		<action name="respondentsTreeSelectForIframe" class="frontRegAction" method="respondentsTreeSelectForIframe">
+    		<result name="success">/app/caller/frontReg/selectRespondentsForIframe.jsp</result>
+		</action>
+		 
+		<!-- 根据用户id找到 电话  树结构 gxh -->
+		<action name="phoneByUserid" class="frontRegAction" method="phoneByUserid"></action>
+		
+		<action name="byUseridOrgIdesd" class="frontRegAction" method="byUseridOrgIdesd"></action>
+		
+		<action name="ipCall" class="frontRegAction" method="ipCall"></action>
+		
+		<action name="findUsers" class="frontRegAction" method="findUsers"></action>
+ 	</package>
+</struts>

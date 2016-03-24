@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.obj/dtds/struts-2.1.dtd">
+<struts>
+	<package name="/app/parkinglot" extends="default" namespace="/app/parkinglot">
+		<!-- 停车场监控，展示在运营管理主页 -->
+		<action name="parkinglotDailyCount" class="parkingMonitor" method="parkinglotDailyCounts"></action>
+		<action name="parkinglotInfoForCarType" class="parkingMonitor" method="queryParkingLotInfoByCarType"></action>
+		<action name="queryParkingLotInfoForCarNum" class="parkingMonitor" method="queryParkingLotInfobyCarNum"></action>
+	</package>
+</struts>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<include file="com/cosmosource/common/struts/struts-common.xml" />
+	<include file="com/cosmosource/app/common/struts/struts-app-common.xml" />
+	<include file="com/cosmosource/app/*/struts/*.xml" />
+
+	<include file="com/cosmosource/app/transfer/struts/struts-transfer-common.xml"/>
+	<include file="struts-default.xml"/>
+	
+	<constant name="struts.devMode" value="false"/>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.action.extension" value="act,do"/>
+    <constant name="struts.objectFactory" value="spring"/>
+    <constant name="struts.custom.i18n.resources" value="properties.ApplicationResources,properties.errors"/>
+    <constant name="struts.multipart.maxSize" value="100000000"/>
+    <constant name="struts.ui.theme" value="css_xhtml"/>
+    <constant name="struts.codebehind.pathPrefix" value="/pages/"/>
+    <constant name="struts.enable.SlashesInActionNames" value="true"/>
+    <constant name="struts.convention.action.disableScanning" value="true"/>
+<!--    <constant name="struts.convention.action.disableJarScanning" value="true"/> -->
+    <constant name="struts.convention.result.path" value="/common/pages" />
+
+    <!-- Configuration for the default package. -->
+    <package name="default" extends="struts-default">
+    	 
+        <interceptors>
+        <interceptor name="configdebug" class="com.configdebug.interceptor.ConfigDebugInterceptor"/>
+        	<interceptor class="com.cosmosource.base.interceptor.TrimInterceptor" name="trim"/>
+           <interceptor name="logInterceptor" class="com.cosmosource.base.interceptor.LoggerInterceptor"/>
+           <interceptor-stack name="defaultStack">
+            		<interceptor-ref name="configdebug" />
+              	<interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <interceptor-ref name="servletConfig"/>
+               <!--  <interceptor-ref name="prepare"/> -->
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/>
+                <interceptor-ref name="scopedModelDriven"/>
+                <interceptor-ref name="modelDriven"/>
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="conversionError"/>
+                <interceptor-ref name="actionMappingParams"/>
+                <interceptor-ref name="logger"/>
+                <interceptor-ref name="timer"/>
+                <interceptor-ref name="logInterceptor"/>
+                <interceptor-ref name="trim"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*</param>
+                </interceptor-ref>
+								<interceptor-ref name="store">
+									<param name="operationMode">AUTOMATIC</param>
+								</interceptor-ref>
+								<interceptor-ref name="paramsPrepareParamsStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <global-results>
+            <result name="mainMenu" type="redirectAction">mainMenu</result>
+            <result name="dataAccessFailure">/common/include/dataAccessFailure.jsp</result>
+			<!--            
+			<result name="exception">/common/include/500.jsp</result>
+            <result name="error">/common/include/500.jsp</result>
+             -->
+            <result name="errorBrowser" type="redirectAction">errorBrowser</result>
+            <result name="mainIndex" type="redirectAction">/common/index.jsp</result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping exception="org.springframework.dao.DataAccessException" result="dataAccessFailure"/>
+            <exception-mapping exception="java.lang.Exception"  result="exception" />
+        </global-exception-mappings>
+        <action name="invalidSession">
+            <result>/common/include/timeoutPage.jsp</result>
+        </action>
+       <action name="errorBrowser">
+            <result>/common/include/errorBrowser.jsp</result>
+        </action>
+        <action name="checkUsername" class="logonAction" method="checkUsername"></action>
+        <action name="checkPwd" class="logonAction" method="checkPwd"></action>
+        <!-- 功能：重置密码（验证）     修改者：ls 时间：2010-12-17 -->
+        <action name="mainMenu" class="logonAction" method="checkPassword">
+            <result name="input">/common/pages/main/pwReset.jsp</result>
+            <result name="success" type="redirectAction">mainLogon.act</result>
+        </action>
+        <!-- 功能：重置密码（确认）     开发者：ls 时间：2010-12-17 -->
+        <action name="mainConfirm" class="logonAction" method="confirmPassword">
+            <result name="input" type="redirectAction">mainMenu.act</result>
+            <result name="success">/common/pages/main/pwReset.jsp</result>
+        </action>
+        <!-- 功能：正常登陆（菜单）     开发者：ls 时间：2010-11-17 -->
+        <action name="mainLogon" class="logonAction" method="logon">
+        	<result name="init">/common/pages/main/pwReset.jsp</result>
+            <result name="success">/common/pages/main/layout.jsp</result>
+        </action>       
+        <!-- 功能：取回密码初始化     开发者：sjy 时间：2010-12-24 -->
+        <action name="getPassword" class="userOrgAction" method="getPassword">
+            <result name="success">/common/pages/main/findPassword.jsp</result>
+        </action>
+        <!-- 功能：取回密码发送邮件     开发者：sjy 时间：2010-12-24 -->
+        <action name="sendEmail" class="userOrgAction" method="sendEmail">
+            <result name="success">/common/pages/main/findPassword.jsp</result>
+            <result name="error">/common/pages/main/findPassword.jsp</result>
+        </action> 
+        
+        <!-- 功能：正常登陆     开发者：WXJ 时间：2013-3-20 -->
+        <action name="loginMain">
+            <result name="success">/common/pages/security/loginMain.jsp</result>
+        </action>   
+        
+    </package>
+
+</struts>

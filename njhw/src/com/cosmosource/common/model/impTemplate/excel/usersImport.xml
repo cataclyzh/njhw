@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<exchange>
+    <excel>
+        <sheet>0</sheet>
+        <startRow>1</startRow> 
+        <class>com.cosmosource.common.model.UserModel</class>
+        <mappings>
+            <mapping index="0" property="realName" type="string" length="20" desc="用户名"/>
+            <mapping index="1" property="loginName" type="string" length="20" desc="登录名"/>
+            <mapping index="2" property="orgId" type="long" length="22" desc="单位id"/>
+            <mapping index="3" property="orgName" type="string" length="20" desc="单位名称"/>
+            <mapping index="4" property="cityCard" type="string" length="20" desc="市民卡"/>
+            <mapping index="5" property="sex" type="string" length="20" desc="性别"/>
+            <mapping index="6" property="phone" type="string" length="20" desc="电话"/>
+            <mapping index="7" property="email" type="string" length="20" desc="邮箱"/>
+       </mappings>
+    </excel>
+    
+</exchange>

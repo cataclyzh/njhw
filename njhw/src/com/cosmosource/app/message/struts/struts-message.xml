@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<package name="/message" extends="default" namespace="/message">
+		<!-- 查询我的消息列表数据 	开发者：ywl	时间：2013-7-3 -->
+		<action name="queryMsgList" class="messageAction" method="queryMsgList">
+			<result name="queryMsgList">/app/message/list_notice.jsp</result>
+		</action>
+		<!-- 删除我的消息列表选择框	开发者：ywl	时间：2013-7-4 -->
+		<action name="delMess" class="messageAction" method="delMess">
+			<result name="delMess">/message/queryMsgList.act</result>
+		</action>
+		<!-- 查询我的访客列表数据		开发者：ywl	时间：2013-7-5 -->
+		<action name="queryMyCallList" class="messageAction" method="queryMyCallList">
+			<result name="queryMyCallList">/app/message/list_caller.jsp</result>
+		</action>
+		<!-- 查询我的待办事项列表数据		开发者：ywl	时间：2013-7-9 -->
+		<action name="queryMyMatter" class="messageAction" method="queryMyMatter">
+			<result name="queryMyMatter">/app/message/list_matter.jsp</result>
+		</action>
+		<!-- 查询待办事项详细信息 -->
+		<action name="queryMyMatterInfo" class="messageAction" method="queryMyMatterInfo">
+			<result name="queryMyMatterInfo">/common/pages/message/receiverMatterInfo.jsp</result>
+		</action>
+		<!-- Ajax查询消息 -->
+		<action name="queryMsgJSON" class="messageAction" method="queryMsgJSON" />
+		<!-- Ajax查询未读消息数 -->
+		<action name="queryMsgNotReadNum" class="messageAction" method="queryMsgNotReadNum" />
+		<!-- Ajax查询未读的Visitor数量 -->
+		<action name="getVisitorNotReadCount" class="messageAction" method="getVisitorNotReadCount" />
+		<!-- Ajax查询未读的Fax数量  -->
+		<action name="queryFaxUnReadNum" class="messageAction" method="queryFaxUnReadNum" />
+ 		<!-- Ajax请求Visitor列表信息  -->
+ 		<action name="queryVisitJSON" class="messageAction" method="queryVisitJSON" />
+ 		<!-- Ajax更新访客信息已读未读状态 
+ 		<action name="changeVisitorInfoRead" class="messageAction" method="changeVisitorInfoRead" />
+ 		-->
+ 		<!-- Ajax查询待办事项信息 -->
+ 		<action name="queryMatter" class="messageAction" method="queryMatter" />
+ 		<!-- Ajax读取待办事项数量 -->
+ 		<action name="queryMyMatterCount" class="messageAction" method="queryMyMatterCount" />
+ 		<action name="queryFaxList" class="messageAction" method="queryFaxList" />
+ 	</package>
+</struts>

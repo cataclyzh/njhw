@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+     
+    <!-- 用户注册-->
+	<bean id="registerAction" class="com.cosmosource.app.caller.action.RegisterAction" scope="prototype">    
+    	<property name="registerManager" ref="registerManager"/>
+    </bean>
+	<bean id="registerManager" class="com.cosmosource.app.caller.service.RegisterManager" parent="manager">
+	</bean>
+	 
+    
+     <!-- 访客管理-->
+	<bean id="callerAction" class="com.cosmosource.app.caller.action.CallerAction" scope="prototype">    
+    	<property name="callerManager" ref="callerManager"/>
+    </bean>
+    <!-- 访客管理  -->
+	<bean id="callerManager" class="com.cosmosource.app.caller.service.CallerManager" parent="manager">
+	</bean>
+	
+    <!-- 访客统计-->
+	<bean id="visitorsTraceAction" class="com.cosmosource.app.caller.action.VisitorsTraceAction" scope="prototype">    
+    	<property name="visitorsTraceManager" ref="visitorsTraceManager"/>
+    </bean>
+	<bean id="visitorsTraceManager" class="com.cosmosource.app.caller.service.VisitorsTraceManager" parent="manager">
+	</bean>
+	
+    <!-- 访客管理(黑名单管理) -->
+	<bean id="blackListAction" class="com.cosmosource.app.caller.action.BlackListAction" scope="prototype">    
+    	<property name="blackListManager" ref="blackListManager"/>
+    </bean>
+	<bean id="blackListManager" class="com.cosmosource.app.caller.service.BlackListManager" parent="manager">
+	</bean>
+</beans>

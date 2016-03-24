@@ -1,0 +1,2436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PropertySQL">
+
+	<typeAlias alias="GrConference" type="com.cosmosource.app.entity.GrConference" />
+	<typeAlias alias="GrAttendance" type="com.cosmosource.app.entity.GrAttendance" />
+	<typeAlias alias="GrComplaints" type="com.cosmosource.app.entity.GrComplaints" />
+	<typeAlias alias="GrLostFound" type="com.cosmosource.app.entity.GrLostFound" />
+	<typeAlias alias="GrParkingInfo" type="com.cosmosource.app.entity.GrParkingInfo" />
+	
+	<!-- 功能：会务套餐  开发者：chengyun 时间：2013-7-24 -->
+	<insert id="insertConferencePackage" parameterClass="java.util.Map" >
+		INSERT INTO GR_CONFERENCE_PACKAGE values (
+			SEQ_GR_CONFERENCE_PACKAGE.Nextval,
+			#conferencePackageName#,
+			#conferencePackageRoom#,
+			#conferencePackageLocation#,
+			#conferencePackageSeat#,
+			#conferencePackageStyle#,
+			#conferencePackageFacility#,
+			#conferencePackagePrice#,
+			#conferencePackageService#,
+			#conferencePackageState#,
+			#resBak1#,
+			#resBak2#,
+			#resBak3#,
+			#resBak4#
+		)		
+	</insert>
+	<delete id="deleteConferencePackage" parameterClass="java.util.Map">
+		delete from GR_CONFERENCE_PACKAGE where CONFERENCE_PACKAGE_ID = #conferencePackageId#
+	</delete>
+	<update id="updateConferencePackage" parameterClass="java.util.Map">
+		update GR_CONFERENCE_PACKAGE set CONFERENCE_PACKAGE_NAME =#conferencePackageName#,
+										CONFERENCE_PACKAGE_ROOM =#conferencePackageRoom#,
+										CONFERENCE_PACKAGE_LOCATION =#conferencePackageLocation#,
+										CONFERENCE_PACKAGE_SEAT =#conferencePackageSeat#,
+										CONFERENCE_PACKAGE_STYLE =#conferencePackageStyle#,
+										CONFERENCE_PACKAGE_FACILITY =#conferencePackageFacility#,
+										CONFERENCE_PACKAGE_PRICE =#conferencePackagePrice#,
+										CONFERENCE_PACKAGE_SERVICE =#conferencePackageService#,
+										CONFERENCE_PACKAGE_STATE =#conferencePackageState#,
+										RES_BAK1 =#resBak1#,
+										RES_BAK2 =#resBak2#,
+										RES_BAK3 =#resBak3#,
+										RES_BAK4 =#resBak4#
+										where CONFERENCE_PACKAGE_ID = #conferencePackageId#
+	</update>
+	<update id="updateConferencePackageStateById" parameterClass="java.util.Map">
+		update GR_CONFERENCE_PACKAGE set CONFERENCE_PACKAGE_STATE = #conferencePackageState# where CONFERENCE_PACKAGE_ID = #conferencePackageId#
+	</update>
+	<update id="updateConferencePackageState" parameterClass="java.util.Map">
+		update GR_CONFERENCE set CONFERENCE_STATE = #conferenceState# where CONFERENCE_PACKAGE_ID = #conferencePackageId# and (CONFERENCE_STATE='4' or CONFERENCE_STATE='0')
+	</update>
+	<select id="findGrConferencePackageById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_CONFERENCE_PACKAGE t where t.CONFERENCE_PACKAGE_ID = #conferencePackageId#
+	</select>
+	
+	<select id="selectSnoBySname" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from gr_patrol_stick t where t.s_name = #sname#
+	</select>
+	
+	<select id="selectAllConferencePackages1" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_CONFERENCE_PACKAGE t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="conferencePackageName">
+				t.CONFERENCE_PACKAGE_NAME like '%' || #conferencePackageName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageRoom">
+				t.CONFERENCE_PACKAGE_ROOM like '%' || #conferencePackageRoom# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageLocation">
+				t.CONFERENCE_PACKAGE_LOCATION like '%' || #conferencePackageLocation# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageStyle">
+				t.CONFERENCE_PACKAGE_STYLE like '%' || #conferencePackageStyle# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageState">
+				t.CONFERENCE_PACKAGE_STATE = #conferencePackageState#
+            </isNotEmpty>
+		</dynamic>
+		order by t.CONFERENCE_PACKAGE_ID desc
+	</select>
+	<select id="selectAllConferencePackages" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_CONFERENCE_PACKAGE t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="conferencePackageName">
+				t.CONFERENCE_PACKAGE_NAME like '%' || #conferencePackageName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageRoom">
+				t.CONFERENCE_PACKAGE_ROOM like '%' || #conferencePackageRoom# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageLocation">
+				t.CONFERENCE_PACKAGE_LOCATION like '%' || #conferencePackageLocation# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageStyle">
+				t.CONFERENCE_PACKAGE_STYLE like '%' || #conferencePackageStyle# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageState">
+				t.CONFERENCE_PACKAGE_STATE = #conferencePackageState#
+            </isNotEmpty>
+            <isGreaterThan compareValue="0" prepend="and" property="conferencePackageId">
+				t.CONFERENCE_PACKAGE_ID = #conferencePackageId#
+          	</isGreaterThan>
+		</dynamic>
+		order by t.CONFERENCE_PACKAGE_ID desc
+	</select>
+
+	<!-- 功能：会务管理 开发者：chengyun 时间：2013-7-8-->
+	<insert id="insertConference" parameterClass="java.util.Map" >
+		INSERT INTO GR_CONFERENCE values (
+			SEQ_GR_CONFERENCE.Nextval,
+			#conferenceName#,
+			#conferenceStartTime#,
+			#conferenceEndTime#,
+			#conferenceUserId#,
+			#conferenceUserName#,
+			#conferenceUserORG#,
+			#conferenceUserPhone#,
+			#conferenceRoom#,
+			#conferenceManCount#,
+			#conferenceState#,
+			#conferenceHasService#,
+			#conferenceDetailService#,
+			#conferenceSatisfy#,
+			#conferenceClientValue#,
+			#resBak1#,
+			#resBak2#,
+			#resBak3#,
+			#resBak4#,
+			#conferencePackageId#
+		)
+	</insert>
+	<delete id="deleteConference" parameterClass="java.util.Map">
+		delete from GR_CONFERENCE where CONFERENCE_ID = #conferenceId#
+	</delete>
+	<update id="updateConferenceStateById" parameterClass="java.util.Map">
+		update GR_CONFERENCE set CONFERENCE_STATE= #conferenceState# where CONFERENCE_ID = #conferenceId#
+	</update>
+	<update id="updatePassConferenceState" parameterClass="java.util.Map">
+     <![CDATA[  update gr_conference set conference_state='3' where conference_state='0' and (conference_endtime < (to_date(#nowDate#,'yyyy-MM-dd hh24:mi:ss'))) ]]>
+	</update>
+	<update id="updateConferenceValueById" parameterClass="java.util.Map">
+		update GR_CONFERENCE set CONFERENCE_SATISFY= #conferenceSatisfy#,CONFERENCE_CLIENTVALUE=#conferenceClientValue#,CONFERENCE_STATE=#conferenceState# where CONFERENCE_ID = #conferenceId#
+	</update>
+	<update id="updateConference" parameterClass="java.util.Map">
+		update GR_CONFERENCE set CONFERENCE_NAME = #conferenceName#,
+								CONFERENCE_STARTTIME=#conferenceStartTime#,
+								CONFERENCE_ENDTIME=#conferenceEndTime#,
+								CONFERENCE_USERNAME=#conferenceUserName#,
+								CONFERENCE_USERORG=#conferenceUserORG#,
+								CONFERENCE_USERPHONE=#conferenceUserPhone#,
+								CONFERENCE_ROOM=#conferenceRoom#,
+								CONFERENCE_MANCOUNT=#conferenceManCount#,
+								CONFERENCE_STATE=#conferenceState#,
+								CONFERENCE_HASSERVICE=#conferenceHasService#,
+								CONFERENCE_DETAIL_SERVICE=#conferenceDetailService#,
+								CONFERENCE_SATISFY=#conferenceSatisfy#,
+								CONFERENCE_CLIENTVALUE=#conferenceClientValue#,
+								RES_BAK1=#resBak1#,
+								RES_BAK2=#resBak2#,
+								RES_BAK3=#resBak3#,
+								RES_BAK4=#resBak4#,
+								CONFERENCE_PACKAGE_ID=#conferencePackageId#
+								where CONFERENCE_ID = #conferenceId#
+	</update>
+	<select id="selectAllConferences"  parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.CONFERENCE_ID,t.CONFERENCE_NAME,to_char(t.CONFERENCE_STARTTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_STARTTIME,
+		to_char(t.CONFERENCE_ENDTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_ENDTIME,t.CONFERENCE_USERID,t.CONFERENCE_USERNAME,
+		t.CONFERENCE_USERORG,t.CONFERENCE_USERPHONE,t.CONFERENCE_ROOM,
+		t.CONFERENCE_MANCOUNT,t.CONFERENCE_STATE,t.CONFERENCE_HASSERVICE,
+		t.CONFERENCE_DETAIL_SERVICE,t.CONFERENCE_SATISFY,t.CONFERENCE_CLIENTVALUE,
+		t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4,t.CONFERENCE_PACKAGE_ID,v.CONFERENCE_PACKAGE_NAME 
+		from GR_CONFERENCE t ,GR_CONFERENCE_PACKAGE v where t.CONFERENCE_PACKAGE_ID=v.CONFERENCE_PACKAGE_ID
+		<dynamic>
+			<isNotEmpty prepend="and" property="conferenceName">
+				t.CONFERENCE_NAME like '%' || #conferenceName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceStartTime">
+				<![CDATA[ t.CONFERENCE_STARTTIME >= to_date(#conferenceStartTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceEndTime">
+           		 <![CDATA[ t.CONFERENCE_STARTTIME <=  to_date(#conferenceEndTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceUserName">
+				t.CONFERENCE_USERNAME like '%' || #conferenceUserName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceHasService">
+				t.CONFERENCE_HASSERVICE= #conferenceHasService#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceState">
+				t.CONFERENCE_STATE= #conferenceState#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageId">
+				t.CONFERENCE_PACKAGE_ID= #conferencePackageId#
+            </isNotEmpty>
+		</dynamic>
+		order by t.CONFERENCE_ID desc
+	</select>
+	
+	<select id="getConferenceInfoById"  parameterClass="string" resultClass="java.util.HashMap" remapResults="true">
+		select t.CONFERENCE_ID,t.CONFERENCE_NAME,to_char(t.CONFERENCE_STARTTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_STARTTIME,
+		to_char(t.CONFERENCE_ENDTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_ENDTIME,t.CONFERENCE_USERID,t.CONFERENCE_USERNAME,
+		t.CONFERENCE_USERORG,t.CONFERENCE_USERPHONE,t.CONFERENCE_ROOM,
+		t.CONFERENCE_MANCOUNT,t.CONFERENCE_STATE,t.CONFERENCE_HASSERVICE,
+		t.CONFERENCE_DETAIL_SERVICE,t.CONFERENCE_SATISFY,t.CONFERENCE_CLIENTVALUE,
+		t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4,t.CONFERENCE_PACKAGE_ID,v.CONFERENCE_PACKAGE_NAME 
+		from GR_CONFERENCE t ,GR_CONFERENCE_PACKAGE v where t.CONFERENCE_PACKAGE_ID=v.CONFERENCE_PACKAGE_ID
+		and t.conference_id = #id#
+		order by t.CONFERENCE_ID desc
+	</select>
+	
+	<update id="saveEvaluateConference" parameterClass="map">
+		UPDATE GR_CONFERENCE SET
+		RES_BAK3 = #evaluate#
+		WHERE CONFERENCE_ID = #id#
+	</update>
+	
+	<select id="findConferenceById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.CONFERENCE_ID,
+	       t.CONFERENCE_NAME,
+	       to_char(t.CONFERENCE_STARTTIME, 'yyyy-mm-dd hh24:mi:ss') CONFERENCE_STARTTIME,
+	       to_char(t.CONFERENCE_ENDTIME, 'yyyy-mm-dd hh24:mi:ss') CONFERENCE_ENDTIME,
+	       t.CONFERENCE_USERID,
+	       t.conference_userorg as CONFERENCE_USERORG, 
+           t.conference_username as CONFERENCE_USERNAME,
+	       t.CONFERENCE_USERPHONE,
+	       t.CONFERENCE_ROOM,
+	       t.CONFERENCE_MANCOUNT,
+	       t.CONFERENCE_STATE,
+	       t.CONFERENCE_HASSERVICE,
+	       t.CONFERENCE_DETAIL_SERVICE,
+	       t.CONFERENCE_SATISFY,
+	       t.CONFERENCE_CLIENTVALUE,
+	       t.RES_BAK1,
+	       t.RES_BAK2,
+	       t.RES_BAK3,
+	       t.RES_BAK4,
+	       t.CONFERENCE_PACKAGE_ID
+	  from GR_CONFERENCE t
+	 where t.CONFERENCE_ID = #conferenceId#
+	</select>
+	
+	<select id="selectMyConferences" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT t.CONFERENCE_ID,t.CONFERENCE_NAME,to_char(t.CONFERENCE_STARTTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_STARTTIME,
+		to_char(t.CONFERENCE_ENDTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_ENDTIME,t.CONFERENCE_USERID,t.CONFERENCE_USERNAME,
+		t.CONFERENCE_USERORG,t.CONFERENCE_USERPHONE,t.CONFERENCE_ROOM,
+		t.CONFERENCE_MANCOUNT,t.CONFERENCE_STATE,t.CONFERENCE_HASSERVICE,
+		t.CONFERENCE_DETAIL_SERVICE,t.CONFERENCE_SATISFY,t.CONFERENCE_CLIENTVALUE,
+		t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4,t.CONFERENCE_PACKAGE_ID,v.CONFERENCE_PACKAGE_NAME 
+		FROM GR_CONFERENCE t,GR_CONFERENCE_PACKAGE v 
+		WHERE t.CONFERENCE_USERID=#conferenceUserId# and t.CONFERENCE_PACKAGE_ID=v.CONFERENCE_PACKAGE_ID
+		<dynamic>
+			<isNotEmpty prepend="and" property="conferenceName">
+				t.CONFERENCE_NAME like '%' || #conferenceName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceUserName">
+				t.CONFERENCE_USERNAME like '%' || #conferenceUserName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceStartTime">
+				<![CDATA[ t.CONFERENCE_STARTTIME >= to_date(#conferenceStartTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceEndTime">
+           		 <![CDATA[ t.CONFERENCE_STARTTIME <=  to_date(#conferenceEndTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceHasService">
+				t.CONFERENCE_HASSERVICE= #conferenceHasService#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferenceState">
+				t.CONFERENCE_STATE= #conferenceState#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="conferencePackageId">
+				t.CONFERENCE_PACKAGE_ID= #conferencePackageId#
+            </isNotEmpty>
+		</dynamic>
+		order by t.CONFERENCE_ID desc
+	</select>
+	
+	
+	<select id="selectOneConferences" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.CONFERENCE_ID,t.CONFERENCE_NAME,to_char(t.CONFERENCE_STARTTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_STARTTIME,
+		to_char(t.CONFERENCE_ENDTIME,'yyyy-mm-dd hh24:mi:ss') CONFERENCE_ENDTIME,t.CONFERENCE_USERID,t.CONFERENCE_USERNAME,
+		t.CONFERENCE_USERORG,t.CONFERENCE_USERPHONE,t.CONFERENCE_ROOM,
+		t.CONFERENCE_MANCOUNT,t.CONFERENCE_STATE,t.CONFERENCE_HASSERVICE,
+		t.CONFERENCE_DETAIL_SERVICE,t.CONFERENCE_SATISFY,t.CONFERENCE_CLIENTVALUE
+		from GR_CONFERENCE t where  t.CONFERENCE_PACKAGE_ID=#conferencePackageId#
+		order by t.CONFERENCE_ID desc
+	</select>
+	
+	<select id="selectOneConferencesEx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 <![CDATA[
+	select t.* from gr_conference t  where t.CONFERENCE_PACKAGE_ID=#packageId# and (t.conference_state='0' or t.conference_state='4') and
+		((t.CONFERENCE_STARTTIME <= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.CONFERENCE_ENDTIME )
+		or (t.CONFERENCE_STARTTIME <= to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.CONFERENCE_ENDTIME)
+		or (t.CONFERENCE_STARTTIME >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') >=t.CONFERENCE_ENDTIME)
+		 )]]>
+	</select>
+	
+	<select id="checkConference" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select * from gr_conference where conference_package_id=#conferencePackageId# and conference_state='4'
+	</select>
+
+
+    <select id="checkAddConference" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select * from gr_conference_package where (CONFERENCE_PACKAGE_NAME=#add_conferencePackageName# or CONFERENCE_PACKAGE_ROOM=#add_conferencePackageRoom#)
+	</select>
+	
+	<select id="checkConferencePackageName" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select *
+		  from gr_conference_package
+		 where CONFERENCE_PACKAGE_NAME = #conferencePackageName# 
+	</select>
+
+	<select id="checkConferencePackageRoom" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select *
+		  from gr_conference_package
+		 where CONFERENCE_PACKAGE_ROOM = #conferencePackageRoom# 
+	</select>
+	
+	<!-- 功能：投诉处理     开发者：chengyun 时间：2013-07-11 -->
+	<insert id="insertComplaint" parameterClass="java.util.Map" >
+		INSERT INTO GR_COMPLAINTS VALUES (
+				SEQ_GR_COMPLAINTS.Nextval,
+				#complaintsTitle#,
+				#complaintsInTime#,
+				#complaintsUserId#,
+				#complaintsUser#,
+				#complaintsTelephone#,
+				#complaintsSatisfy#,
+				#complaintsDetail#,
+				#complaintsFeedback#,
+				#complaintsState#,
+				#complaintsOverTime#,
+				#complaintsProcessUser#,
+				#complaintsProcessPhone#,
+				#complaintsProcessResult#,
+				#resBak1#,
+				#resBak2#,
+				#resBak3#,
+				#resBak4#
+		)
+	</insert>
+	<delete id="deleteComlaint" parameterClass="java.util.Map">
+		delete from GR_COMPLAINTS where COMPLAINTS_ID=#complaintsId#
+	</delete>
+	<update id="updateComlaint" parameterClass="java.util.Map">
+		update GR_COMPLAINTS set COMPLAINTS_TITLE =#complaintsTitle#,
+								COMPLAINTS_INTIME=#complaintsInTime#,
+								COMPLAINTS_USERID=#complaintsUserId#,
+								COMPLAINTS_USER=#complaintsUser#,
+								COMPLAINTS_TELEPHONE=#complaintsTelephone#,
+								COMPLAINTS_SATISFY=#complaintsSatisfy#,
+								COMPLAINTS_DETAIL=#complaintsDetail#,
+								COMPLAINTS_FEEDBACK=#complaintsFeedback#,
+								COMPLAINTS_STATE=#complaintsState#,
+								COMPLAINTS_OVERTIME=#complaintsOverTime#,
+								COMPLAINTS_PROCESS_USER=#complaintsProcessUser#,
+								COMPLAINTS_PROCESS_PHONE=#complaintsProcessPhone#,
+								COMPLAINTS_PROCESS_RESULT=#complaintsProcessResult#,
+								RES_BAK1=#resBak1#,
+								RES_BAK2=#resBak2#,
+								RES_BAK3=#resBak3#,
+								RES_BAK4=#resBak4#
+							where COMPLAINTS_ID=#complaintsId#
+	</update>
+	
+	<select id="selectAllComplaints" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.COMPLAINTS_ID,t.COMPLAINTS_TITLE,to_char(t.COMPLAINTS_INTIME,'yyyy-mm-dd') COMPLAINTS_INTIME,
+			t.COMPLAINTS_USERID,t.COMPLAINTS_USER,t.COMPLAINTS_TELEPHONE,t.COMPLAINTS_SATISFY,t.COMPLAINTS_DETAIL,t.COMPLAINTS_FEEDBACK,
+			t.COMPLAINTS_STATE,to_char(t.COMPLAINTS_OVERTIME,'yyyy-mm-dd') COMPLAINTS_OVERTIME,t.COMPLAINTS_PROCESS_USER,
+			t.COMPLAINTS_PROCESS_PHONE,t.COMPLAINTS_PROCESS_RESULT,t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_COMPLAINTS t where 1=1
+				<dynamic>
+					<isNotEmpty prepend="and" property="complaintsTitle">
+						t.COMPLAINTS_TITLE like '%' || #complaintsTitle# || '%'
+					</isNotEmpty>
+					<isNotEmpty prepend="and" property="complaintsInTime">
+						<![CDATA[ t.COMPLAINTS_INTIME >= to_date(#complaintsInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+		            </isNotEmpty>
+		            <isNotEmpty prepend="and" property="complaintsOverTime">
+		           		 <![CDATA[ t.COMPLAINTS_INTIME <=  to_date(#complaintsOverTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+		            </isNotEmpty>
+		            <isNotEmpty prepend="and" property="complaintsUser">
+						t.COMPLAINTS_USER like '%' || #complaintsUser# || '%'
+					</isNotEmpty>
+					<isNotEmpty prepend="and" property="complaintsState">
+						t.COMPLAINTS_STATE = #complaintsState#
+					</isNotEmpty>
+				</dynamic>
+				order by t.COMPLAINTS_ID desc
+	</select>
+	
+	<select id="findComplaintById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.COMPLAINTS_ID,t.COMPLAINTS_TITLE,to_char(t.COMPLAINTS_INTIME,'yyyy-mm-dd') COMPLAINTS_INTIME,
+			t.COMPLAINTS_USERID,t.COMPLAINTS_USER,t.COMPLAINTS_TELEPHONE,t.COMPLAINTS_SATISFY,t.COMPLAINTS_DETAIL,t.COMPLAINTS_FEEDBACK,
+			t.COMPLAINTS_STATE,to_char(t.COMPLAINTS_OVERTIME,'yyyy-mm-dd') COMPLAINTS_OVERTIME,t.COMPLAINTS_PROCESS_USER,
+			t.COMPLAINTS_PROCESS_PHONE,t.COMPLAINTS_PROCESS_RESULT,t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_COMPLAINTS t where t.COMPLAINTS_ID=#complaintsId#
+	</select>
+	
+	<select id="selectMyComplaints" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_COMPLAINTS t where t.COMPLAINTS_USERID=#complaintsUserId#
+	</select>
+	
+	<!-- 功能：失物招领 开发者：chengyun 时间：2013-07-11 -->
+	<insert id="insertLostFound" parameterClass="java.util.Map">
+		INSERT INTO GR_LOST_FOUND values (
+			SEQ_GR_LOST_FOUND.Nextval,
+			#lostFoundTitle#,
+			#lostFoundThingName#,
+			#lostFoundIntime#,
+			#lostFoundPickUser#,
+			#lostFoundPickUserOrg#,
+			#lostFoundLocation#,
+			#lostFoundDetail#,
+			#lostFoundKeeper#,
+			#lostFoundState#,
+			#lostFoundLostUser#,
+			#lostFoundLostUserOrg#,
+			#lostFoundOverTime#,
+			#lostFoundPhone#,
+			#resBak1#,
+			#resBak2#,
+			#resBak3#,
+			#resBak4#
+		)
+	</insert>
+	<delete id="deleteLostFound" parameterClass="java.util.Map">
+		delete from GR_LOST_FOUND where LOST_FOUND_ID= #lostFoundId#
+	</delete>
+	<update id="updateLostFound" parameterClass="java.util.Map">
+		update GR_LOST_FOUND set LOST_FOUND_TITLE = #lostFoundTitle#,
+								LOST_FOUND_THINGNAME=#lostFoundThingName#,
+								LOST_FOUND_INTIME=#lostFoundIntime#,
+								LOST_FOUND_PICKUSER=#lostFoundPickUser#,
+								LOST_FOUND_PICKUSER_ORG=#lostFoundPickUserOrg#,
+								LOST_FOUND_LOCATION=#lostFoundLocation#,
+								LOST_FOUND_DETAIL=#lostFoundDetail#,
+								LOST_FOUND_KEEPER=#lostFoundKeeper#,
+								LOST_FOUND_STATE=#lostFoundState#,
+								LOST_FOUND_LOSTUSER=#lostFoundLostUser#,
+								LOST_FOUND_LOSTUSER_ORG=#lostFoundLostUserOrg#,
+								LOST_FOUND_OVERTIME=#lostFoundOverTime#,
+								LOST_FOUND_PHONE=#lostFoundPhone#,
+								RES_BAK1=#resBak1#,
+								RES_BAK2=#resBak2#,
+								RES_BAK3=#resBak3#,
+								RES_BAK4=#resBak4#
+							where LOST_FOUND_ID= #lostFoundId#
+	</update>
+	<select id="selectAllLostFounds" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.LOST_FOUND_ID,t.LOST_FOUND_TITLE,t.LOST_FOUND_THINGNAME,to_char(t.LOST_FOUND_INTIME,'yyyy-MM-dd hh24:mi:ss') LOST_FOUND_INTIME,
+		        to_char(t.LOST_FOUND_INTIME,'yyyy-MM-dd') LOST_FOUND_INTIME_STRING, 
+				t.LOST_FOUND_PICKUSER,t.LOST_FOUND_PICKUSER_ORG,t.LOST_FOUND_LOCATION,t.LOST_FOUND_DETAIL,t.LOST_FOUND_KEEPER,t.LOST_FOUND_STATE,
+				t.LOST_FOUND_LOSTUSER,t.LOST_FOUND_LOSTUSER_ORG,to_char(t.LOST_FOUND_OVERTIME,'yyyy-MM-dd hh24:mi:ss') LOST_FOUND_OVERTIME,
+				t.LOST_FOUND_PHONE,t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_LOST_FOUND t where 1=1
+					<dynamic>
+						<isNotEmpty prepend="and" property="lostFoundTitle">
+							t.LOST_FOUND_TITLE like '%'|| #lostFoundTitle# || '%'
+			            </isNotEmpty>
+		<isNotEmpty prepend="and" property="lostFoundThingName">
+			t.LOST_FOUND_THINGNAME like '%'|| #lostFoundThingName# || '%'
+			            </isNotEmpty>
+		<isNotEmpty prepend="and" property="lostFoundIntime">
+							<![CDATA[ to_date(to_char(t.LOST_FOUND_INTIME,'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#lostFoundIntime#, 'yyyy-MM-dd')  ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="lostFoundOverTime">
+			           		 <![CDATA[ to_date(to_char(t.LOST_FOUND_INTIME,'yyyy-MM-dd'),'yyyy-MM-dd') <=  to_date(#lostFoundOverTime#, 'yyyy-MM-dd')  ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="lostFoundState">
+			t.LOST_FOUND_STATE= #lostFoundState#
+			            </isNotEmpty>
+	</dynamic>
+	order by t.LOST_FOUND_INTIME desc
+	</select>
+	
+	<select id="findLostFoundById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.LOST_FOUND_ID,t.LOST_FOUND_TITLE,t.LOST_FOUND_THINGNAME,to_char(t.LOST_FOUND_INTIME,'yyyy-MM-dd hh24:mi:ss') LOST_FOUND_INTIME, 
+				t.LOST_FOUND_PICKUSER,t.LOST_FOUND_PICKUSER_ORG,t.LOST_FOUND_LOCATION,t.LOST_FOUND_DETAIL,t.LOST_FOUND_KEEPER,t.LOST_FOUND_STATE,
+				t.LOST_FOUND_LOSTUSER,t.LOST_FOUND_LOSTUSER_ORG,to_char(t.LOST_FOUND_OVERTIME,'yyyy-MM-dd hh24:mi:ss') LOST_FOUND_OVERTIME,
+				t.LOST_FOUND_PHONE,t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_LOST_FOUND t where t.LOST_FOUND_ID = #lostFoundId#
+	</select>
+	
+	<select id="selectNotClaimCountNumber" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select COUNT(*) as NOTCLAIMCOUNTNUMBER from GR_LOST_FOUND t where t.LOST_FOUND_STATE = #lostFoundState#
+	</select>
+
+	<!-- 功能：考勤排班    开发者：chengyun  时间：2013-07-15-->
+	<insert id="insertAttendanceSchedule" parameterClass="java.util.Map">
+		INSERT INTO
+		GR_ATTENDANCE_SCHEDULE values (
+		SEQ_GR_ATTENDANCE_SCHEDULE.Nextval,
+		#attendanceScheduleUserId#,
+		#attendanceScheduleUserName#,
+		#attendanceScheduleOrgId#,
+		#attendanceScheduleOrgName#,
+		#attendanceScheduleAdminId#,
+		#attendanceScheduleAdminName#,
+		#attendanceScheduleInTime#,
+		#attendanceScheduleOutTime#,
+		#attendanceScheduleState#,
+		#resBak1#,
+		#resBak2#,
+		#resBak3#,
+		#resBak4#
+		)
+	</insert>
+	<delete id="deleteAttendanceSchedule" parameterClass="java.util.Map">
+		delete from
+		GR_ATTENDANCE_SCHEDULE where
+		ATTENDANCE_SCHEDULE_ID=#attendanceScheduleId#
+	</delete>
+	<update id="updateAttendanceSchedule" parameterClass="java.util.Map">
+		update
+		GR_ATTENDANCE_SCHEDULE set
+		ATTENDANCE_SCHEDULE_USERID=#attendanceScheduleUserId#,
+		ATTENDANCE_SCHEDULE_USERNAME=#attendanceScheduleUserName#,
+		ATTENDANCE_SCHEDULE_ORGID=#attendanceScheduleOrgId#,
+		ATTENDANCE_SCHEDULE_ORGNAME=#attendanceScheduleOrgName#,
+		ATTENDANCE_SCHEDULE_ADMINID=#attendanceScheduleAdminId#,
+		ATTENDANCE_SCHEDULE_ADMINNAME=#attendanceScheduleAdminName#,
+		ATTENDANCE_SCHEDULE_INTIME=#attendanceScheduleInTime#,
+		ATTENDANCE_SCHEDULE_OUTTIME=#attendanceScheduleOutTime#,
+		ATTENDANCE_SCHEDULE_STATE=#attendanceScheduleState#,
+		RES_BAK1=#resBak1#,
+		RES_BAK2=#resBak2#,
+		RES_BAK3=#resBak3#,
+		RES_BAK4=#resBak4#
+		where ATTENDANCE_SCHEDULE_ID=#attendanceScheduleId#
+	</update>
+	
+	<select id="selectAllAttendanceSchedules" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+				select ST.* from (
+				select t.ATTENDANCE_SCHEDULE_ID,
+				t.ATTENDANCE_SCHEDULE_USERID,
+				t.ATTENDANCE_SCHEDULE_USERNAME,
+				t.ATTENDANCE_SCHEDULE_ORGID,
+				(SELECT O.NAME FROM ORG O WHERE O.ORG_ID = t.ATTENDANCE_SCHEDULE_ORGID) ATTENDANCE_SCHEDULE_ORGNAME,
+				t.ATTENDANCE_SCHEDULE_ADMINID,
+				t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(t.ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd') ATTENDANCE_SCHEDULE_OUTTIME,
+				t.ATTENDANCE_SCHEDULE_STATE,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4,
+				b.Card_ID as CARDNO 
+				FROM GR_ATTENDANCE_SCHEDULE t, NJHW_TSCARD b
+				WHERE t.ATTENDANCE_SCHEDULE_USERID = b.USER_ID
+		<dynamic>
+			<isNotEmpty prepend="and" property="attendanceScheduleUserId">
+				t.ATTENDANCE_SCHEDULE_USERID = #attendanceScheduleUserId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleUserName">
+				t.ATTENDANCE_SCHEDULE_USERNAME like '%' || #attendanceScheduleUserName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceScheduleOrgId">
+				t.ATTENDANCE_SCHEDULE_ORGID = #attendanceScheduleOrgId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleOrgName">
+				ATTENDANCE_SCHEDULE_ORGNAME like '%' || #attendanceScheduleOrgName# || '%'
+            </isNotEmpty>
+             <isNotEmpty prepend="and" property="attendanceScheduleAdminId">
+				t.ATTENDANCE_SCHEDULE_ADMINID = #attendanceScheduleAdminId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleAdminName">
+				t.ATTENDANCE_SCHEDULE_ADMINNAME like '%' ||	#attendanceScheduleAdminName# || '%'
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleInTime">
+				<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleOutTime">
+           		 <![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME <=  to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="res_bak1">
+				<![CDATA[ t.RES_BAK1 >= #res_bak1# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="res_bak2">
+           		<![CDATA[ t.RES_BAK2 <= #res_bak2# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleState">
+				t.ATTENDANCE_SCHEDULE_STATE = #attendanceScheduleState#
+            </isNotEmpty>
+		</dynamic>
+		order by t.ATTENDANCE_SCHEDULE_ID desc
+		) ST
+	</select>
+	<select id="findAttendanceScheduleById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_SCHEDULE_USERID,t.ATTENDANCE_SCHEDULE_USERNAME,t.ATTENDANCE_SCHEDULE_ORGID,
+        		(SELECT O.NAME FROM ORG O WHERE O.ORG_ID = t.ATTENDANCE_SCHEDULE_ORGID) ATTENDANCE_SCHEDULE_ORGNAME,
+				t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(t.ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				t.ATTENDANCE_SCHEDULE_STATE,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_ATTENDANCE_SCHEDULE t where t.ATTENDANCE_SCHEDULE_ID=#attendanceScheduleId#
+	</select>
+	<update id="updateAttendanceScheduleStateById" parameterClass="java.util.Map">
+		UPDATE GR_ATTENDANCE_SCHEDULE 
+			SET ATTENDANCE_SCHEDULE_STATE=#attendanceScheduleState# 
+		WHERE ATTENDANCE_SCHEDULE_ID=#attendanceScheduleId#
+	</update>
+	<update id="suspendAllAttendanceSchedulesStateByTime" parameterClass="java.util.Map">
+		update GR_ATTENDANCE_SCHEDULE t set t.ATTENDANCE_SCHEDULE_STATE=#attendanceScheduleState# where 1=1
+		<isNotEmpty prepend="and" property="attendanceScheduleOutTime">
+           	<![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME <=  to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+		</isNotEmpty>
+	</update>
+	<select id="getAttendanceRecordList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT to_char(t.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') RECORDTIME,t.FLAG 
+		FROM VM_PUNCH_RECORD t, NJHW_TSCARD s
+		WHERE t.CARD_NO = s.CARD_ID
+			<dynamic>
+			<isNotEmpty prepend="and" property="attendanceScheduleUserId">
+				s.USER_ID = #attendanceScheduleUserId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleInTime">
+				<![CDATA[ t.RECORDTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleOutTime">
+           		 <![CDATA[ t.RECORDTIME <=  to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getAttendanceRecord" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT to_char(b.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') as RT FROM 
+			(SELECT a.*, to_char(a.RECORDTIME,'yyyy-MM-dd') AS dd FROM VM_PUNCH_RECORD a) b 
+		WHERE dd = #date#
+		AND	b.CARD_NO = #cardNo#
+		ORDER BY RT
+	</select>
+	
+	<select id="getAttendanceRecord_new" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select to_char(record_time,'yyyy-MM-dd hh24:mi:ss') as RT from T_010_ATTENDANCE_LOG where citizen_card_no = #cardNo# 
+		and attend_year = #year# and attend_month = #month# and attend_date = #date# 
+		order by record_time
+	</select>
+	
+	<!-- 查询考勤日期后一天 1小时内的刷卡记录 -->
+	<select id="getAfterDayRecord" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select to_char(b.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') as RT from (SELECT a.*, to_char(a.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') AS dd FROM VM_PUNCH_RECORD a) b 
+		where b.dd <= #date# || ' 01:00:00' and b.dd >= #date# || ' 00:00:00'
+		and b.card_no = #cardNo#
+	]]>
+	</select>
+	
+	<!-- 查询考勤日期前一天1小时内的刷卡记录 -->
+	<select id="getBeforeDayRecord" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select to_char(b.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') as RT from (SELECT a.*, to_char(a.RECORDTIME,'yyyy-MM-dd hh24:mi:ss') AS dd FROM VM_PUNCH_RECORD a) b 
+		where b.dd <= #date# || ' 24:00:00' and b.dd >= #date# || ' 23:00:00' 
+		and b.card_no = #cardNo#		
+	]]>
+	</select>
+	
+	<!-- 查询考勤日期后一天 1小时内的刷卡记录 -->
+	<select id="getAfterDayRecord_new" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select to_char(record_time,'yyyy-MM-dd hh24:mi:ss') as RT from T_010_ATTENDANCE_LOG where citizen_card_no = #cardNo# 
+		and attend_year = #year# and attend_month = #month# and attend_date = #date# and attend_time < '010000'
+		order by record_time
+	]]>
+	</select>
+	
+	<!-- 查询考勤日期前一天1小时内的刷卡记录 -->
+	<select id="getBeforeDayRecord_new" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select to_char(record_time,'yyyy-MM-dd hh24:mi:ss') as RT from T_010_ATTENDANCE_LOG where citizen_card_no = #cardNo# 
+		and attend_year = #year# and attend_month = #month# and attend_date = #date# and attend_time > '230000'
+		order by record_time		
+	]]>
+	</select>
+	
+	<select id="getAttendanceOrgInfoById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ORG_ID,s.NAME from USERS t,ORG s where t.USERID = #attendanceScheduleUserId# and t.ORG_ID = s.ORG_ID
+	</select>
+	<select id="queryAttendanceScheduleIsExist" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_SCHEDULE_USERID,t.ATTENDANCE_SCHEDULE_USERNAME,t.ATTENDANCE_SCHEDULE_ORGID,
+				t.ATTENDANCE_SCHEDULE_ORGNAME,t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(t.ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				t.ATTENDANCE_SCHEDULE_STATE,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,
+				t.RES_BAK4 from GR_ATTENDANCE_SCHEDULE t where t.ATTENDANCE_SCHEDULE_USERID = #attendanceScheduleUserId# and t.ATTENDANCE_SCHEDULE_STATE = #attendanceScheduleState# and ((<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]> and <![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME <= to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>) or (<![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]> and <![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME <= to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>) or (<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME <= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]> and <![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME >= to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>) or (<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]> and <![CDATA[ t.ATTENDANCE_SCHEDULE_OUTTIME <= to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>))
+	</select>
+	
+	<!-- 查询该时间是否已经有排班了	开发者：ywl		时间：2013-9-5 -->
+	<select id="queryNewAttendanceScheduleIsExist" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_SCHEDULE_USERID,t.ATTENDANCE_SCHEDULE_USERNAME,t.ATTENDANCE_SCHEDULE_ORGID,
+		t.ATTENDANCE_SCHEDULE_ORGNAME,t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+		to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd') ATTENDANCE_SCHEDULE_INTIME,
+		to_char(t.ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd') ATTENDANCE_SCHEDULE_OUTTIME,
+		t.ATTENDANCE_SCHEDULE_STATE,
+		t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,
+		t.RES_BAK4 from GR_ATTENDANCE_SCHEDULE t where t.ATTENDANCE_SCHEDULE_USERID = #attendanceScheduleUserId#
+		and t.ATTENDANCE_SCHEDULE_STATE = #attendanceScheduleState# and 
+		<![CDATA[
+			t.ATTENDANCE_SCHEDULE_OUTTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd') 
+		]]>
+		<!-- 
+		<![CDATA[ 
+		
+		((
+			t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd') 
+			or t.ATTENDANCE_SCHEDULE_INTIME < to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd')
+		)
+			and (t.ATTENDANCE_SCHEDULE_OUTTIME <= to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd') 
+				or t.ATTENDANCE_SCHEDULE_OUTTIME > to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd'))
+			)
+			and t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd')
+      	)
+		]]>  -->
+	</select>
+	
+	<!-- 功能：考勤    开发者：chengyun  时间：2013-07-10-->
+	<insert id="insertAttendance" parameterClass="java.util.Map">
+		INSERT INTO
+		GR_ATTENDANCE values (
+		SEQ_GR_ATTENDANCE.Nextval,
+		#attendanceScheduleId#,
+		#attendanceUserId#,
+		#attendanceUserName#,
+		#attendanceOrgId#,
+		#attendanceOrgName#,
+		#attendanceScheduleAdminId#,
+		#attendanceScheduleAdminName#,
+		#attendanceScheduleInTime#,
+		#attendanceScheduleOutTime#,
+		#attendanceInTime#,
+		#attendanceOutTime#,
+		#resBak1#,
+		#resBak2#,
+		#resBak3#,
+		#resBak4#
+		)
+	</insert>
+	<insert id="addAttendance" parameterClass="java.util.Map">
+		INSERT INTO
+		GR_ATTENDANCE values (
+		SEQ_GR_ATTENDANCE.Nextval,
+		#scheduleId#,
+		#userId#,
+		#userName#,
+		#orgId#,
+		#orgName#,
+		#adminId#,
+		#adminName#,
+		to_date(#scheduleInTime#, 'yyyy-MM-dd hh24:mi:ss'),
+		to_date(#scheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss'),
+		to_date(#inTime#, 'yyyy-MM-dd hh24:mi:ss'),
+		to_date(#outTime#, 'yyyy-MM-dd hh24:mi:ss'),
+		#resBak1#,
+		#resBak2#,
+		#resBak3#,
+		#resBak4#
+		)
+	</insert>
+	<!-- 查询用户制定日期的考勤记录 -->
+	<select id="getOneAttendance" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT ATTENDANCE_ID FROM GR_ATTENDANCE 
+		WHERE ATTENDANCE_SCHEDULE_ID=#aScheduleId# AND res_bak2=#resBak2#
+	</select>
+	<select id="isAttendanceExist" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT ATTENDANCE_ID FROM GR_ATTENDANCE 
+		WHERE attendance_userid=#userId# AND res_bak2=#resBak2#
+	</select>
+	<delete id="deleteAttendance" parameterClass="java.util.Map">
+		delete from
+		GR_ATTENDANCE where ATTENDANCE_ID=#attendanceId#
+	</delete>
+	<update id="updateAttendance" parameterClass="java.util.Map">
+		update
+		GR_ATTENDANCE set ATTENDANCE_SCHEDULE_ID=#attendanceScheduleId#,
+		ATTENDANCE_USERID=#attendanceUserId#,
+		ATTENDANCE_USERNAME=#attendanceUserName#,
+		ATTENDANCE_ORGID=#attendanceOrgId#,
+		ATTENDANCE_ORGNAME=#attendanceOrgName#,
+		ATTENDANCE_SCHEDULE_ADMINID=#attendanceScheduleAdminId#,
+		ATTENDANCE_SCHEDULE_ADMINNAME=#attendanceScheduleAdminName#,
+		ATTENDANCE_SCHEDULE_INTIME=#attendanceScheduleInTime#,
+		ATTENDANCE_SCHEDULE_OUTTIME=#attendanceScheduleOutTime#,
+		ATTENDANCE_INTIME=#attendanceInTime#,
+		ATTENDANCE_OUTTIME=#attendanceOutTime#,
+		RES_BAK1=#resBak1#,
+		RES_BAK2=#resBak2#,
+		RES_BAK3=#resBak3#,
+		RES_BAK4=#resBak4#
+		where
+		ATTENDANCE_ID=#attendanceId#
+	</update>
+	<select id="selectAllAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+			select ST.* from (
+				select t.ATTENDANCE_ID,t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_USERID,t.ATTENDANCE_USERNAME,t.ATTENDANCE_ORGID,
+				(SELECT O.NAME FROM ORG O WHERE O.ORG_ID = t.ATTENDANCE_ORGID) ATTENDANCE_ORGNAME,
+				t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				to_char(t.ATTENDANCE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_INTIME,
+				to_char(t.ATTENDANCE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_OUTTIME,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_ATTENDANCE t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="attendanceScheduleId">
+				t.ATTENDANCE_SCHEDULE_ID= #attendanceScheduleId#
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceUserId">
+				t.ATTENDANCE_USERID= #attendanceUserId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceUserName">
+				t.ATTENDANCE_USERNAME
+				like '%'|| #attendanceUserName# || '%'
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceOrgId">
+				t.ATTENDANCE_ORGID= #attendanceOrgId#
+            </isNotEmpty>	
+			<isNotEmpty prepend="and" property="attendanceOrgName">
+				ATTENDANCE_ORGNAME
+				like '%'|| #attendanceOrgName# || '%'
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceScheduleAdminId">
+				t.ATTENDANCE_SCHEDULE_ADMINID = #attendanceScheduleAdminId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleAdminName">
+				t.ATTENDANCE_SCHEDULE_ADMINNAME like '%' ||	#attendanceScheduleAdminName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceScheduleInTime">
+				<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleOutTime">
+           		 <![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME <=  to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceInTime">
+					<![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') >= to_date(#attendanceInTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceOutTime">
+           		 <![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') <=  to_date(#attendanceOutTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceSta">
+				t.RES_BAK1= #attendanceSta#
+            	</isNotEmpty>
+		</dynamic>
+		) ST order by ST.RES_BAK2 desc
+	</select>
+	<!-- 
+	<select id="selectAllAttendances" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+			select distinct ST.* from (
+				select t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_USERID,t.ATTENDANCE_USERNAME,t.ATTENDANCE_ORGID,
+				(SELECT O.NAME FROM ORG O WHERE O.ORG_ID = t.ATTENDANCE_ORGID) ATTENDANCE_ORGNAME,
+				t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				to_char(t.ATTENDANCE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_INTIME,
+				to_char(t.ATTENDANCE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_OUTTIME,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_ATTENDANCE t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="attendanceScheduleId">
+				t.ATTENDANCE_SCHEDULE_ID= #attendanceScheduleId#
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceUserId">
+				t.ATTENDANCE_USERID= #attendanceUserId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceUserName">
+				t.ATTENDANCE_USERNAME
+				like '%'|| #attendanceUserName# || '%'
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceOrgId">
+				t.ATTENDANCE_ORGID= #attendanceOrgId#
+            </isNotEmpty>	
+			<isNotEmpty prepend="and" property="attendanceOrgName">
+				ATTENDANCE_ORGNAME
+				like '%'|| #attendanceOrgName# || '%'
+            	</isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceScheduleAdminId">
+				t.ATTENDANCE_SCHEDULE_ADMINID = #attendanceScheduleAdminId#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleAdminName">
+				t.ATTENDANCE_SCHEDULE_ADMINNAME like '%' ||	#attendanceScheduleAdminName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="attendanceScheduleInTime">
+				<![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME >= to_date(#attendanceScheduleInTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceScheduleOutTime">
+           		 <![CDATA[ t.ATTENDANCE_SCHEDULE_INTIME <=  to_date(#attendanceScheduleOutTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceInTime">
+					<![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') >= to_date(#attendanceInTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceOutTime">
+           		 <![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') <=  to_date(#attendanceOutTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceSta">
+				t.RES_BAK1= #attendanceSta#
+            	</isNotEmpty>
+		</dynamic>
+		) ST order by st.RES_BAK2 DESC
+	</select>
+	-->
+	<select id="findAttendanceById" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.ATTENDANCE_ID,t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_USERID,t.ATTENDANCE_USERNAME,t.ATTENDANCE_ORGID,
+				t.ATTENDANCE_ORGNAME,t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				to_char(t.ATTENDANCE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_INTIME,
+				to_char(t.ATTENDANCE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_OUTTIME,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_ATTENDANCE t where t.ATTENDANCE_ID=#attendanceId#
+		</select>
+	<select id="selectAllAttendances2" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.ATTENDANCE_ID,t.ATTENDANCE_SCHEDULE_ID,t.ATTENDANCE_USERID,t.ATTENDANCE_USERNAME,t.ATTENDANCE_ORGID,
+				t.ATTENDANCE_ORGNAME,t.ATTENDANCE_SCHEDULE_ADMINID,t.ATTENDANCE_SCHEDULE_ADMINNAME,
+				to_char(t.ATTENDANCE_SCHEDULE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_INTIME,
+				to_char(ATTENDANCE_SCHEDULE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_SCHEDULE_OUTTIME,
+				to_char(t.ATTENDANCE_INTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_INTIME,
+				to_char(t.ATTENDANCE_OUTTIME,'yyyy-MM-dd hh24:mi:ss') ATTENDANCE_OUTTIME,
+				t.RES_BAK1,t.RES_BAK2,t.RES_BAK3,t.RES_BAK4 from GR_ATTENDANCE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="attendanceInTime">
+					<![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') >= to_date(#attendanceInTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="attendanceOutTime">
+           		 <![CDATA[ to_date(t.RES_BAK2, 'yyyy-MM-dd') <=  to_date(#attendanceOutTime#, 'yyyy-MM-dd')  ]]>
+			</isNotEmpty>
+		</dynamic>
+				order by t.ATTENDANCE_SCHEDULE_INTIME asc
+	</select>
+	<!-- 功能：车辆进出 开发者：chengyun 时间：2013-07-11-->
+	<insert id="insertParkinginfo" parameterClass="java.util.Map" >
+		INSERT INTO GR_PARKINGINFO values (
+			SEQ_GR_PARKINGINFO.Nextval,
+			#parkingInfoOrgId#,
+			#parkingInfoOrgName#,
+			#parkingInfoNumber#,
+			#resBak1#,
+			#resBak2#,
+			#resBak3#,
+			#resBak4#
+		)
+	</insert>
+	<delete id="deleteParkinginfo" parameterClass="java.util.Map" >
+		delete from em_org_res where eor_id=#parkingInfoId# and eor_type='6'
+	</delete>
+	<update id="updateParkinginfo" parameterClass="java.util.Map">
+		update EM_ORG_RES set RES_NAME=#parkingInfoNumber# where eor_type='6' and  EOR_ID=#parkingInfoId# 
+	</update>
+	<select id="selectAllParkinginfos" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select org.name as org_name, nvl(e.res_name, 0) as res_name, e.eor_id, org.org_id
+		from (select o.name, o.org_id, o.order_num
+			from org o
+			where (o.p_id = '2') or (<![CDATA[o.p_id = '1' and o.org_id <> '2']]>)) org, em_org_res e
+		where org.org_id = e.org_id(+)
+		  and e.eor_type(+) = '6'
+		 <dynamic>
+			<isNotEmpty prepend="and" property="parkingInfoOrgId">
+				org.org_id= #parkingInfoOrgId#
+            	</isNotEmpty>
+        </dynamic>
+        and org.org_id not in ('1400')
+		order by org.order_num asc
+	</select>
+	<select id="selectAllParkingCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select sum(nvl(e.res_name, 0)) as cun
+		from (select o.name, o.org_id, o.order_num
+		from org o
+		where (o.p_id = '2') or (<![CDATA[o.p_id = '1' and o.org_id <> '2']]>)) org, em_org_res e
+		where org.org_id = e.org_id(+)
+		and e.eor_type(+) = '6'
+	</select>
+	<select id="queryCard" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM (
+			SELECT O.NAME AS ORGNAME,O.ORG_ID,O.P_ID,
+					DECODE(C.ORG_ID, O.ORG_ID, '', C.NAME) AS DEPARTMENT,
+					(SELECT NJ.UEP_MOBILE FROM NJHW_USERS_EXP NJ WHERE NJ.USERID = B.USERID) TELPHONE,
+					B.USERID AS USERID,
+					B.DISPLAY_NAME AS USERNAME, 
+					A.NUP_PN AS PLATENUMBER 
+			FROM 
+					NJHW_USERS_PLATENUM A, 
+					USERS B, 
+					ORG O,
+					ORG C
+			WHERE 
+					A.USERID = B.USERID AND 
+					FN_GET_PARKING_ORGID(B.ORG_ID)=O.ORG_ID
+					AND B.ORG_ID=C.ORG_ID AND O.P_ID = 2
+					) T 
+			WHERE 1=1
+			<dynamic>
+				<isNotEmpty prepend="AND" property="orgname">
+					ORGNAME like '%' || #orgname# || '%'
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="department">
+					DEPARTMENT like '%' || #department# || '%'
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="username">
+					USERNAME like '%' || #username# || '%'
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="platenumber">
+					PLATENUMBER like '%' || #platenumber# || '%'
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	<select id="selectCarNumber" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select sum(RES_NAME) as TOTALNUM from EM_ORG_RES  where 1=1 and eor_type='6' 
+	</select>
+	<select id="selectTotalNumber" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select CTT_VALUE as PARKING from T_COMMON_CONSTANTS where CTT_KEY='GR_PARKING_TOTAL'
+	</select>
+	<update id="updateTotalNumber" parameterClass="java.util.Map">
+        update T_COMMON_CONSTANTS set CTT_VALUE= #parkingTotal# where CTT_KEY='GR_PARKING_TOTAL'
+	</update>
+	<select id="findParkingOrgById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select o.name as ORGNAME from EM_ORG_RES t,org o where t.org_id=o.org_id and t.EOR_ID=#parkingInfoId#
+	</select>
+		<select id="findParkingNumById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.RES_NAME as PARKINGNUM from EM_ORG_RES t where t.EOR_ID=#parkingInfoId#
+	</select>
+	<select id="findParkingIdById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ORG_ID as PARKINGNUM from EM_ORG_RES t where t.EOR_ID=#parkingInfoId#
+	</select>
+	
+	
+		<select id="selectOrgNotIn" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select b.name,b.org_id from org b where b.org_id not in（select a.org_id from em_org_res a where a.eor_type='6'） and level_num='2'
+	</select>
+	<insert id="insertNotIn" parameterClass="java.util.Map" >
+		INSERT INTO EM_ORG_RES values (
+			SEQ_EM_ORG_RES.Nextval,
+			#notInORG_ID#,
+			#notInORG_NAME#,
+			#notInRES_ID#,
+			#notInEOR_TYPE#,
+			#notInPOR_EXP1#,
+			#notInPOR_EXP2#,
+			#notInPOR_EXP3#,
+			#notInPOR_EXP4#,
+			#notInPOR_EXP5#,
+			#notInPOR_ST#,
+			#notInPOR_ET#,
+			#notInPOR_FLAG#,
+			#notInINSERT_ID#,
+			#notInINSERT_DATE#,
+			#notInMODIFY_ID#,
+			#notInMODIFY_DATE#,
+			#notInRES_NAME#	
+		)
+	</insert>
+	
+
+	<!--功能：查询报修单 	开发者：zh 	时间：2013-03-21  -->
+	<select id="selectList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from CS_REPAIR_FAULT t where 1=1
+		<dynamic>
+			<isEqual compareValue="mySheet" prepend="and" property="selectType">
+				t.CRF_BAK1 = #crfBak1#
+			</isEqual>
+			<isNotEmpty prepend="and" property="flag">
+				t.CRF_FLAG= #flag#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="beginTime">
+				<![CDATA[ t.CRF_RT >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endTime">
+           		 <![CDATA[ t.CRF_RT <=  to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+				t.USER_NAME like '%'||
+				#userName# || '%'
+            </isNotEmpty>
+		</dynamic>
+		order by t.CRF_ID desc, t.CRF_FLAG asc
+	</select>
+
+	<!--功能：统计报修 	开发者：zh 	时间：2013-03-22  -->
+	<select id="statisticsSQL" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select EAS_ID, EAS_NAME, count(EAS_ID) as Num from CS_REPAIR_FAULT
+		where <![CDATA[ TO_CHAR(CRF_RT,'yyyy') = #year#   ]]>
+		and <![CDATA[ TO_CHAR(CRF_RT,'mm') = #month#    ]]>
+		<isGreaterThan compareValue="0" prepend="and" property="aetId">
+			AET_ID = #aetId# 
+            </isGreaterThan>
+		<isGreaterThan compareValue="0" prepend="and" property="orgId">
+			ORG_ID in
+			<iterate property="orgIds" open="(" close=")" conjunction=",">
+				#orgIds[]#
+			    </iterate>
+		</isGreaterThan>
+		GROUP BY EAS_ID, EAS_NAME
+	</select>
+
+	<!--功能：加载报修年份 	开发者：zh 	时间：2013-03-29  -->
+	<select id="loadYearsSQL" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select TO_CHAR(CRF_RT,'yyyy') as year
+		from CS_REPAIR_FAULT
+		where CRF_RT is not null
+		GROUP by TO_CHAR(CRF_RT,'yyyy')
+		ORDER by
+		TO_CHAR(CRF_RT,'yyyy') desc
+	</select>
+
+	<!-- 设备类型 管理-->
+	<!-- 查询设备类型序列 -->
+	<select id="GET_GR_DEVICE_TYPE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_DEVICETYPE.Nextval from dual
+	</select>
+
+	<!--功能：新增设备类型 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertDeviceType" parameterClass="java.util.Map">
+		insert into
+		GR_DEVICE_TYPE (DEVICE_TYPE_ID,DEVICE_TYPE_NO,DEVICE_TYPE_NAME, DEVICE_TYPE_DESCRIBE)
+		values(#deviceTypeId#,#deviceTypeNo#,#deviceTypeName#, #deviceTypeDescribe#)
+	</insert>
+
+	<!--功能：根据设备类型ID修改设备类型信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updateDeviceType" parameterClass="java.util.Map">
+		update
+		GR_DEVICE_TYPE set DEVICE_TYPE_NO = #deviceTypeNo#,DEVICE_TYPE_NAME =
+		#deviceTypeName#,DEVICE_TYPE_DESCRIBE = #deviceTypeDescribe# where
+		DEVICE_TYPE_ID = #deviceTypeId#
+	</update>
+
+	<!--功能：根据设备类型ID删除设备类型信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deleteDeviceType" parameterClass="java.util.Map">
+		delete from
+		GR_DEVICE_TYPE where DEVICE_TYPE_ID = #deviceTypeId#
+	</delete>
+
+
+	<!--功能：根据设备类型ID查询设备类型信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectDeviceTypeByDeviceTypeId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap"> select t.* from GR_DEVICE_TYPE t
+		where t.DEVICE_TYPE_ID =
+		#deviceTypeId# </select>
+
+	<!--功能：查询设备类型信息       开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectDeviceType" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from GR_DEVICE_TYPE t order by t.DEVICE_TYPE_ID
+	</select>
+
+	<!--功能：分页查询设备类型信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllDeviceType" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_DEVICE_TYPE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="deviceTypeNo">
+				t.DEVICE_TYPE_NO=#deviceTypeNo#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceTypeName"> t.DEVICE_TYPE_NAME
+				like
+				'%' || #deviceTypeName# || '%'</isNotEmpty>
+			order by t.DEVICE_TYPE_ID
+		</dynamic>
+	</select>
+
+	<select id="checkDeviceType" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	    select t.* from gr_device_type t where t.device_type_no=#deviceTypeNo# or t.device_type_name=#deviceTypeName#
+	</select>
+
+<select id="checkDeviceTypeModify" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	    select t.* from gr_device_type t where (t.device_type_no=#deviceTypeNo# or t.device_type_name=#deviceTypeName#) and t.device_type_id!=#deviceTypeId#
+	</select>
+	<select id="checkDevice" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+      select t.* from gr_device t where t.device_no=#deviceNo# or t.device_name=#deviceName#
+    </select>
+
+<select id="checkDeviceModify" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+      select t.* from gr_device t where (t.device_no=#deviceNo# or t.device_name=#deviceName#) and t.device_id!=#deviceId#	
+	</select>
+
+
+	<!--设备管理  -->
+	<!-- 查询设备序列 -->
+	<select id="GET_GR_DEVICE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_DEVICE.Nextval from dual
+	</select>
+
+	<!--功能：新增设备 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertDevice" parameterClass="java.util.Map">
+		insert
+		into GR_DEVICE
+		(DEVICE_ID,DEVICE_NO,DEVICE_TYPE_ID, DEVICE_NAME, DEVICE_DESCRIBE,
+		DEVICE_PRODUCE_TIME,
+		DEVICE_BUY_TIME, DEVICE_WARRANTY_TIME,
+		DEVICE_COMPANY, DEVICE_SEQUENCE)
+		values (#deviceId#,#deviceNo#,#deviceTypeId#,
+		#deviceName#,
+		#deviceDescribe#,
+		#deviceProduceTime#, #deviceBuyTime#,
+		#deviceWarrantyTime#,
+		#deviceCompany#, #deviceSequence#)
+	</insert>
+
+	<!--功能：根据设备ID修改设备信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updateDevice" parameterClass="java.util.Map">
+		update
+		GR_DEVICE set
+		DEVICE_TYPE_ID = #deviceTypeId#,
+		DEVICE_NO = #deviceNo#,
+		DEVICE_NAME = #deviceName#,
+		DEVICE_DESCRIBE = #deviceDescribe#,
+		DEVICE_PRODUCE_TIME =
+		#deviceProduceTime#,
+		DEVICE_BUY_TIME = #deviceBuyTime#,
+		DEVICE_WARRANTY_TIME = #deviceWarrantyTime#,
+		DEVICE_COMPANY =
+		#deviceCompany#,
+		DEVICE_SEQUENCE = #deviceSequence#
+		where
+		DEVICE_ID =
+		#deviceId#
+	</update>
+
+	<!--功能：根据设备ID删除设备信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deleteDevice" parameterClass="java.util.Map">
+		delete from GR_DEVICE
+		where DEVICE_ID = #deviceId#
+	</delete>
+
+	<!--功能：根据设备ID查询设备信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectDevice" resultClass="java.util.HashMap">
+		select t.* from GR_DEVICE t order by t.DEVICE_ID
+	</select>
+
+	<!--功能：根据设备ID查询设备信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectDeviceByDeviceId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from GR_DEVICE t where t.DEVICE_ID = #deviceId#
+	</select>
+
+	<!--功能：根据设备类型ID查询设备信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectDeviceByDeviceTypeId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from GR_DEVICE t where t.DEVICE_TYPE_ID = #deviceTypeId# order by t.DEVICE_ID
+	</select>
+
+	<!--功能：分页查询设备信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllDevice" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_DEVICE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="deviceNo"> t.DEVICE_NO =
+				#deviceNo#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceTypeId"> t.DEVICE_TYPE_ID =
+				#deviceTypeId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceName"> t.DEVICE_NAME like
+				'%'
+				|| #deviceName# || '%'</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceProduceStartTime">
+				<![CDATA[ to_date(to_char(t.DEVICE_PRODUCE_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#deviceProduceStartTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceProduceEndTime">
+				<![CDATA[ to_date(to_char(t.DEVICE_PRODUCE_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#deviceProduceEndTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceBuyStartTime">
+				<![CDATA[ to_date(to_char(t.DEVICE_BUY_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#deviceBuyStartTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceBuyEndTime">
+				<![CDATA[ to_date(to_char(t.DEVICE_BUY_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#deviceBuyEndTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			order by t.DEVICE_ID
+		</dynamic>
+	</select>
+	<!-- 批量删除出库设备	开发者：ywl		时间：2013-9-23 -->
+	<delete id="inventoryDelete" parameterClass="java.util.Map">
+		DELETE GR_DEVICE WHERE DEVICE_ID = #deviceTypeId#
+	</delete>
+	<!-- 删除设备之前必须先删除该表的数据。因为有字段约束 -->
+	<delete id="storageDelete" parameterClass="java.util.Map">
+		DELETE GR_STORAGE WHERE DEVICE_ID = #deviceTypeId#
+	</delete>
+	<delete id="grinoutstorageDelete" parameterClass="java.util.Map">
+		DELETE GR_INOUT_STORAGE WHERE DEVICE_ID = #deviceTypeId#
+	</delete>
+	<delete id="grrepairDelete" parameterClass="java.util.Map">
+		DELETE gr_repair WHERE device_id = #deviceTypeId#
+	</delete>
+	
+	
+	
+	<!-- 批量删除出库设备之前先查询该设备是否已被管理		开发者：ywl		时间：2013-9-23 -->
+	<select id="queryInventory" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT T.* FROM GR_DEVICE T WHERE T.DEVICE_TYPE_ID IN (#deviceTypeIds#) ORDER BY T.DEVICE_ID
+	</select>
+	
+	<!-- 库存管理 -->
+	<!-- 查询库存序列 -->
+	<select id="GET_GR_STORAGE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_STORAGE.Nextval from dual
+	</select>
+
+	<!--功能：插入库存记录 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertStorage" parameterClass="java.util.Map">
+		insert into GR_STORAGE
+		(STORAGE_ID, DEVICE_ID, DEVICE_TYPE_ID, STORAGE_INVENTORY)
+		values(#storageId#,#deviceId#, #deviceTypeId#, #storageInventory#)
+	</insert>
+	
+	<!--功能：库存设备类型 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="modifyStorage" parameterClass="java.util.Map">
+	update
+		GR_STORAGE set DEVICE_TYPE_ID = #deviceTypeId# where
+		DEVICE_ID = #deviceId#
+	</insert>
+		<insert id="modifyInOutStorage" parameterClass="java.util.Map">
+	update
+		GR_INOUT_STORAGE set DEVICE_TYPE_ID = #deviceTypeId# where
+		DEVICE_ID = #deviceId#
+	</insert>
+
+	<!--功能：根据库存单号ID修改库存信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updateStorage" parameterClass="java.util.Map">
+		update
+		GR_STORAGE set STORAGE_INVENTORY = #storageInventory# where
+		STORAGE_ID = #storageId#
+	</update>
+	
+	<!--功能：根据库存单号ID删除库存信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deleteStorage" parameterClass="java.util.Map">
+		delete from
+		GR_STORAGE
+		where STORAGE_ID = #storageId#
+	</delete>
+
+	<!--功能：根据设备ID查询库存信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="getStorageInfoByDeviceId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from GR_STORAGE t where t.DEVICE_ID = #deviceId# order by t.STORAGE_ID
+	</select>
+
+	<!--功能：分页查询库存信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllStorage" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_STORAGE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="storageId"> t.STORAGE_ID =
+				#storageId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceTypeId"> t.DEVICE_TYPE_ID =
+				#deviceTypeId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceId"> t.DEVICE_ID =
+				#deviceId#</isNotEmpty>
+			order by t.STORAGE_ID
+		</dynamic>
+	</select>
+
+	<!-- 出入库记录管理 -->
+	<!-- 查询出入库序列 -->
+	<select id="GET_GR_INOUT_STORAGE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_INOUT_STORAGE.Nextval from dual
+	</select>
+	
+	<!--功能：插入出入库记录 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertInStorage" parameterClass="java.util.Map">
+		insert into
+		GR_INOUT_STORAGE
+		(INOUT_STORAGE_ID,DEVICE_TYPE_ID,DEVICE_ID,
+		LENDER_USER_ID,LENDER_USER_NAME,LENDER_USER_ORG,LENDER_USER_ORG_NAME,AUTHOR_USER_ID,INOUT_STORAGE_FLAG,INOUT_STORAGE_IN_DETAIL,INOUT_STORAGE_IN_NUMBER,INOUT_STORAGE_TIME)
+		values(#inOutStorageId#,#deviceTypeId#,#deviceId#,
+		#lenderUserId#,#lenderUserName#,#lenderUserOrg#,#lenderUserOrgName#,#authorUserId#,#inoutStorageFlag#,#inoutStorageInDetail#,#inoutStorageInNumber#,#inoutStorageTime#)
+	</insert>
+	
+	<insert id="insertOutStorage" parameterClass="java.util.Map">
+		insert into
+		GR_INOUT_STORAGE
+		(INOUT_STORAGE_ID,DEVICE_TYPE_ID,DEVICE_ID,
+		LENDER_USER_ID,LENDER_USER_NAME,LENDER_USER_ORG,LENDER_USER_ORG_NAME,AUTHOR_USER_ID,INOUT_STORAGE_FLAG,INOUT_STORAGE_OUT_DETAIL,INOUT_STORAGE_OUT_NUMBER,INOUT_STORAGE_TIME)
+		values(#inOutStorageId#,#deviceTypeId#,#deviceId#,
+		#lenderUserId#,#lenderUserName#,#lenderUserOrg#,#lenderUserOrgName#,#authorUserId#,#inoutStorageFlag#,#inoutStorageOutDetail#,#inoutStorageOutNumber#,#inoutStorageTime#)
+	</insert>
+
+	<!--功能：根据出入库记录单号ID修改出入库记录信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updateInOutStorage" parameterClass="java.util.Map">
+		update
+		GR_INOUT_STORAGE set
+		DEVICE_TYPE_ID = #deviceTypeId#,
+		DEVICE_ID = #deviceId#,
+		LENDER_USER_ID =
+		#lenderUserId#,
+		AUTHOR_USER_ID = #authorUserId#,
+		INOUT_STORAGE_FLAG
+		=#inoutStorageFlag#,
+		INOUT_STORAGE_IN_DETAIL = #inoutStorageInDetail#,
+		INOUT_STORAGE_IN_NUMBER = #inoutStorageInNumber#,
+		INOUT_STORAGE_TIME = #inoutStorageTime#,
+		INOUT_STORAGE_OUT_DETAIL
+		= #inoutStorageOutDetail#,
+		INOUT_STORAGE_OUT_NUMBER =
+		#inoutStorageOutNumber#
+		where
+		INOUT_STORAGE_ID = #inoutStorageId#
+	</update>
+
+	<!--功能：根据出入库记录单号ID删除出入库记录信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deleteInOutStorage" parameterClass="java.util.Map">
+		delete from
+		GR_INOUT_STORAGE
+		where INOUT_STORAGE_ID = #inoutStorageId#
+	</delete>
+	
+	<!--功能：根据出入库记录单号ID查询出入库记录信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectInOutStorageByInOutStorageId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_INOUT_STORAGE t where t.INOUT_STORAGE_ID = #inoutStorageId#
+	</select>
+
+	<!--功能：分页查询出入库信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllInOutStorage" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_INOUT_STORAGE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="inoutStorageId"> t.INOUT_STORAGE_ID =
+				#inoutStorageId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceId"> t.DEVICE_ID =
+				#deviceId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceTypeId"> t.DEVICE_TYPE_ID =
+				#deviceTypeId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="lenderUserName"> t.LENDER_USER_NAME
+				like '%' || #lenderUserName# || '%'</isNotEmpty>
+			<isNotEmpty prepend="and" property="lenderUserOrg"> t.LENDER_USER_ORG = #lenderUserOrg#</isNotEmpty>
+			<isNotEmpty prepend="and" property="authorUserId"> t.AUTHOR_USER_ID =
+				#authorUserId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="inoutStorageFlag"> t.INOUT_STORAGE_FLAG
+				=#inoutStorageFlag#</isNotEmpty>
+			<isNotEmpty prepend="and" property="inOutStorageStartTime">
+				<![CDATA[ to_date(to_char(t.INOUT_STORAGE_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#inOutStorageStartTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="inOutStorageEndTime">
+				<![CDATA[ to_date(to_char(t.INOUT_STORAGE_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#inOutStorageEndTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			order by t.INOUT_STORAGE_TIME desc
+		</dynamic>
+	</select>
+
+
+	<!-- 维修记录管理 -->
+	<!--功能：插入维修记录 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertRepair" parameterClass="java.util.Map">
+		insert into
+		GR_REPAIR
+		(REPAIR_ID,DEVICE_TYPE_ID,DEVICE_ID,
+		REPORT_USER_ORG,ORG_NAME,REPORT_USER_ID,REPORT_USER_NAME,REPORT_USER_TEL,REPAIR_THEME,REPAIR_DETAIL,REPAIR_START_TIME,REPAIR_STATE)
+		values(#repairId#,#deviceTypeId#,#deviceId#,
+		#reportUserOrg#,#orgName#,#reportUserId#,#reportUserName#,#reportUserTel#,#repairTheme#,#repairDetail#,#repairStartTime#,#repairState#)
+	</insert>
+
+	<select id="GET_GR_REPAIR_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_REPAIR.Nextval from dual
+	</select>
+	
+	<!--功能：查询单位信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllOrgInfo" resultClass="java.util.HashMap">
+		select t.* from Org t where t.LEVEL_NUM = 2
+	</select>
+	
+	<!--功能：查询物业部门信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPropertyOrgInfo" resultClass="java.util.HashMap">
+		select t.* from Org t where t.P_ID = 300
+	</select>
+	
+	<!--功能：根据维修单号ID修改维修派发信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="distributionRepair" parameterClass="java.util.Map">
+		update
+		GR_REPAIR t set
+		t.REPAIR_USER_ID =#repairUserId#,
+		t.REPAIR_USER_NAME = #repairUserName#,
+		t.DISTRIBUTE_USER_ID = #distributeUserId#,
+		t.REPAIR_STATE = #repairState#,
+		t.DISTRIBUTE_TIME = #distributeTime#
+		where
+		t.REPAIR_ID = #repairId#
+	</update>
+	
+	<!--功能：根据维修单号ID修改维修完成信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="completeRepair" parameterClass="java.util.Map">
+		update
+		GR_REPAIR t set
+		t.REPAIR_RECEIPT =#completeRepairReceipt#,
+		t.REPAIR_END_TIME = #repairEndTime#,
+		t.REPAIR_STATE = #repairState#
+		where
+		t.REPAIR_ID = #repairId#
+	</update>
+	
+	<!--功能：根据维修单号ID修改维修评价信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="evaluateRepair" parameterClass="java.util.Map">
+		update
+		GR_REPAIR t set
+		t.REPAIR_SATISFY =#repairSatisfy#,
+		t.REPAIR_EVALUATE = #repairEvaluate#,		
+		t.REPAIR_STATE = #repairState#
+		where
+		t.REPAIR_ID = #repairId#
+	</update>
+	
+	<!--功能：根据维修单号ID修改维修评价信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="suspendRepair" parameterClass="java.util.Map">
+		update
+		GR_REPAIR t set
+		t.REPAIR_STATE = #repairState#
+		where
+		t.REPAIR_ID = #repairId#
+	</update>
+
+	<!--功能：根据维修单号ID修改维修信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updateRepair" parameterClass="java.util.Map">
+		update
+		GR_REPAIR set
+		DEVICE_TYPE_ID = #deviceTypeId#,
+		DEVICE_ID = #deviceId#,
+		REPORT_USER_ORG =
+		#reportUserOrg#,
+		REPORT_USER_ID = #reportUserId#,
+		REPAIR_USER_ID
+		=#repairUserId#,
+		DISTRIBUTE_USER_ID = #distributeUserId#,
+		REPAIR_THEME =
+		#repairTheme#,
+		REPAIR_DETAIL = #repairDetail#,
+		REPAIR_START_TIME =
+		#repairStartTime#,
+		REPAIR_END_TIME = #repairEndTime#,
+		REPAIR_STATE =
+		#repairState#,
+		DISTIRBUTE_TIME = #distributeTime#,
+		REPAIR_RECEIPT =
+		#repairReceipt#,
+		REPAIR_SATISFY = #repairSatisfy#,
+		REPAIR_EVALUATE =
+		#repairEvaluate#
+		where
+		REPAIR_ID = #repairId#
+	</update>
+
+	<!--功能：根据维修单号ID删除维修记录信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deleteRepair" parameterClass="java.util.Map">
+		delete from
+		GR_REPAIR
+		where REPAIR_ID = #repairId#
+	</delete>
+
+	<!--功能：根据维修单号ID查询维修记录 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectRepairInfoByRepairId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.* from GR_REPAIR t where t.REPAIR_ID = #repairId#
+	</select>
+
+	<!--功能：查询维修记录 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllRepairInfoList" resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_REPAIR t order by t.REPAIR_START_TIME desc
+	</select>
+
+	<!--功能：分页查询维修记录信息 开发者：tangtq 时间：2013-7-10  -->
+	<select id="selectAllRepair" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_REPAIR t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="deviceId"> t.DEVICE_ID =
+				#deviceId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="reportUserName"> t.REPORT_USER_NAME
+				like '%' || #reportUserName# || '%'</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgId"> t.REPORT_USER_ORG = 
+				#orgId#</isNotEmpty>				
+			<isNotEmpty prepend="and" property="repairState"> t.REPAIR_STATE
+				=#repairState#</isNotEmpty>
+			<isNotEmpty prepend="and" property="repairStartTime">
+				<![CDATA[ to_date(to_char(t.REPAIR_START_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#repairStartTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="repairEndTime">
+				<![CDATA[ to_date(to_char(t.REPAIR_START_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#repairEndTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="deviceTypeId"> t.DEVICE_TYPE_ID =
+				#deviceTypeId#</isNotEmpty>
+			order by t.REPAIR_START_TIME DESC
+		</dynamic>
+	</select>
+
+	<!-- 维修耗材记录管理 -->
+	<!--功能：插入耗材记录 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="GET_GR_REPAIR_COST_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_REPAIR_COST.Nextval from dual
+	</select>
+	
+	<insert id="insertRepairCost" parameterClass="java.util.Map">
+		insert into
+		GR_REPAIR_COST
+		(REPAIR_COST_ID,
+		REPAIR_ID,
+		DEVICE_COST_ID,
+		ORG_ID,
+		ORG_NAME,
+		REPAIR_COST_REPORT_USER_ID,
+		REPORT_USER_NAME,
+		REPAIR_COST_REPAIR_USER_ID,
+		REPAIR_COST_TITLE,
+		DEVICE_NUMBER,
+		REPAIR_COST_TIME)
+		values(#repairCostId#,
+		#repairId#,
+		#deviceCostId#,
+		#orgId#,
+		#orgName#,
+		#repairCostReportUserId#,
+		#reportUserName#,
+		#repairCostRepairUserId#,
+		#repairCostTitle#,
+		#deviceNumber#,
+		#repairCostTime#
+		)
+	</insert>
+
+	<!--功能：根据维修耗材单号查看耗材详细信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<select id="selectRepairCostById" resultClass="java.util.HashMap">
+		select t.* from GR_REPAIR_COST t where t.REPAIR_COST_ID = #repairCostId#
+	</select>
+
+	<!--功能：分页查询耗材记录信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectAllRepairCost" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_REPAIR_COST t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="repairCostId"> t.REPAIR_COST_ID
+				=#repairCostId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="reportUserName"> t.REPORT_USER_NAME
+				like '%' || #reportUserName# || '%'</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgId"> t.ORG_ID = #orgId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="repairCostStartTime">
+				<![CDATA[ to_date(to_char(t.REPAIR_COST_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#repairCostStartTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="repairCostEndTime">
+				<![CDATA[ to_date(to_char(t.REPAIR_COST_TIME, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#repairCostEndTime#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			order by t.REPAIR_COST_ID
+		</dynamic>
+	</select>
+	
+	<!-- 巡查管理 -->	
+	<select id="GET_GR_PATROL_LINE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_PATROL_LINE.Nextval from dual
+	</select>
+	<!--功能：插入巡查线路信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertPatrolLine" parameterClass="java.util.Map">
+		insert into
+		GR_PATROL_LINE
+		(PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,PATROL_NODES,IS_AVALIABLE)
+		values(#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#patrolNodes#,#isAvaliable#)
+	</insert>	
+	
+	<!--功能：根据巡查线路ID修改巡查线路	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updatePatrolLine" parameterClass="java.util.Map">
+		update
+		GR_PATROL_LINE t set
+		t.PATROL_LINE_NAME =#patrolLineName#,
+		t.PATROL_LINE_DESC =#patrolLineDesc#,
+		t.PATROL_NODES =#patrolNodes#
+		where
+		t.PATROL_LINE_ID = #patrolLineId#
+	</update>
+
+    <!--功能：根据巡查线路ID修改巡查线路状态	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updatePatrolLineState" parameterClass="java.util.Map">
+		update
+		GR_PATROL_LINE t set
+		t.IS_AVALIABLE =#isAvaliable#
+		where
+		t.PATROL_LINE_ID = #patrolLineId#
+	</update>
+	<!--功能：根据巡查线路ID删除巡查线路 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deletePatrolLine" parameterClass="java.util.Map">
+		delete from GR_PATROL_LINE where PATROL_LINE_ID = #patrolLineId#
+	</delete>
+
+	<!--功能：根据巡查线路ID查询巡查线路 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolLineInfoByScheduleLineId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_LINE t where t.PATROL_LINE_ID = #patrolLineId#
+	</select>
+	
+	<!--功能：查询巡查线路列表 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolLineInfo" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_LINE t where t.IS_AVALIABLE = '0'
+	</select>
+
+	<!--功能：查询巡查线路信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolLineInfoList" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_LINE t order by t.patrolLineId
+	</select>
+
+	<!--功能：分页查询巡查线路信息 开发者：tangtq 时间：2013-7-10  -->
+	<select id="selectAllPatrolLine" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.* from GR_PATROL_LINE t where 1=1 and t.IS_AVALIABLE = '0'
+		<dynamic>
+			<isNotEmpty prepend="and" property="patrolLineId"> t.PATROL_LINE_ID =
+				#patrolLineId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="patrolLineName"> t.PATROL_LINE_NAME
+				like '%' || #patrolLineName# || '%'</isNotEmpty>
+			order by t.PATROL_LINE_ID DESC
+		</dynamic>
+	</select>
+	
+	<select id="GET_GR_PATROL_SCHEDULE_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_PATROL_SCHEDULE.Nextval from dual
+	</select>
+	
+	<!--功能：插入巡查班次信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertPatrolSchedule" parameterClass="java.util.Map">
+		insert into
+		GR_PATROL_SCHEDULE
+		(SCHEDULE_ID,ORG_ID,ORG_NAME,USER_ID,USER_NAME,PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,PATROL_NODES,SCHEDULE_START_DATE,SCHEDULE_END_DATE,SCHEDULE_START_TIME,SCHEDULE_END_TIME,SCHEDULE_DESC,PATROL_SCHEDULE_STATE)
+		values(#scheduleId#,#orgId#,#orgName#,#userId#,#userName#,#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#patrolNodes#,to_date(#scheduleStartDate#,'yyyy-MM-dd'),to_date(#scheduleEndDate#,'yyyy-MM-dd'),#scheduleStartTime#,#scheduleEndTime#,#scheduleDesc#,#patrolScheduleState#)
+	</insert>	
+	
+	<!--功能：插入拆分巡更排班信息 	开发者：ChunJing 	时间：2014-01-16  -->
+	<insert id="insertPatrolScheduleTimeSplit" parameterClass="java.util.Map">
+		INSERT INTO GR_PATROL_SCHEDULE_SPLIT
+		  (SCHEDULE_SPLIT_ID,
+		   SCHEDULE_ID,
+		   SCHEDULE_START_DATE,
+		   SCHEDULE_END_DATE,
+		   SCHEDULE_START_TIME,
+		   SCHEDULE_END_TIME)
+		VALUES
+		  (SEQ_WEB_COUNT.NEXTVAL,
+		  #schedule_ID#,
+		  #schedule_start_date#,
+		  #schedule_end_date#,
+		  #schedule_start_time#,
+		  #schedule_end_time#)
+	</insert>	
+	
+	<!--功能：插入排班跟用户ID关联关系 	开发者：ChunJing 	时间：2014-01-16  -->
+	<insert id="insertPatrolScheduleUserSplit" parameterClass="java.util.Map">
+		INSERT INTO GR_PATROL_SCHEDULE_USER
+		  (schedule_user_id,
+		   user_id,
+		   schedule_id)
+		VALUES
+		  (SEQ_WEB_COUNT.NEXTVAL,
+		  #user_id#,
+		  #schedule_id#)
+	</insert>	
+	
+	<!--功能：检查排班是否有冲突 	开发者：ChunJing 	时间：2014-01-16  -->
+	<select id="findConfictListById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT T.USER_NAME,
+			   T.SCHEDULE_START_DATE,
+			   T.SCHEDULE_END_DATE,
+			   T.SCHEDULE_START_TIME,
+			   T.SCHEDULE_END_TIME
+		  FROM GR_PATROL_SCHEDULE T
+		   WHERE T.USER_ID = #userId#
+		   AND T.PATROL_LINE_ID = #patrolLineID#
+		   AND T.PATROL_SCHEDULE_STATE = '0'
+		   AND T.USER_ID IN 
+		   	   (SELECT G.USER_ID FROM GR_PATROL_SCHEDULE G 
+		   	   WHERE
+		       TO_DATE(#startTime#, 'yyyy/MM/dd hh24:mi:ss') BETWEEN
+		       TO_DATE(CONCAT
+		       			(CONCAT
+		       				((TO_CHAR(G.SCHEDULE_START_DATE, 'yyyy/MM/dd')),
+		                              ' '),
+		                       G.SCHEDULE_START_TIME),
+		                'yyyy/MM/dd hh24:mi:ss') AND
+		       TO_DATE(CONCAT
+		       			(CONCAT
+		       				((TO_CHAR(G.SCHEDULE_END_DATE, 'yyyy/MM/dd')),
+		                             ' '),
+		                      G.SCHEDULE_END_TIME),
+		               'yyyy/MM/dd hh24:mi:ss')
+		    OR 
+		    	TO_DATE(#endTime#, 'yyyy/MM/dd hh24:mi:ss') BETWEEN
+		       		TO_DATE(CONCAT(CONCAT((TO_CHAR(G.SCHEDULE_START_DATE, 'yyyy/MM/dd')),
+		                              ' '),
+		                       G.SCHEDULE_START_TIME),
+		                'yyyy/MM/dd hh24:mi:ss') AND
+		       TO_DATE(
+		       		CONCAT(
+		       			CONCAT((TO_CHAR(G.SCHEDULE_END_DATE, 'yyyy/MM/dd')),
+		                             ' '),
+		                      G.SCHEDULE_END_TIME),
+		               'yyyy/MM/dd hh24:mi:ss'))
+	</select>
+	
+	<!--功能：根据巡查班次ID修改巡查班次信息	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updatePatrolSchedule" parameterClass="java.util.Map">
+		update
+		GR_PATROL_SCHEDULE t set
+		t.PATROL_LINE_ID =#patrolLineId#,
+		t.SCHEDULE_START_DATE =to_date(#scheduleStartDate#,'yyyy-MM-dd'),
+		t.SCHEDULE_END_DATE =to_date(#scheduleEndDate#,'yyyy-MM-dd'),
+		t.SCHEDULE_START_TIME =#scheduleStartTime#,
+		t.SCHEDULE_END_TIME =#scheduleEndTime#,
+		t.SCHEDULE_DESC =#scheduleDesc#
+		where
+		t.SCHEDULE_ID = #scheduleId#
+	</update>
+	
+	<!--功能：根据巡查班次ID修改巡查班次信息为停止中	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="stopPatrolSchedule" parameterClass="java.util.Map">
+		update
+		GR_PATROL_SCHEDULE t set
+		t.PATROL_SCHEDULE_STATE =#patrolScheduleState#
+		where
+		t.SCHEDULE_ID = #scheduleId#
+	</update>
+
+	<!--功能：根据巡查班次ID删除巡查班次信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deletePatrolSchedule" parameterClass="java.util.Map">
+		delete from GR_PATROL_SCHEDULE where SCHEDULE_ID = #scheduleId#
+	</delete>
+	
+	<!--功能：初始化巡查班次信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolScheduleInfoByScheduleId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_SCHEDULE t where t.SCHEDULE_ID = #scheduleId#
+	</select>
+
+	<!--功能：根据巡查班次ID查询巡查班次信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolScheduleInfo" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_SCHEDULE t
+	</select>
+
+	<!--功能：查询巡查班次信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolScheduleInfoList" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_SCHEDULE t order by t.SCHEDULE_ID
+	</select>
+
+	<!--功能：分页查询巡查班次信息 开发者：tangtq 时间：2013-7-10  -->
+	<select id="selectAllPatrolSchedule" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select ST.* from (select t.*,(SELECT O.NAME FROM ORG O WHERE O.ORG_ID=T.ORG_ID)ORGNAME from GR_PATROL_SCHEDULE t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="scheduleId"> t.SCHEDULE_ID =
+				#scheduleId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgId"> t.ORG_ID =
+				#orgId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="userId"> t.USER_ID =
+				#userId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="patrolLineId"> t.PATROL_LINE_ID =
+				#patrolLineId#</isNotEmpty>
+			<isNotEmpty prepend="and" property="patrolScheduleState"> t.PATROL_SCHEDULE_STATE =
+				#patrolScheduleState#</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgName">ORGNAME
+				like '%' || #orgName# || '%'</isNotEmpty>
+            <isNotEmpty prepend="and" property="userName"> t.USER_NAME
+				like '%' || #userName# || '%'</isNotEmpty>
+			<isNotEmpty prepend="and" property="patrolLineName"> t.PATROL_LINE_NAME
+				like '%' || #patrolLineName# || '%'</isNotEmpty>
+		    <isNotEmpty prepend="and" property="scheduleStartQueryDate">
+				<![CDATA[ to_date(to_char(t.SCHEDULE_START_DATE, 'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#scheduleStartQueryDate#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+		    <isNotEmpty prepend="and" property="scheduleEndQueryDate">
+				<![CDATA[ to_date(to_char(t.SCHEDULE_END_DATE, 'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#scheduleEndQueryDate#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="scheduleStartQueryTime">
+				<![CDATA[ to_date('2013-5-1 ' || t.SCHEDULE_START_TIME,'yyyy-MM-dd hh24:MI:ss') >= to_date('2013-5-1 ' || #scheduleStartQueryTime#, 'yyyy-MM-dd hh24:MI:ss')]]>
+			</isNotEmpty>
+		    <isNotEmpty prepend="and" property="scheduleEndQueryTime">
+				<![CDATA[ to_date('2013-5-1 ' || t.SCHEDULE_END_TIME,'yyyy-MM-dd hh24:MI:ss') <= to_date('2013-5-1 ' || #scheduleEndQueryTime#, 'yyyy-MM-dd hh24:MI:ss')]]>
+			</isNotEmpty>
+			order by t.SCHEDULE_ID DESC
+			) ST
+		</dynamic>
+	</select>
+	
+	<select id="GET_GR_PATROL_RECORD_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_PATROL_RECORD.Nextval from dual
+	</select>
+	
+	<select id="GET_GR_PATROL_EXCEPTION_SEQ_VALUE" resultClass="long">
+		select
+		SEQ_GR_PATROL_EXCEPTION.Nextval from dual
+	</select>
+	
+	<!--功能：插入巡查记录信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertPatrolRecord" parameterClass="java.util.Map">
+		insert into
+		GR_PATROL_RECORD
+		(RECORD_ID,SCHEDULE_ID,ORG_ID,ORG_NAME,USER_ID,USER_NAME,PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,PATROL_NODES,SCHEDULE_START_TIME,SCHEDULE_END_TIME,IS_DEAL,ADD_DATE)
+		values(#recordId#,#scheduleId#,#orgId#,#orgName#,#userId#,#userName#,#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#patrolNodes#,to_date(#scheduleStartTime#,'yyyy-mm-dd HH24:mi:ss'),to_date(#scheduleEndTime#,'yyyy-mm-dd HH24:mi:ss'),#isDeal#,to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'))
+	</insert>
+	
+	<!-- 插入远程数据库查询到的数据到本地数据库 开发者：ChunJing 时间：2014-01-20  -->
+	<insert id="insertPatrolSyncData" parameterClass="java.util.Map">
+		INSERT INTO GR_PATROL_REMOTE_SYNC
+		  (RECORD_ID,
+		   TERM_ID,
+		   CHECK_DATE_TIME,
+		   DEAL_FLAG,
+		   CARD_NAME,
+		   EDIT_FLAG,
+		   REMOTE_ID,
+		   INSERT_DATE)
+		VALUES
+		   (#RecordId#,#TermId#,
+<!-- 		   TO_CHAR(#CheckDateTime#,'yyyy-MM-dd hh24:mi:ss'),#DealFlag#,#CardName#,
+ -->		  #CheckDateTime#,#DealFlag#,#CardName#,
+		   #EditFlag#,#ID#,Sysdate)
+	</insert>
+	
+	<select id="getLocalSynchronizedData" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.TERM_ID,MAX(t.record_id) as max_record_id from GR_PATROL_REMOTE_SYNC t group by TERM_ID
+	</select>
+	
+	<insert id="insertPatrolExceptionHistory" parameterClass="java.util.Map">
+		insert into
+		GR_PATROL_EXCEPTION_HISTORY
+		(EXCEPTION_ID,SCHEDULE_ID,ORG_ID,ORG_NAME,USER_ID,USER_NAME,PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,SCHEDULE_START_DATE,SCHEDULE_END_DATE,EXCEPTION_DESC,IS_NORMAL,ADD_DATE)
+		values(#exceptionId#,#scheduleId#,#orgId#,#orgName#,#userId#,#userName#,#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#scheduleStartTime#,#scheduleEndTime#,#exceptionDesc#,#isNormal#,to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'))
+	</insert>
+	
+	<insert id="insertPatrolRecordHistory" parameterClass="java.util.Map">
+		insert into
+		gr_patrol_record_history
+		(RECORD_ID,SCHEDULE_ID,ORG_ID,ORG_NAME,USER_ID,USER_NAME,PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,PATROL_NODES,SCHEDULE_START_TIME,SCHEDULE_END_TIME,IS_DEAL,ADD_DATE)
+		values(#recordId#,#scheduleId#,#orgId#,#orgName#,#userId#,#userName#,#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#patrolNodes#,#scheduleStartTime#,#scheduleEndTime#,#isDeal#,to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'))
+	</insert>
+	
+	<delete id="deletePatrolRecord" parameterClass="java.util.Map">
+	delete from gr_patrol_record t where t.is_deal='1'
+	</delete>
+	
+	<delete id="deletePatrolException" parameterClass="java.util.Map">
+	delete from gr_patrol_exception t
+	</delete>
+	
+	<!--功能：插入巡查异常记录信息 	开发者：tangtq 	时间：2013-7-10  -->
+	<insert id="insertPatrolException" parameterClass="java.util.Map">
+		insert into
+		GR_PATROL_EXCEPTION
+		(EXCEPTION_ID,SCHEDULE_ID,ORG_ID,ORG_NAME,USER_ID,USER_NAME,PATROL_LINE_ID,PATROL_LINE_NAME,PATROL_LINE_DESC,SCHEDULE_START_DATE,SCHEDULE_END_DATE,EXCEPTION_DESC,IS_NORMAL,ADD_DATE,RES_BAK1)
+		values(#exceptionId#,#scheduleId#,#orgId#,#orgName#,#userId#,#userName#,#patrolLineId#,#patrolLineName#,#patrolLineDesc#,#scheduleStartDate#,#scheduleEndDate#,#exceptionDesc#,#isNormal#,to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'),#res_bak1#)
+	</insert>
+	
+    <!--功能：修改巡查记录处理字段为已处理	开发者：tangtq 	时间：2013-7-10  -->
+	<update id="updatePatrolRecord" parameterClass="java.util.Map">
+		update
+		GR_PATROL_RECORD t set
+		t.IS_DEAL =#isDeal#
+		where
+		t.RECORD_ID = #recordId#
+	</update>
+	
+	<!-- 每日00:00:00获取当天班次情况 -->
+	<select id="selectPatrolScheduleInfoEveryDay" resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.schedule_id,
+       t.org_id,
+       t.org_name,
+       t.user_id,
+       t.user_name,
+       t.patrol_line_id,
+       t.patrol_line_name,
+       t.patrol_line_desc,
+       t.patrol_nodes,
+       decode
+       (sign(to_date(t.schedule_start_time,'hh24:mi:ss')-to_date(t.schedule_end_time,'hh24:mi:ss')),-1,
+       to_char(sysdate-1,'yyyy-mm-dd')|| ' ' || t.schedule_start_time,
+       to_char(sysdate-2,'yyyy-mm-dd')|| ' ' || t.schedule_start_time
+       ) as schedule_start_date_time,
+         decode
+       (sign(to_date(t.schedule_start_time,'hh24:mi:ss')-to_date(t.schedule_end_time,'hh24:mi:ss')),-1,
+       to_char(sysdate-1,'yyyy-mm-dd')|| ' ' || t.schedule_end_time,
+       to_char(sysdate-1,'yyyy-mm-dd')|| ' ' || t.schedule_end_time
+       ) as schedule_end_date_time,
+       t.schedule_desc,
+       t.patrol_schedule_state
+  from gr_patrol_schedule t
+ where (t.schedule_start_time < t.schedule_end_time and
+       trunc(sysdate) - 1 >= t.schedule_start_date and
+       trunc(sysdate) - 1 <= t.schedule_end_date)
+    or (t.schedule_start_time > t.schedule_end_time and
+       trunc(sysdate) - 2 >= t.schedule_start_date and
+       trunc(sysdate) - 2 <= t.schedule_end_date)
+   and t.patrol_schedule_state = '0'
+	]]>  
+	</select>
+	
+	<select id="selectGrPatrolRecord" resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.record_id, t.schedule_id,
+       t.org_id,
+       t.org_name,
+       t.user_id,
+       t.user_name,
+       t.patrol_line_id,
+       t.patrol_line_name,
+       t.patrol_line_desc,
+       t.patrol_nodes,
+       to_char(t.schedule_start_time,'yyyy-mm-dd HH24:mi:ss') schedule_start_time,
+       to_char(t.schedule_end_time,'yyyy-mm-dd HH24:mi:ss') schedule_end_time,
+       t.is_deal,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4
+  from gr_patrol_record t
+ where t.is_deal='1'
+	]]>  
+	</select>
+	
+	<select id="selectGrPatrolException" resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.exception_id, t.schedule_id,
+       t.org_id,
+       t.org_name,
+       t.user_id,
+       t.user_name,
+       t.patrol_line_id,
+       t.patrol_line_name,
+       t.patrol_line_desc,
+       to_char(t.schedule_start_date,'yyyy-mm-dd HH24:mi:ss') schedule_start_date,
+       to_char(t.schedule_end_date,'yyyy-mm-dd HH24:mi:ss') schedule_end_date,
+       t.exception_desc,
+       t.is_normal,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4
+  from gr_patrol_exception t
+	]]>  
+	</select>
+
+	<!-- 每日08:00:00获取当天巡查记录情况 zhujiabiao -->
+	<select id="selectPatrolRecordInfoEveryDay" resultClass="java.util.HashMap">
+		select t.record_id,
+           t.schedule_id,
+           o.org_id,
+           o.short_name org_name,
+           u.userid user_id,
+           u.display_name user_name,
+           t.patrol_line_id,
+           t.patrol_line_name,
+           t.patrol_line_desc,
+           t.patrol_nodes,
+           to_char(t.schedule_start_time, 'yyyy-mm-dd hh24:mi:ss') as schedule_start_time,
+           to_char(t.schedule_end_time, 'yyyy-mm-dd hh24:mi:ss') as schedule_end_time,
+           t.is_deal,
+           p.patrol_position_card_no
+      from gr_patrol_record t, gr_patrol_position_card p,users u,org o 
+     where t.user_id = p.user_id
+		   and t.is_deal = '0'
+       and p.user_id = u.userid
+       and u.org_id = o.org_id
+	</select>
+	
+	<!-- 查询卡号是否重复 -->
+	<select id="selectUsedGrPatrolPositionCard" parameterClass="string" resultClass="java.util.HashMap">
+		SELECT * FROM GR_PATROL_POSITION_CARD
+		WHERE PATROL_POSITION_CARD_NO = #cardNo#
+	</select>
+	
+	<!-- 查询用户是否已经绑定过 -->
+	<select id="selectUserFromGrPatrolPositionCard" parameterClass="long" resultClass="java.util.HashMap">
+		SELECT * FROM GR_PATROL_POSITION_CARD
+		WHERE USER_ID = #uid#
+	</select>
+	
+	<!--功能：插入员工定位卡绑定信息 	开发者：tangtq 	时间：2013-7-10 modify 2013-09-23  -->
+	<insert id="insertPatrolPositionCard" parameterClass="java.util.Map">
+		INSERT INTO GR_PATROL_POSITION_CARD
+		  (PATROL_POSITION_CARD_ID,
+		   ORG_ID,
+		   ORG_NAME,
+		   USER_ID,
+		   USER_NAME,
+		   PATROL_POSITION_CARD_NO,
+		   IS_AVALIABLE,
+		   RES_BAK1,
+		   RES_BAK2,
+		   RES_BAK3,
+		   RES_BAK4)
+		VALUES
+		  (SEQ_GR_PATROL_POSITION_CARD.NEXTVAL,
+		   (SELECT O.ORG_ID FROM ORG O,USERS U WHERE O.ORG_ID = U.ORG_ID AND U.USERID = #userId#),
+		   (SELECT O.SHORT_NAME FROM ORG O,USERS U WHERE O.ORG_ID = U.ORG_ID AND U.USERID = #userId#),
+		   #userId#,
+		   (SELECT TRIM(U.DISPLAY_NAME) AS USER_NAME FROM USERS U WHERE U.USERID = #userId#),
+		   #cardNo#,
+		   #ISAVALIABLE#,
+		   #RESBAK1#,
+		   #RESBAK2#,
+		   #RESBAK3#,
+		   #RESBAK4#)
+	   <!-- 
+		insert into
+		GR_PATROL_POSITION_CARD
+		(PATROL_POSITION_CARD_ID,USER_ID,IS_AVALIABLE,RES_BAK1,RES_BAK2,RES_BAK3,RES_BAK4)
+		values 
+		(SEQ_GR_PATROL_POSITION_CARD.Nextval,#userId#,#isAvaliable#,#resBak1#,#resBak2#,#resBak3#,#resBak4#)
+		-->
+	</insert>	
+	
+	<!-- 更新定位卡已分配信息，如果已分配则 status 字段为0   时间：2014-01-22 @author：Chun Jing -->
+	<update id="updateVisRfidandid" parameterClass="java.util.Map">
+		update vis_rfidandid t set t.status = decode(t.status,0,1,1,0) where t.tagmac = #visId#
+	</update>
+	
+	<!-- 恢复定位卡分配状态信息    时间：2014-01-22 @author：Chun Jing -->
+	<update id="recoverVisRfidandid" parameterClass="java.util.Map">
+		UPDATE VIS_RFIDANDID T
+		SET T.STATUS = decode(t.status,0,1,1,0)
+		WHERE T.IDCRADNUM =
+			(SELECT C.PATROL_POSITION_CARD_NO
+		FROM GR_PATROL_POSITION_CARD C
+			WHERE C.PATROL_POSITION_CARD_ID = #patrolPositionCardId#)
+	</update>
+	
+	<!-- 恢复定位卡分配状态信息    时间：2014-01-22 @author：Chun Jing -->
+	<update id="batchRecoverVisRfidandid" parameterClass="java.util.Map">
+		UPDATE VIS_RFIDANDID T
+		SET T.STATUS = decode(t.status,0,1,1,0)
+		WHERE T.IDCRADNUM in
+			(SELECT C.PATROL_POSITION_CARD_NO
+		FROM GR_PATROL_POSITION_CARD C
+			WHERE C.PATROL_POSITION_CARD_ID in 
+			<iterate property="patrolPositionCardId" open="(" close=")" conjunction=",">
+    			#patrolPositionCardId[]#
+           	</iterate>)
+	</update>
+	
+	
+	
+	<!-- 建立巡更棒和用户之间的关联 @author zhujiabiao -->
+	<insert id="insertGrPatrolStickUser" parameterClass="java.util.Map">
+		insert into gr_patrol_stick_user
+		  (s_id, u_id, su_id)
+		values
+		  (#sId#, #uId#, SEQ_GR_PATROL_POSITION_CARD.nextval)
+	</insert>
+	
+	<!--功能：根据员工定位卡ID修改员工定位卡	@author zhujiabiao-->
+	<update id="updatePatrolPositionCard" parameterClass="java.util.Map">
+		update
+		GR_PATROL_POSITION_CARD t set
+		t.PATROL_POSITION_CARD_NO = #cardNo#
+		where
+		t.PATROL_POSITION_CARD_ID = #patrolPositionCardId#
+	</update>
+
+	<update id="updatePatrolStickUser" parameterClass="java.util.Map">
+		update
+		gr_patrol_stick_user t set
+		t.s_id = #sId#
+		where
+		t.su_id = #suId#
+	</update>
+
+	<!--功能：根据员工巡更棒ID删除员工定位卡 	开发者：tangtq 	时间：2013-7-10  -->
+	<delete id="deletePatrolPositionStick" parameterClass="java.util.Map">
+		delete from GR_PATROL_STICK_USER where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="patrolStickIds">
+				su_id in 
+				<iterate property="patrolStickIds" open="(" close=")" conjunction=",">
+    				#patrolStickIds[]#
+           		</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deletePatrolPositionCard" parameterClass="java.util.Map">
+		delete from GR_PATROL_POSITION_CARD where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="patrolPositionCardId">
+				PATROL_POSITION_CARD_ID in <iterate property="patrolPositionCardId" open="(" close=")" conjunction=",">
+    			#patrolPositionCardId[]#
+           		</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<!--功能：根据员工定位卡ID查询员工定位卡 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolPositionCardInfoByPatrolPositionCardId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_POSITION_CARD t where t.PATROL_POSITION_CARD_ID = #patrolPositionCardId#
+	</select>
+	
+	<!--功能：查询员工定位卡列表 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolPositionCardInfo" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_POSITION_CARD t where t.IS_AVALIABLE = '0'
+	</select>
+
+	<!--功能：查询员工定位卡信息 	开发者：tangtq    时间：2013-7-10  -->
+	<select id="selectPatrolPositionCardInfoList" resultClass="java.util.HashMap">
+		select t.* from GR_PATROL_POSITION_CARD t where t.IS_AVALIABLE = '0' order by t.patrolPositionCardId
+	</select>
+	
+	<!-- 验证用户是否配置了定位卡 -->
+	<select id="checkPatrolPositionCardList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.patrol_position_card_id,
+		       u.display_name,
+		       u.userid,
+		       o.org_id,
+		       o.short_name,
+		       v.tagnickname,
+		       v.visid,
+		       v.idcradnum
+		  FROM GR_PATROL_POSITION_CARD t, users u, org o, vis_rfidandid v
+		 where t.user_id = u.userid
+		   and u.org_id = o.org_id
+		   and t.patrol_position_card_no = v.idcradnum
+		<dynamic>
+			<isNotEmpty prepend="and" property="treeUIds">
+				u.userid in <iterate property="treeUIds" open="(" close=")" conjunction=",">
+    			#treeUIds[]#
+           		</iterate>
+			</isNotEmpty>
+			order by t.PATROL_POSITION_CARD_ID DESC
+		</dynamic>
+	</select>
+	
+	<select id="queryPositionCard" parameterClass="string" 
+		resultClass="hashmap">
+		select * from T_027_WY_POSITION_CARD where card_id = #cardId#
+	</select>
+	
+	<select id="queryPositionCardByMac" parameterClass="string" 
+		resultClass="hashmap">
+		select * from T_027_WY_POSITION_CARD where card_mac = #mac#
+	</select>
+	
+	<!-- 查询巡更棒Record信息 -->
+	<select id="getPatrolStickRecord" parameterClass="map" resultClass="hashMap" remapResults="true">
+		SELECT a.term_id, a.check_date_time, a.edit_flag, trim(d.display_name) as display_name, e.position, f.short_name
+		FROM gr_patrol_remote_sync a, gr_patrol_stick b, gr_patrol_stick_user c, users d, gr_patrol e, org f
+		WHERE b.s_id = c.s_id and a.term_id = b.s_no and d.userid = c.u_id and e.card_name = a.card_name and fn_get_orgid(d.org_id) = f.org_id
+		<dynamic>
+			<isNotEmpty prepend="and" property="userNameStr">
+				d.display_name like '%' || #userNameStr# || '%'		
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[
+		and a.check_date_time >= #startTimeStr#
+		and a.check_date_time <= #endTimeStr#
+		]]>
+		ORDER BY a.check_date_time desc
+	</select>
+
+	<select id="selectPatrolPositionCardList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select t.patrol_position_card_id,
+		       trim(u.display_name) display_name,
+		       u.userid,
+		       o.org_id,
+		       o.short_name,
+		       t.patrol_position_card_no TAGNICKNAME, a.card_id
+		  FROM GR_PATROL_POSITION_CARD t, users u, org o , T_027_WY_POSITION_CARD a
+		 where t.user_id = u.userid
+		   and u.org_id = o.org_id
+		   and t.patrol_position_card_no = a.card_mac
+		<dynamic>
+			<isNotEmpty prepend="and" property="patrolPositionCardId"> 
+			t.PATROL_POSITION_CARD_ID =	#patrolPositionCardId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgId"> 
+			o.ORG_ID =	#orgId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName"> 
+			u.display_name like '%' || #userName# || '%'
+			</isNotEmpty>
+			order by t.PATROL_POSITION_CARD_ID DESC
+		</dynamic>
+	</select>
+
+	<!--功能：分页查询员工巡更棒信息 开发者：zhujiabiao 时间：2013-09-22 -->
+	<select id="selectPatrolStickList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		 select s.s_no, u.display_name, o.short_name, su.su_id,s.s_id,u.userid
+		  from GR_PATROL_STICK_user su, GR_PATROL_STICK s, users u, org o
+		 where su.s_id = s.s_id
+		   and su.u_id = u.userid
+		   and o.org_id = u.org_id
+		    and s.is_avaliable = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="patrolStickUserId">
+				 su.su_id =	#patrolStickUserId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="sno"> 
+				s.s_no = #sno#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orgId"> 
+				o.ORG_ID = #orgId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+			 	u.display_name	like '%' || #userName# || '%'
+			 </isNotEmpty>
+		</dynamic>
+			order by s.s_no DESC
+	</select>
+	
+	<select id="checkPatrolStickList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		 select s.s_no, u.display_name, o.short_name, su.su_id
+		  from GR_PATROL_STICK_user su, GR_PATROL_STICK s, users u, org o
+		 where su.s_id = s.s_id
+		   and su.u_id = u.userid
+		   and o.org_id = u.org_id
+		    and s.is_avaliable = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="treeUIds">
+				u.userid in <iterate property="treeUIds" open="(" close=")" conjunction=",">
+    			#treeUIds[]#
+           		</iterate>
+			</isNotEmpty>
+			order by s.s_no DESC
+		</dynamic>
+	</select>
+	
+	
+	<!-- 根据员工ID获取部门ID、部门名称、员工姓名 -->
+	<select id="getOrgInfoByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.ORG_ID,s.NAME,t.DISPLAY_NAME from USERS t,ORG s where t.USERID = #userId# and t.ORG_ID = s.ORG_ID
+	</select>
+	
+	<!-- 根据无线定位卡号查询无线定位卡mac -->
+	<select id="getTagMacByCardno" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.tagmac from vis_rfidandid t where t.idcradnum = #cardno#
+	</select>
+
+	<!-- 获取所有的无线定位卡 -->
+	<select id="getAllVisRfidandid" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.* from vis_rfidandid t order by t.visid desc 
+	</select>
+
+	<!-- 获取停车场信息 -->
+	<select id="getDailyCarCount" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT 	T.*,to_char(T.INVOKE_TIME,'yyyy-MM-dd hh24:mi:ss') TIME
+		FROM T_002_PARKING_LOG T
+		WHERE 1=1
+		<!--  
+		WHERE T.INVOKE_TIME LIKE to_date(#date#,'yyyy/MM/dd')
+		-->
+		<dynamic>
+			<isNotEmpty prepend="and" property="interface_type">
+				T.INTERFACE_TYPE = #interface_type#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="off_interface_type">
+				T.INTERFACE_TYPE != #off_interface_type#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="cardTypes">
+				<![CDATA[ T.CARD_TYPE in ]]>
+				<iterate property="cardTypes" open="(" close=")" conjunction="," >
+	        	   #cardTypes[]#
+	       		 </iterate>
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="carNo">
+				T.CAR_NO like '%'||#carNo#||'%'
+            </isNotEmpty>
+        </dynamic>
+		ORDER BY t.invoke_time DESC
+	</select>
+	
+	<select id="getAllPatrolSchenduleInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	SELECT G.SCHEDULE_ID,
+	       G.ORG_ID,
+	       G.ORG_NAME,
+	       G.USER_ID,
+	       G.USER_NAME,
+	       G.PATROL_LINE_ID,
+	       G.PATROL_LINE_NAME,
+	       G.PATROL_LINE_DESC,
+	       G.PATROL_NODES,
+	       S.SCHEDULE_SPLIT_ID,
+	       S.SCHEDULE_START_DATE,
+	       S.SCHEDULE_END_DATE,
+	       S.SCHEDULE_START_TIME,
+	       S.SCHEDULE_END_TIME
+	  FROM GR_PATROL_SCHEDULE G,GR_PATROL_SCHEDULE_SPLIT S 
+	  WHERE G.SCHEDULE_ID = S.SCHEDULE_ID 
+	</select>
+	
+	<delete id="clearExceptionRecords" parameterClass="java.util.Map">
+		delete from gr_patrol_exception where 1=1
+	</delete>
+	
+	
+	<select id="getAllPointsData" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT G.RECORD_ID,
+	       G.TERM_ID,
+	       G.CHECK_DATE_TIME,
+	       G.DEAL_FLAG,
+	       G.CARD_NAME,
+	       G.EDIT_FLAG,
+	       G.REMOTE_ID,
+	       G.INSERT_DATE 
+	  FROM GR_PATROL_REMOTE_SYNC G
+	</select>
+	
+	<select id="getAllScheduleSplitData" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT G.RECORD_ID,
+	       G.TERM_ID,
+	       G.CHECK_DATE_TIME,
+	       G.DEAL_FLAG,
+	       G.CARD_NAME,
+	       G.EDIT_FLAG,
+	       G.REMOTE_ID,
+	       G.INSERT_DATE 
+	  FROM GR_PATROL_REMOTE_SYNC G
+	</select>
+	
+	<!-- 加载巡查排班页面的时候，修改排班状态   by:ChunJing  2014-02-19-->
+	<update id="updatePatrolSchenduleState" parameterClass="java.util.Map">
+		UPDATE GR_PATROL_SCHEDULE T
+		SET T.PATROL_SCHEDULE_STATE = '1'
+		WHERE SYSDATE >
+		TO_DATE(
+		CONCAT(
+		CONCAT(TO_CHAR(T.SCHEDULE_END_DATE, 'yyyy-MM-dd'),' '),
+		T.SCHEDULE_END_TIME),
+		'yyyy/MM/dd hh24:mi:ss') 
+	</update>
+	
+	<select id="getPositionUser" parameterClass="map" resultClass="hashmap">
+		SELECT B.PATROL_POSITION_CARD_NO, B.USER_NAME 
+		FROM GR_PATROL_POSITION_CARD B 
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="userName">
+				B.USER_NAME like '%' || #userName# || '%'
+            </isNotEmpty>
+        </dynamic>
+	</select>
+</sqlMap>

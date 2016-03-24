@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EnergyintSQL">
+
+	<typeAlias alias="EiReport" type="com.cosmosource.app.energyint.model.EiReport" />
+	<typeAlias alias="EiHistoryConsume" type="com.cosmosource.app.energyint.model.EiHistoryConsume" />
+	
+	<!-- 需要查询的时间。获取时间ID -->
+	<sql id="query_time">
+			<isEqual property="queryTimeType"  compareValue="0">
+			in (select time_energy_id from ei_time_energy where time_energy_year
+			= #year#)
+		</isEqual>
+		<isEqual property="queryTimeType"  compareValue="1">
+			in (select time_energy_id from ei_time_energy where time_energy_year=
+			#year# and time_energy_month = #month# )
+		</isEqual>
+		<isEqual property="queryTimeType"  compareValue="2">
+			in (select time_energy_id from ei_time_energy where time_energy_year=
+			#year# and time_energy_month = #month# and time_energy_day = #day#)
+		</isEqual>
+		<isEqual property="queryTimeType"  compareValue="3">
+			in (select time_energy_id from ei_time_energy where time_energy_year=
+			#year# and time_energy_month = #month# and time_energy_day = #day#
+			and time_energy_hour = #hour#)
+		</isEqual>
+	</sql>
+	
+	<!--功能：三维数据-耗水量 开发者：zh 时间：2013-04-21 -->
+	<select id="loadSWData_01" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT floor, val FROM V_ENERGY_01
+	</select>
+
+	<!--功能：三维数据-耗电量 开发者：zh 时间：2013-04-21 -->
+	<select id="loadSWData_02" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT floor,val FROM V_ENERGY_02
+	</select>
+
+	<!-- 获取自己相应的信息 -->
+	<!-- 获取总人数 -->
+	<select id="SELECT_PEOPLE_COUNT" resultClass="int">
+		select
+		count(uep_id) from njhw_users_exp
+	</select>
+
+	<!-- 获取我所在的房间的总人数 -->
+	<select id="SELECT_ROOM_PEOPLE_COUNT" resultClass="int"
+		parameterClass="java.lang.String">
+		select count(1) from njhw_users_exp where room_id =
+		(select room_id from njhw_users_exp where userid =#userid#)
+	</select>
+
+	<!-- 获取我所在的楼层人数 -->
+	<select id="SELECT_FLOOR_PEOPLE_COUNT" resultClass="int"
+		parameterClass="java.lang.String">
+		select count(1) from njhw_users_exp where
+		njhw_users_exp.room_id in (select node_id from objtank where p_id = (
+		select p_id from objtank where node_id = (select room_id from
+		njhw_users_exp where userid =#userid#)) and EXT_RES_TYPE ='R')
+	</select>
+
+	<!-- 获取我所在的楼和层 -->
+	<select id="SELECT_MY_FLOOR_AND_LAYER" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select name from objtank where node_id = (select p_id
+		from objtank where
+		node_id = (select room_id from njhw_users_exp where
+		userid =#userid#))
+	</select>
+
+	<!--获取大厦的总房间数  -->
+	<select id="SELECT_BUILDING_ROOMS_COUNT" resultClass="int">
+		select  count(1) from objtank   where objtank.ext_res_type = 'R'
+	</select>
+	
+	<!--获取此人所在楼层的总房间数  -->
+	<select id="SELECT_MY_FLOOR_ROOMS_COUNT" resultClass="int"
+		parameterClass="java.lang.String">
+		select count(1) from objtank where p_id = (select p_id from objtank where node_id = (select
+		room_id from njhw_users_exp
+		where userid =#userid# )) and ext_res_type = 'R'
+	</select>
+	
+	<!-- 获取我所在的房间 -->
+	<select id="SELECT_MY_ROOM" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select name from objtank where node_id = (select
+		room_id from njhw_users_exp
+		where userid = #userid#)
+	</select>
+
+	<!-- 获取我所在的楼 -->
+	<select id="SELECT_MY_SEAT" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select distinct(kwh_seat) from ei_kwh_meter where
+		kwh_room =#myRoom#
+	</select>
+
+	<!-- 获取房间所在的楼 -->
+	<select id="SELECT_ROOM_SEAT" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select distinct(kwh_seat) from ei_kwh_meter where kwh_room
+		=#room#
+	</select>
+
+	<!-- 获取房间所在的层 -->
+	<select id="SELECT_ROOM_FLOOR" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select distinct(kwh_floor) from ei_kwh_meter where kwh_room
+		=#room#
+	</select>
+
+	<!-- 根据房间ID获取房间 -->
+	<select id="SELECT_ROOM_NAME" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select name from objtank where node_id =#roomid#
+	</select>
+
+	<!-- 获取大厦能耗消耗，总报告 -->
+	<select id="SELECT_BUILDING_ENERGY_CONSUMPTION" resultClass="EiReport"
+		parameterClass="EiReport" remapResults="true">
+		<!-- 获取不同能源的消耗总和 -->
+		<isEqual property="queryEnergyType" compareValue="0">
+			select
+			sum(measure) as measure from ei_kwh_consume_analysis where
+			time_energy_id
+		</isEqual>
+		<isEqual property="queryEnergyType" compareValue="1">
+			select
+			sum(measure_heat) as measure_heat,sum(measure_flow) as measure_flow
+			from ei_flow_consume_analysis where time_energy_id
+		</isEqual>
+		<isEqual property="queryEnergyType" compareValue="2">
+			select
+			sum(measure) as measure from ei_water_consume_analysis where
+			time_energy_id
+		</isEqual>
+
+		<!-- 导入公共sql -->
+		<isParameterPresent>
+			<include refid="EnergyintSQL.query_time" />
+		</isParameterPresent>
+	</select>	
+
+		<!-- 根据时间查询 三项电表的消耗 -->
+	<select id="SELECT_3KWH_ENERGY_CONSUMPTION" parameterClass="EiReport" resultClass="EiReport">
+	 select m.kwh_seat, m.kwh_floor, sum(w.measure) as measure from ei_kwh_consume_analysis w, ei_kwh_meter m
+	 where w.meter_id = m.kwh_id 
+  	 and m.kwh_type = 2
+  	 and w.time_energy_id
+	 <isParameterPresent>
+	 	<include refid="query_time" />
+	 </isParameterPresent>
+	 group by  m.kwh_seat, m.kwh_floor
+	</select>
+	
+	<!-- 查询各个机关的电耗 -->
+	<resultMap id="get-product-map" class="java.util.HashMap">
+		<result property="org_name" column="org_name" />
+		<result property="all_kwh" column="all_kwh" />
+	</resultMap>
+	<select id="SELECT_ENERGY_CONSUMPTION_GROUP_BY_ORGANS" parameterClass="EiReport"  resultMap="get-product-map">
+	select  trim(org.name) as org_name ,sum(ei_kwh_consume_analysis.measure) as all_kwh
+    from objtank, em_org_res, ei_kwh_meter, ei_kwh_consume_analysis,org
+    where objtank.node_id = em_org_res.res_id
+    and em_org_res.eor_type = 1
+    and ei_kwh_meter.kwh_type = 1
+    and ei_kwh_meter.kwh_room = objtank.name
+    and ei_kwh_meter.kwh_id = ei_kwh_consume_analysis.meter_id
+    and org.org_id=em_org_res.org_id
+		and ei_kwh_consume_analysis.time_energy_id 
+		<!-- 导入公共sql -->
+		<isParameterPresent>   
+          <include refid="query_time" />   
+   		</isParameterPresent> 
+		group by org.name
+	</select>
+	
+		<!-- 历史数据处理方式 -->
+	<!-- 删除分析表 -->
+	<delete id="DELETE_ENERGY_CONSUMPTION_ANALYSIS" parameterClass="EiReport">
+		<isEqual property="deleteType" compareValue="0">
+			delete from ei_kwh_consume_analysis where time_energy_id
+		</isEqual>
+		<isEqual property="deleteType" compareValue="1">
+			delete from ei_flow_consume_analysis where time_energy_id
+		</isEqual>
+		<isEqual property="deleteType" compareValue="2">
+			delete from ei_water_consume_analysis where time_energy_id
+		</isEqual>
+		<isParameterPresent>
+			<include refid="query_time" />
+		</isParameterPresent>
+	</delete>
+	
+	<!-- 新增历史记录 -->
+	<insert id="INSERT_EI_HISTORY_CONSUME_ANALYSIS" parameterClass="EiHistoryConsume">
+		insert into
+		EI_HISTORY_CONSUME values
+		(SEQ_EI_HISTORY_CONSUME.Nextval,#history_year#,#org_name#,#consume_type#,#measure#,#measure_heat#)
+	</insert>
+	
+	<!-- 根据时间查询 水耗 -->
+	<select id="SELECT_WATER_ENERGY_CONSUMPTION" parameterClass="EiReport" resultClass="EiReport">
+	 select m.water_seat, m.water_floor, sum(w.measure) as measure from ei_water_consume_analysis w, ei_water_meter m
+	 where w.meter_id = m.water_id and w.time_energy_id
+	 <isParameterPresent>
+			<include refid="query_time" />
+	 </isParameterPresent>
+	 group by  m.water_seat, m.water_floor
+	</select>
+	
+	<!-- 根据时间查询 气耗 -->
+	<select id="SELECT_FLOW_ENERGY_CONSUMPTION" parameterClass="EiReport" resultClass="EiReport">
+		select mf.flow_seat, mf.flow_floor, sum(f.measure_flow) as
+		measure_flow, sum(f.measure_heat) as measure_heat
+		from ei_flow_consume_analysis f, ei_flow_meter mf
+		where f.meter_id = mf.flow_id
+		and f.time_energy_id
+		<isParameterPresent>
+			<include refid="query_time" />
+		</isParameterPresent>
+		group by  mf.flow_seat, mf.flow_floor
+	</select>
+	
+	<!-- 查询每个楼层，对应的机关 -->
+	<select id="SELECT_ORGAN_ROOMS" resultClass="EiReport">
+			select b.org_name,a.name,count(1) as totalroom from objtank a,(select
+   	 o.name,o.p_id,og.org_id as org_name  from em_org_res e,objtank o,org og where eor_type =
+    1 and e.res_id = o.node_id and e.org_id(+) = og.org_id group by o.name,o.p_id,og.org_id) b
+    where a.node_id = b.p_id group by a.name,b.org_name
+	</select>
+	
+	<!-- 查询机关历史年能耗消耗数据 -->
+	<select id="SELECT_EI_HISTORY_CONSUME_ORGAN" resultClass="EiHistoryConsume" parameterClass="java.util.List">
+		select trim(o.name) as org_name,
+       e.history_year as history_year,
+       e.consume_type as consume_type,
+       sum(e.measure_heat) as measure_heat,
+       sum(e.measure) measure
+  		from ei_history_consume e, org o
+ 		where o.name = e.org_name(+)
+   		and o.p_id = '2' and e.history_year in <iterate open="(" close=")" conjunction=","> #list[]# </iterate> group by o.name, e.history_year, e.consume_type, o.order_num
+  		order by e.history_year 
+	</select>
+	
+	
+	<!-- 查询机关历史年能耗消耗数据 -->
+	<select id="SELECT_EI_HISTORY_CONSUME_ORGAN_NULL" resultClass="EiHistoryConsume">
+  	select trim(o.name) as org_name,
+       NVL(e.history_year,0) as history_year,
+      NVL(e.consume_type,1) as consume_type,
+      NVL(sum(e.measure_heat),0.0) as measure_heat,
+       NVL(sum(e.measure),0.0) measure
+  		from ei_history_consume e, org o
+ 		where o.name = e.org_name(+)
+   		and o.p_id = '2' group by o.name, e.history_year, e.consume_type, o.order_num
+      order by e.history_year 
+	</select>
+	
+	<!-- 查询大厦历史年能耗消耗数据 -->
+	<select id="SELECT_EI_HISTORY_CONSUME_BUILDING" resultClass="EiHistoryConsume" parameterClass="java.util.List">
+		select consume_type,history_year, sum(measure_heat) as measure_heat,sum(measure) measure from ei_history_consume  where history_year in <iterate open="(" close=")" conjunction=","> #list[]# </iterate> group by consume_type,history_year order by history_year 
+	</select>
+	
+	<!-- 查询某过去月份的能源消耗-机关单位为键 -->
+	<resultMap class="EiHistoryConsume" id="SELECT_EI_HISTORY_CONSUME_MONTH_MAP">
+		<result property="org_name" column="org_name" nullValue="" javaType="java.lang.String"/>
+		<result property="measure" column="measure" nullValue="0" javaType="java.lang.Double"/>
+		<result property="measure_heat" column="measure_heat" nullValue="0" javaType="java.lang.Double"/>
+	</resultMap>
+	<select id="SELECT_EI_HISTORY_CONSUME_MONTH" parameterClass="java.util.Map" resultMap="SELECT_EI_HISTORY_CONSUME_MONTH_MAP">
+	select o.name as org_name,
+       nvl(sum(ei.MEASURE), 0) as MEASURE,
+       nvl(sum(ei.MEASURE_HEAT), 0) as MEASURE_HEAT
+    from EI_HISTORY_CONSUME_MONTH ei, org o
+   where o.p_id = '2'
+   and to_char(o.org_id) = ei.org_name(+) 
+ 	and 
+	ei.Consume_Type(+) = #consume_type# and ei.HISTORY_YEAR(+) = #year# 
+	 <isNotNull  property="month" prepend="and">
+	  ei.HISTORY_MONTH(+) = #month#
+	 </isNotNull>
+	 group by o.name
+	 order by o.name asc
+	</select>
+	
+	<!-- 查询大厦过去月份的信息 -->
+	<resultMap class="EiReport" id="SELECT_EI_HISTORY_CONSUME_MONTH_PRE_MAP">
+	<result property="measure" column="measure" nullValue="0" javaType="java.lang.Double"/>
+	<result property="measure_heat" column="measure_heat" nullValue="0" javaType="java.lang.Double"/>
+	</resultMap>
+	<select id="SELECT_EI_HISTORY_CONSUME_PRE_MONTH" parameterClass="EiReport" resultMap="SELECT_EI_HISTORY_CONSUME_MONTH_PRE_MAP">
+	 select sum(MEASURE) MEASURE,sum(MEASURE_HEAT) MEASURE_HEAT from EI_HISTORY_CONSUME_MONTH where CONSUME_TYPE = #queryEnergyType# and History_Year = #year#
+	 <isNotEqual  property="month" prepend="and" compareValue="0">
+	  HISTORY_MONTH = #month#
+	 </isNotEqual>
+	</select>
+	
+	<select id="getEnergyMonthDetail" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	 select history_year||'-'||history_month as history_date, nvl(sum(MEASURE), 0) as MEASURE, nvl(sum(MEASURE_HEAT), 0) as MEASURE_HEAT from EI_HISTORY_CONSUME_MONTH where 1=1
+	 <isNotEqual  property="queryEnergyType" prepend="and" compareValue="0">
+	  CONSUME_TYPE = #queryEnergyType#
+	 </isNotEqual>
+	 group by history_year, history_month
+	</select>
+	
+	<select id="queryOilEnergyInput" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+select o.short_name as ORG_NAME, o.org_id as ORG_ID, nvl(e1.measure, 0) as MEASURE_3, nvl(e1.measure_heat, 0) as MEASURE_HEAT_3,
+       nvl(e2.measure, 0) as MEASURE_2, nvl(e2.measure_heat, 0) as MEASURE_HEAT_2,
+       nvl(e3.measure, 0) as MEASURE_1, nvl(e3.measure_heat, 0) as MEASURE_HEAT_1
+from org o,
+     ei_history_consume_month e1,
+     ei_history_consume_month e2,
+     ei_history_consume_month e3
+where o.p_id = '2'
+  and o.org_id = e1.org_name(+)
+  and e1.history_year(+) = to_number(to_char(sysdate - interval '3' month, 'YYYY'))
+  and e1.history_month(+) = to_number(to_char(sysdate - interval '3' month, 'MM'))
+  and e1.consume_type(+) = '4'
+  and o.org_id = e2.org_name(+)
+  and e2.history_year(+) = to_number(to_char(sysdate - interval '2' month, 'YYYY'))
+  and e2.history_month(+) = to_number(to_char(sysdate - interval '2' month, 'MM'))
+  and e2.consume_type(+) = '4'
+  and o.org_id = e3.org_name(+)
+  and e3.history_year(+) = to_number(to_char(sysdate - interval '1' month, 'YYYY'))
+  and e3.history_month(+) = to_number(to_char(sysdate - interval '1' month, 'MM'))
+  and e3.consume_type(+) = '4'
+order by o.org_id asc
+	</select>
+	
+	
+	<select id="queryOilEnergyMonth" parameterClass="EiHistoryConsume" resultClass="java.util.HashMap" >
+		select count(*) as count from EI_HISTORY_CONSUME_MONTH e where e.history_year=#history_year# 
+		and e.history_month=#history_month# 
+		and e.org_name=#org_name# 
+		and e.consume_type='4'
+	</select>
+	
+	<!-- 新增油耗历史记录 -->
+	<insert id="INSERT_EI_HISTORY_CONSUME_MONTH" parameterClass="EiHistoryConsume">
+		insert into
+		EI_HISTORY_CONSUME_MONTH values
+		(SEQ_EI_HISTORY_CONSUME_MONTH.Nextval,#history_year#,#history_month#,#org_name#,#consume_type#,#measure#,#measure_heat#)
+	</insert>
+	
+	<!-- 更新历史记录 -->
+	<update id="UPDATE_EI_HISTORY_CONSUME_MONTH" parameterClass="EiHistoryConsume">
+		update EI_HISTORY_CONSUME_MONTH e set e.measure = #measure#, e.measure_heat = #measure_heat#
+			where e.history_year=#history_year# 
+    		and e.history_month=#history_month#
+    		and e.org_name=#org_name#
+    		and e.consume_type=#consume_type#
+	</update>
+</sqlMap>

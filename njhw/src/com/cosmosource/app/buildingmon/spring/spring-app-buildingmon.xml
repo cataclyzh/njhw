@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+    <!-- 楼宇监控-->
+	<bean id="roomAssignmentsAction" class="com.cosmosource.app.buildingmon.action.RoomAssignmentsAction" scope="prototype">    
+    	<property name="roomAssignmentsManager" ref="roomAssignmentsManager"/>
+    </bean>
+	<bean id="roomAssignmentsManager" class="com.cosmosource.app.buildingmon.service.RoomAssignmentsManager" parent="manager">
+	</bean>
+	
+	<bean id="sxtMonAction" class="com.cosmosource.app.buildingmon.action.SXTMonAction" scope="prototype">
+		<property name="buildingMonManager" ref="buildingMonManager"></property>
+	</bean>
+	
+	<!-- 电梯监控 cjw 2013-03-27-->
+	<bean id="buildingAction" class="com.cosmosource.app.buildingmon.action.BuildingAction" scope="prototype">
+		<property name="buildingMonManager" ref="buildingMonManager"></property>
+	</bean>
+	<bean name="buildingMonManager" class="com.cosmosource.app.buildingmon.service.BuildingMonManager" parent="manager">
+		 <property name="devicePermissionToApp" ref="devicePermissionToApp"/>
+	</bean>
+	
+	
+	<!-- 功能：闸机监控  		作者：zh   		时间：2013-03-27-->
+	<bean id="zjMonAction" class="com.cosmosource.app.buildingmon.action.ZJMonAction" scope="prototype">
+		<property name="zjMonManager" ref="zjMonManager"></property>
+		<property name="doorControlToAppService" ref="doorControlToAppService"></property>
+	</bean>
+	<bean name="zjMonManager" class="com.cosmosource.app.buildingmon.service.ZJMonManager" parent="manager"></bean>
+	<!-- 功能：门禁监控  		作者：zh   		时间：2013-03-27-->
+	<bean id="mjMonAction" class="com.cosmosource.app.buildingmon.action.MJMonAction" scope="prototype">
+		<property name="mjMonManager" ref="mjMonManager"></property>
+		<property name="gatesControlToAppService" ref="gatesControlToAppService"></property>
+	</bean>
+	<bean name="mjMonManager" class="com.cosmosource.app.buildingmon.service.MJMonManager" parent="manager"></bean>
+	<!-- 功能：楼宇监控管理首页  		作者：zh   		时间：2013-04-03-->
+	<bean id="buildMonAction" class="com.cosmosource.app.buildingmon.action.BuildMonAction" scope="prototype">
+		<property name="buildMonManager" ref="buildMonManager"></property>
+		<property name="devicePermissionToApp" ref="devicePermissionToApp"/>
+	</bean>
+	<bean id="buildMonManager" class="com.cosmosource.app.buildingmon.service.BuildMonManager"  parent="manager">
+	   <property name="wirelessManager" ref="wirelessManager" />
+	</bean>
+	<bean id="wirelessManager" class="com.cosmosource.app.wirelessLocation.service.WirelessManager" parent="manager"></bean>
+</beans>

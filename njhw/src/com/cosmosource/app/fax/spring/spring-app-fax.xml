@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-lazy-init="true">
+
+	<!-- 网络传真的操作 qiyanqiang 时间 2013-5-7 -->
+
+	<bean id="faxAction" class="com.cosmosource.app.fax.action.FaxAction"
+		scope="prototype">
+		<property name="faxManager" ref="faxManager"></property>
+		<property name="personnelExpInforManager" ref="personnelExpInforManager" />
+		<property name="faxToAppService" ref="faxToAppService"></property>
+	</bean>
+	<bean id="faxManager" class="com.cosmosource.app.fax.service.FaxManger"
+		parent="manager">
+		<property name="faxToAppService" ref="faxToAppService"></property>
+	</bean>
+	<!-- new 网络传真的操作 -->
+	<bean id="faxQuery" class="com.cosmosource.app.fax.action.FaxQueryAction"
+		scope="prototype">
+		<property name="faxQueryService" ref="faxQueryService"></property>
+		<property name="personnelExpInforManager" ref="personnelExpInforManager">
+		</property>
+	</bean>
+	<bean id="faxQueryService" class="com.cosmosource.app.fax.service.FaxQueryService"
+		parent="manager">
+	</bean>
+</beans>

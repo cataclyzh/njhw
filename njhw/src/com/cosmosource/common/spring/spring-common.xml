@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	http://www.springframework.org/schema/jee 
+	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-lazy-init="true">
+	
+	
+	<!-- 功能：登录管理Action  开发者：WXJ  时间：2010-11-19    修改者：ls  时间：2010-11-22  修改者：sjy  时间：2010-12-23-->
+    <bean id="logonAction" class="com.cosmosource.common.action.LogonAction" scope="prototype">
+    	<property name="authorityManager" ref="authorityManager" />
+    	<property name="userMgrManager" ref="userMgrManager" />
+    	<property name="msgBoardManager" ref="msgBoardManager" />
+    	<property name="msgBoxManager" ref="msgBoxManager" />
+    	<property name="isInputQA" value="1" />
+    	<property name="showOnlineUserCount" value="${show.online.user.count}" />
+    </bean>  
+
+   	<bean id="authorityManager" class="com.cosmosource.common.service.AuthorityManager"  parent="manager"></bean> 
+ 	<bean id="comManager" class="com.cosmosource.common.service.ComManager"  parent="manager"></bean> 
+
+	<!-- 机构管理Manager -->
+    <bean id="orgMgrManager" class="com.cosmosource.common.service.OrgMgrManager" parent="manager">
+    	<property name="company" value="lotusadmin"></property>
+    </bean>         
+    <!-- 机构管理Action -->
+    <bean id="orgMgrAction" class="com.cosmosource.common.action.OrgMgrAction" scope="prototype">    
+    	<property name="orgMgrManager" ref="orgMgrManager"/>
+    	<property name="doorControlToAppService" ref="doorControlToAppService"/>
+    </bean>  
+
+  	<!-- 用户管理Manager -->
+    <bean id="userMgrManager" class="com.cosmosource.common.service.UserMgrManager" parent="manager">
+			<property name="commonManager" ref="commonManager"/>
+	</bean>   
+    <!-- 用户管理Action -->
+    <bean id="userMgrAction" class="com.cosmosource.common.action.UserMgrAction" scope="prototype">    
+    	<property name="userMgrManager" ref="userMgrManager"/>
+    </bean> 
+     
+    
+    <!-- 用户机构管理Action  add by sjy 2010-12-23 修改个人信息时用-->
+    <bean id="userOrgAction" class="com.cosmosource.common.action.UserOrgAction" scope="prototype">    
+    	<property name="userMgrManager" ref="userMgrManager"/>
+    	<property name="orgMgrManager" ref="orgMgrManager"/>
+    	<property name="authorityManager" ref="authorityManager"/>
+    	<property name="smsSendMessageService" ref="smsSendMessage"/>
+    	<property name="cAAccessToLoginService" ref="cAAccessToLoginService"/>
+    	<property name="personCardQueryToAppService" ref="personCardQueryToAppService"/>
+    </bean> 
+    
+   	<!-- 角色管理Manager -->
+    <bean id="roleMgrManager" class="com.cosmosource.common.service.RoleMgrManager" parent="manager"></bean>   
+    <!-- 角色管理Action -->
+    <bean id="roleMgrAction" class="com.cosmosource.common.action.RoleMgrAction" scope="prototype">    
+    	<property name="roleMgrManager" ref="roleMgrManager"/>
+    </bean>
+    	
+   	<!-- 功能菜单管理Manager -->
+    <bean id="menuMgrManager" class="com.cosmosource.common.service.MenuMgrManager" parent="manager"></bean>   
+    <!-- 功能菜单管理Action -->
+    <bean id="menuMgrAction" class="com.cosmosource.common.action.MenuMgrAction" scope="prototype">    
+    	<property name="menuMgrManager" ref="menuMgrManager"/>
+    </bean>
+
+   	<!-- 权限管理Manager -->
+    <bean id="rightMgrManager" class="com.cosmosource.common.service.RightMgrManager" parent="manager"></bean>   
+    <!-- 权限管理Action -->
+    <bean id="rightMgrAction" class="com.cosmosource.common.action.RightMgrAction" scope="prototype">    
+    	<property name="rightMgrManager" ref="rightMgrManager"/>
+    </bean>
+
+	<!-- 功能：公告管理Manager  开发者：ls  时间：2010-11-16 -->
+	<bean id="msgBoardManager" class="com.cosmosource.common.service.MsgBoardManager" parent="manager"></bean>
+    <!-- 功能：公告管理Action   开发者：ls  时间：2010-11-16 -->
+    <bean id="msgBoardAction" class="com.cosmosource.common.action.MsgBoardAction" scope="prototype">    
+    	<property name="msgBoardManager" ref="msgBoardManager"/>
+    </bean>
+    
+    <!-- 功能：消息管理Manager  开发者：ls  时间：2010-11-19 -->
+	<bean id="msgBoxManager" class="com.cosmosource.common.service.MsgBoxManager" parent="manager"></bean>
+    <!-- 功能：消息管理Action   开发者：ls  时间：2010-11-19 -->
+    <bean id="msgBoxAction" class="com.cosmosource.common.action.MsgBoxAction" scope="prototype">    
+    	<property name="msgBoxManager" ref="msgBoxManager"/>
+    	<property name="personnelExpInforManager" ref="personnelExpInforManager">
+		</property>
+    </bean>
+
+   	<!-- 业务字典管理Manager -->
+    <bean id="dictMgrManager" class="com.cosmosource.common.service.DictMgrManager" parent="manager"></bean>   
+    <!-- 业务类型字典管理Action -->
+    <bean id="dicttypeMgrAction" class="com.cosmosource.common.action.DicttypeMgrAction" scope="prototype">    
+    	<property name="dictMgrManager" ref="dictMgrManager"/>
+    </bean>
+    <!-- 业务类型明细管理Action -->
+    <bean id="dictdetaMgrAction" class="com.cosmosource.common.action.DictdetaMgrAction" scope="prototype">    
+    	<property name="dictMgrManager" ref="dictMgrManager"/>
+    </bean>
+    <!-- 文件处理Action -->
+    <bean id="filesAction" class="com.cosmosource.common.action.FilesAction" scope="prototype">    
+    </bean>
+ 	<!-- 注册码生成Manager -->
+    <bean id="registerkeyManager" class="com.cosmosource.common.service.RegisterkeyManager" parent="manager"></bean>   
+    <!-- 注册码生成Action -->
+    <bean id="registerKeyAction" class="com.cosmosource.common.action.RegisterKeyAction" scope="prototype">    
+    	<property name="registerkeyManager" ref="registerkeyManager"/>
+    </bean>  
+
+   	<!-- 软件下载管理Manager -->
+    <bean id="filesMgrManager" class="com.cosmosource.common.service.FilesMgrManager" parent="manager"></bean>   
+    <!-- 软件下载管理Action -->
+    <bean id="filesMgrAction" class="com.cosmosource.common.action.FilesMgrAction" scope="prototype">    
+    	<property name="filesMgrManager" ref="filesMgrManager"/>
+		<property name="sFilePath">
+			<value type="java.lang.String">${dir.root}${soft.download.filepath}</value>
+		</property>	
+    </bean>
+
+ 	<!-- Quartz本地Schduler 
+	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<property name="triggers">
+			<list>
+				<ref bean="cronGenJsons" />	
+				<ref bean="cronGenDeptJsons" />	
+			</list>
+		</property>
+	</bean>-->
+	
+	<!-- 生成机构json文件Cron式Trigger定义 -->
+	<bean id="cronGenJsons" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="JobDetail4GenJsons" />
+		<!-- 每天执行一次,正式运行定为每天早上0:00 -->
+		<property name="cronExpression" value="0 0 0 * * ?" />
+	</bean>
+	<!--  生成json文件Cron JobDetail -->
+	<bean id="JobDetail4GenJsons" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="orgMgrManager" />
+		<property name="targetMethod" value="getGenJsonFiles" />
+		<property name="concurrent" value="false" />
+	</bean>		
+	<bean id="constantsManager" class="com.cosmosource.common.service.ConstantsManager"  parent="manager">
+	</bean> 
+    <!-- 常量管理Action -->
+    <bean id="cttMgrAction" class="com.cosmosource.common.action.CttMgrAction" scope="prototype">    
+    	<property name="constantsManager" ref="constantsManager"/>
+    </bean>
+    
+    
+    <!-- 功能：CA信息查询Action 开发者：yc  时间：2011-11-23 -->
+	<bean id="caQueryAction" class="com.cosmosource.common.action.CaQueryAction" scope="prototype">    
+    	<property name="caMgrManager" ref="caMgrManager"/>
+    </bean>	    
+    <bean id="caMgrManager" class="com.cosmosource.common.service.CAMgrManager" parent="manager"></bean>    
+    <!-- 功能：CA信息删除Action 开发者：yc  时间：2011-11-23 -->
+	<bean id="caDeleteAction" class="com.cosmosource.common.action.CaDeleteAction" scope="prototype">    
+    	<property name="caMgrManager" ref="caMgrManager"/>
+    </bean>	 
+     <!-- CA资料审核 -->
+    <bean id="tAcCaapplyAuditAction" class="com.cosmosource.common.action.TAcCaapplyAuditAction" scope="prototype">    
+    	<property name="camgrManager" ref="caMgrManager"/>
+    </bean> 
+     <bean id="caLicenseAction" class="com.cosmosource.common.action.CALicenseAction" scope="prototype">    
+    	<property name="camgrManager" ref="caMgrManager"/>
+    </bean>
+    
+    <!-- 导出管理 -->
+	<bean id="exportApplyPDF" class="com.cosmosource.common.service.ExportApplyPDF"/>
+	
+    <!-- CA Action -->
+    <bean id="caApplyAction" class="com.cosmosource.common.action.CaApplyAction" scope="prototype">    
+    	<property name="caMgrManager" ref="caMgrManager"/>
+    	<property name="export" ref="exportApplyPDF"/>
+    </bean>
+    
+    <!-- 是否使用签章,签章序列号是否正确 -->
+	<bean id="verdictIsUseCaAction" class="com.cosmosource.common.action.VerdictIsUseCaAction" scope="prototype"></bean>
+ 
+    <!-- CA用户操作 -->
+    <bean id="caUserActionAction" class="com.cosmosource.common.action.CaUserActionAction" scope="prototype">    
+    	<property name="caMgrManager" ref="caMgrManager"/>
+    </bean>
+    
+    <!-- CA用户关联信息 -->
+    <bean id="caUserAction" class="com.cosmosource.common.action.CaUserAction" scope="prototype">
+    	<property name="caMgrManager" ref="caMgrManager"/>
+    </bean>
+    
+	<!-- CA功能维护 -->
+    <bean id="caFunctionAction" class="com.cosmosource.common.action.CaFunctionAction" scope="prototype">    
+    	<property name="camgrManager" ref="caMgrManager"/>
+    </bean> 
+    
+    <!-- 知识管理 -->
+    <bean id="knowledgeManager" class="com.cosmosource.common.service.KnowledgeManager" parent="manager"></bean> 
+    
+    <!-- 知识查询  -->
+    <bean id="knowledgeAction" class="com.cosmosource.common.action.KnowledgeAction" scope="prototype">    
+    	<property name="knowledgeManager" ref="knowledgeManager"/>
+    </bean>
+    
+    <!-- 首页  -->
+    <bean id="homeAction" class="com.cosmosource.common.action.HomeAction" scope="prototype">    
+        <property name="authorityManager" ref="authorityManager" />
+    </bean>
+
+    <!-- 取数据库时间 -->
+    <bean id="monitorAction" class="com.cosmosource.common.action.MonitorAction" scope="prototype">    
+        <property name="comMgr" ref="comManager" />
+    </bean>    
+    <!-- 数据级别管理Manager -->
+    <bean id="levelManager" class="com.cosmosource.common.service.LevelManager" parent="manager"></bean>   
+    
+    <!-- 业务类型字典管理Action -->
+    <bean id="levelAction" class="com.cosmosource.common.action.LevelAction" scope="prototype">    
+    	<property name="levelManager" ref="levelManager"/>
+    	<property name="company">
+    	    <value type="java.lang.String">${level.company}</value>
+    	</property>
+    </bean>
+
+ <!-- 问题帖管理 -->
+    <bean id="vendorQuestionAction" class="com.cosmosource.common.action.VendorQuestionAction" scope="prototype">    
+    	<property name="questionManager" ref="questionManager"/>
+    </bean>
+    
+
+    <bean id="questionManager" class="com.cosmosource.common.service.QuestionManager" parent="manager">
+    </bean>
+<!-- 功能：问题贴审批    开发者：ycw  时间：2012-7-9 -->
+	<bean id="commonApproveQuestionAction" class="com.cosmosource.common.action.ApproveQuestionAction" scope="prototype">    
+    	<property name="questionManager" ref="questionManager"/>
+    </bean>
+    
+<!-- 功能：问题贴回复    开发者：ycw  时间：2012-7-10 -->
+    <bean id="commonAnswerQuestionAction" class="com.cosmosource.common.action.AnswerQuestionAction" scope="prototype">    
+    	<property name="questionManager" ref="questionManager"/>
+    </bean>
+    
+<!-- 功能：结贴操作    开发者：ycw  时间：2012-7-10 -->
+    <bean id="commonDealQuestionAction" class="com.cosmosource.common.action.DealQuestionAction" scope="prototype">    
+    	<property name="questionManager" ref="questionManager"/>
+    </bean>
+    
+<!-- 功能：已回复问题贴查询    开发者：ycw  时间：2012-7-10 -->
+    <bean id="commonAnsweredQuestion" class="com.cosmosource.common.action.AnsweredQuestionAction" scope="prototype">    
+    	<property name="questionManager" ref="questionManager"/>
+    </bean>
+    
+    <!-- 功能：excel导入    开发者：cjw  时间：2013-4-8 -->
+	  <bean id="excelImportAction" class="com.cosmosource.common.action.impTemplate.ExcelImportAction" scope="prototype">
+	  		<property name="impTemplateManager" ref="impTemplateManager"></property>
+	  		<property name="importService" ref="importService"></property>
+	  		<property name="excelDataLoader" ref="excelDataLoader"></property>
+	  </bean>
+	  <bean id="impTemplateManager" class="com.cosmosource.common.service.impTemplate.ImpTemplateManager" parent="manager">
+	  </bean>
+	  <!--首页登录认证的service	  -->
+	  <bean id="someWaysLoginService" class="com.cosmosource.common.service.CAAccessToLoginService">
+	  		<property name="smsMessage" ref="smsMessage"></property>
+	  </bean>
+</beans>

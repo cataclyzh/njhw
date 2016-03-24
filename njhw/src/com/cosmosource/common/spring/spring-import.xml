@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+       default-lazy-init="true"> 
+	
+	<!-- 导入服务  -->
+    <bean id="importService" class="com.simple.tool.imp.service.ImportService">
+	    <property name="configLoader">
+			<ref bean="configLoader"/>
+	    </property>
+	    <property name="configFactoies">  
+            <map>  
+                <entry key="excel" value-ref="excelImportCfgFactory"/>
+                <entry key="csv" value-ref="csvImportCfgFactory"/>   
+            </map>  
+        </property>
+	    <property name="transfers">  
+            <map>  
+                <entry key="excel" value-ref="excelDataToBeanTransfer"/> 
+                <entry key="csv" value-ref="csvDataToArrayTransfer"/>  
+            </map>  
+        </property>
+	    <property name="dataLoaders">  
+            <map>  
+                <entry key="excel" value-ref="excelDataLoader"/>  
+                <entry key="csv" value-ref="csvDataLoader"/>  
+            </map>  
+        </property>
+	    <property name="dataImporters">  
+            <map>  
+                <entry key="excel" value-ref="excelToDateHibernateImporter"/>  
+                <entry key="csv" value-ref="csvDataJDBCImporter"/>  
+            </map>  
+        </property>
+	    <property name="validators">  
+            <map>  
+                <entry key="excel" value-ref="excelImportValidator"/> 
+                <entry key="csv" value-ref="csvImportValidator"/>  
+            </map>  
+        </property>
+    </bean>
+    
+    <!-- 配置加载器 -->
+    <bean id="configLoader" class="com.simple.tool.imp.service.FilePathConfigLoader">
+    	<property name="basePath" value="com/cosmosource/common/model/impTemplate/"></property>
+    </bean>
+    
+    <!-- 约束检查器 -->      
+    <bean id="constraintChecker" class="com.simple.tool.imp.data.constraint.ConstraintChecker">    
+    </bean>
+      
+    <!--  数据验证器 -->
+    <!-- 必填项 验证器 -->
+    <bean id="requiredDataValidator" class="com.simple.tool.imp.data.validator.RequiredDataValidator">
+    </bean>
+    
+    <!-- 最大允许长度验证器 -->  
+    <bean id="maxLengthDataValidator" class="com.simple.tool.imp.data.validator.MaxLengthDataValidator">  
+    </bean> 
+    
+    <!-- 正则表达式验证器 -->
+    <bean id="patternDataValidator" class="com.simple.tool.imp.data.validator.PatternDataValidator">    
+    </bean>
+    
+    <!-- 集合取值验证器 -->   
+    <bean id="collectionDataValidator" class="com.simple.tool.imp.data.validator.CollectionDataValidator">
+    </bean>
+    
+    <!-- map取值验证器 -->   
+    <bean id="mapDataValidator" class="com.simple.tool.imp.data.validator.MapDataValidator">
+    </bean>
+    
+    <!-- Excel导入 -->
+    <!-- Excel导入配置工厂 -->
+    <bean id="excelImportCfgFactory" class="com.simple.tool.imp.excel.cfg.ExcelCfgFactory">
+    </bean>
+    
+    <!-- Excel数据转换器  -->
+    <!-- Excel数据转换为 JavaBean,此集合可用于hibenate持久化 -->
+    <bean id="excelDataToBeanTransfer" class="com.simple.tool.imp.excel.ExcelDataToBeanTransfer">  
+    </bean>
+     
+    <!-- Excel数据转换为字段Map,此集合可用于ibatis持久化 -->
+    <bean id="excelDataToColumnMapTransfer" class="com.simple.tool.imp.excel.ExcelDataToColumnMapTransfer">  
+    </bean>
+    
+    <!-- Excel数据转换为对象数组,此集合可用于jdbc持久化 -->
+    <bean id="excelDataToArrayTransfer" class="com.simple.tool.imp.excel.ExcelDataToArrayTransfer">  
+    </bean>
+    
+    <!-- Excel数据加载器 -->
+    <bean id="excelDataLoader" class="com.simple.tool.imp.excel.ExcelDataLoader">
+    </bean>
+    
+    <!-- Excel数据导入器 -->
+    <bean id="excelDataImporter" class="com.simple.tool.imp.excel.ExcelDataImporter">    
+    </bean>
+    
+    <!-- 使用jdbc导入Excel数据 -->
+    <bean id="excelDataJDBCImporter" class="com.simple.tool.imp.excel.ExcelDataJDBCImporter">
+    	<property name="baseManager">
+			<ref bean="importBaseManager"/>
+	    </property>
+    </bean>
+    
+    <bean id="excelToDateHibernateImporter" class="com.cosmosource.common.service.ExcelToDateTemplete">
+    	<property name="importManager">
+    		<ref bean="importManager"/>
+    	</property>
+    </bean>
+    
+    <!-- Excel导入验证器 -->
+    <bean id="excelImportValidator" class="com.simple.tool.imp.excel.ExcelImportValidator">
+	    <property name="constraintChecker">
+			<ref bean="constraintChecker"/>
+	    </property>
+        <property name="dataValidatorList">  
+            <list>
+                <ref local="requiredDataValidator"/>
+                <ref local="maxLengthDataValidator"/>
+                <ref local="patternDataValidator"/>
+                <ref local="collectionDataValidator"/>
+                <ref local="mapDataValidator"/>
+            </list>     
+        </property> 
+    </bean>
+    
+    <!-- csv导入 -->
+    <!-- csv导入配置工厂 -->
+    <bean id="csvImportCfgFactory" class="com.simple.tool.imp.csv.cfg.CsvCfgFactory">
+    </bean>
+    
+    <!-- csv数据转换器  -->
+    <!-- csv数据转换为 JavaBean,此集合可用于hibenate持久化 -->
+    <bean id="csvDataToBeanTransfer" class="com.simple.tool.imp.csv.CsvDataToBeanTransfer">  
+    </bean>
+     
+    <!-- csv数据转换为字段Map,此集合可用于ibatis持久化 -->
+    <bean id="csvDataToColumnMapTransfer" class="com.simple.tool.imp.csv.CsvDataToColumnMapTransfer">  
+    </bean>
+    
+    <!-- csv数据转换为对象数组,此集合可用于jdbc持久化 -->
+    <bean id="csvDataToArrayTransfer" class="com.simple.tool.imp.csv.CsvDataToArrayTransfer">  
+    </bean>
+    
+    <!-- csv数据加载器 -->
+    <bean id="csvDataLoader" class="com.simple.tool.imp.csv.CsvDataLoader">
+    </bean>
+    
+    <!-- csv数据导入器 -->
+    <bean id="csvDataImporter" class="com.simple.tool.imp.csv.CsvDataImporter">
+    </bean>
+      
+    <!-- 使用jdbc导入csv数据 -->
+    <bean id="csvDataJDBCImporter" class="com.simple.tool.imp.csv.CsvDataJDBCImporter">
+    	<property name="baseManager">
+			<ref bean="importBaseManager"/>
+	    </property>
+    </bean>
+      
+    <!-- csv导入验证器 -->
+    <bean id="csvImportValidator" class="com.simple.tool.imp.csv.CsvImportValidator">
+	    <property name="constraintChecker">
+			<ref bean="constraintChecker"/>
+	    </property>
+        <property name="dataValidatorList">  
+            <list>
+                <ref local="requiredDataValidator"/>
+                <ref local="maxLengthDataValidator"/>
+                <ref local="patternDataValidator"/>
+                <ref local="collectionDataValidator"/>
+                <ref local="mapDataValidator"/>
+            </list>     
+        </property> 
+    </bean>
+    
+     <bean id="importBaseDao" class="com.simple.tool.imp.persistence.dao.BaseDao">   
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+	  </bean>
+	  
+	  <bean id="importBaseManager" class="com.simple.tool.imp.persistence.service.BaseManager">
+	        <property name="baseDao" ref="importBaseDao"/>
+	  </bean> 
+	  <bean id="importManager" class="com.cosmosource.common.service.ImportManager" parent="manager">
+	  		
+	  </bean>
+</beans>       

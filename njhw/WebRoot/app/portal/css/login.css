@@ -1,0 +1,208 @@
+/* 公共样式 */
+body, dl, dt, dd, ul, li, p, a, h1, h2, h3, h4, h5, h6, div, select, input, span, img, table, td, tr, th
+{
+	margin: 0;
+	padding: 0;
+}
+li
+{
+	list-style: none;
+	font-size: 14px;
+}
+img
+{
+	display: block;
+	border: 0;
+}
+.clear
+{
+	clear: both;
+	height: 0;
+	line-height: 0;
+	font-size: 0; 
+	*height:1px;
+	*line-height:1px;
+	*font-size:1px;
+}
+/* 主体样式 */
+body
+{
+    background: url(../images/main_bg.jpg) center center no-repeat;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+.box
+{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+}
+/* 主体内容样式 */
+.bg_01
+{
+	height: 768px;
+	position: absolute;
+	top: 50%;
+	margin-top: -384px;
+	z-index: 2;
+	width: 850px;
+	left:50%;
+	margin-left:-425px;
+	display:none;
+}
+/* 背景样式 */
+.bg_02
+{
+	width: 100%;
+	height: 768px;
+	position: absolute;
+	bottom: 0;
+	z-index: 1;
+	overflow: hidden;
+}
+.login_loading
+{
+	position:absolute;
+	width:100px;
+	text-align:center;
+	top:50%;
+	left:50%;
+	margin-left:-50px;
+	color:White;
+	font-size:15px;
+	font-weight:bold;
+	z-index:100;
+}
+/* 背景图片样式 */
+.bg_02 img
+{
+	width: 1366px;
+	height: 768px;
+	float: left;
+}
+/* 公司logo样式 */
+.logo
+{
+	position:relative;
+	top: 270px;
+	left:-250px;
+}
+.login_box
+{
+	width: 480px;
+	height: 315px;
+	float: left;
+	display: inline;
+	background-image: url(../images/login/login_bg.png);
+	position:relative;
+	top: 100px;
+	right:-450px;
+}
+/* 登陆框样式 */
+.title
+{
+	margin-top: 82px;
+	margin-left: 57px;
+}
+.title li
+{
+	color: #2d2d2d;
+	line-height: 45px;
+	height:45px;
+}
+.title li img
+{
+	position:absolute; 
+	right:105px; 
+	top:184px!important;/*css hack区分ff和ie*/
+	top:180px;
+	cursor:pointer;
+}
+.vail
+{
+	display:none;
+}
+/*用户名，密码，验证码提示*/
+.title span
+{
+	color:red;
+	display:none;
+}
+.login_img
+{
+	margin-top: 20px;
+	margin-left: 116px;
+}
+/* 用户名，密码，验证码样式 */
+.wid
+{
+	height: 27px;
+	width: 205px;
+	background-image: url(../images/login/input_bg.png);
+	background-repeat: no-repeat;
+	border: 0px;
+	font-size: 14px;
+	padding-left: 3px;
+	margin-left:5px;
+	line-height:27px;  /* 文本居中对齐 */
+	position:relative;
+	top:0!important;/*css hack区分ff和ie*/
+	top:4px;
+
+}
+/* 登录按钮样式 */
+.bottom_01
+{
+	width: 95px;
+	height: 34px;
+	padding-bottom: 3px;
+	background-image: url(../images/login/button.png);
+	background-repeat: no-repeat;
+	border: 0px;
+	font-size: 14px;
+	color: #fff;
+	float: left;
+	cursor:pointer;
+}
+/* 登录按钮滑过样式 */
+.bottom_01:hover
+{
+	background-image: url(../images/login/button.png);
+	background-position: -200px 0;
+	background-repeat: no-repeat;
+}
+/* 重置按钮样式 */
+.bottom_02
+{
+	width: 95px;
+	height: 34px;
+	margin-left: 15px;
+	padding-bottom: 3px;
+	float: right;
+	background-image: url(../images/login/button.png);
+	background-repeat: no-repeat;
+	background-position: 0 -100px;
+	border: 0px;
+	font-size: 14px;
+	color: #8b8b8b;
+	float: left;
+	cursor:pointer;
+}
+/* 重置按钮滑过样式 */
+.bottom_02:hover
+{
+	background-image: url(../images/login/button.png);
+	background-position: -200px -100px;
+	color: #0585dc;
+}
+/* 错误提示样式 */
+.error_tip
+{
+	float:left;
+	margin:40px 0 0 40%;
+	color:red;
+	font-size:14px;
+}

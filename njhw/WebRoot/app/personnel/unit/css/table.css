@@ -1,0 +1,76 @@
+/* ����ͼƬ */
+*{margin:0;padding:0;font-size:13px;color: #2d374b}
+
+.common_table_main
+{
+	border:1px solid #9abbe8;
+	width:90%;
+	margin:0 auto;
+}
+.common_table_header
+{
+	height:30px;
+	line-height:30px;
+	width:100%;
+	background:url(../images/table_bg.png) 0 0 repeat-x;
+}
+.common_table_header span
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#0b47b3;
+	margin-left:10px;
+	float:left;
+}
+.main_table
+{
+	width:100%;
+	text-align: left;
+	background: none repeat scroll 0 0 #F6F5F1;
+}
+.main_table a
+{
+	cursor:pointer;
+    text-decoration: none;
+}
+.main_table tr td
+{
+	height: 30px;
+	color: #8090b2;
+}
+.table_header
+{
+	background: none repeat scroll 0 0 #ECECE4;
+    color: #8090b2;
+    font-family: "΢���ź�";
+    font-size: 14px;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+
+.table_header  td span
+{
+    color: #8090b2;
+}
+.even_tr
+{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    background: url("../images/border_00_7.jpg") repeat-x scroll left bottom transparent;
+    color: #808080;
+    font-size: 12px;
+}
+.odd_tr
+{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    background: url("../images/border_00_7.jpg") repeat-x scroll left bottom transparent;
+    color: #808080;
+    font-size: 12px;
+}

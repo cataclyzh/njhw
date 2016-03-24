@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-lazy-init="true">
+	<description>Spring公共配置 </description>
+
+	<!-- 数据源配置,使用应用内的BoneCP数据库连接池 -->
+	<bean id="sqlDataSource" class="com.jolbox.bonecp.BoneCPDataSource">
+		<property name="driverClass" value="${sqljdbc.driver}" />
+		<property name="jdbcUrl" value="${sqljdbc.url}" />
+		<property name="username" value="${sqljdbc.username}" />
+		<property name="password" value="${sqljdbc.password}" />
+		<property name="idleConnectionTestPeriod" value="${bonecp.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${bonecp.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${bonecp.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${bonecp.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${bonecp.partitionCount}" />
+		<property name="acquireIncrement" value="${bonecp.acquireIncrement}" />
+		<property name="statementsCacheSize" value="${bonecp.statementsCacheSize}" />
+		<property name="releaseHelperThreads" value="${bonecp.releaseHelperThreads}" />
+	</bean>
+	<!-- 事务管理器配置,单数据源事务 -->
+	<bean id="sqlTransactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="sqlJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="sqlDataSource" />
+	</bean>
+	<!-- Hibernate配置 -->
+	<bean id="sqlSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="sqlDataSource" />
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache/ehcache-hibernate.xml</prop>
+				<prop key="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.batch_size}</prop>
+			</props>
+		</property>
+
+		<property name="eventListeners">
+			<map>
+				<!-- 在事务提交前触发，在当前记录中添加审计信息 -->
+				<entry key="save-update">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+						<bean class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener" />
+					</list>
+				</entry>
+				<entry key="save">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener">
+						</bean>
+						<bean class="org.hibernate.event.def.DefaultSaveEventListener" />
+					</list>
+				</entry>
+				<entry key="update">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+						<bean class="org.hibernate.event.def.DefaultUpdateEventListener" />
+					</list>
+				</entry>
+				<entry key="merge">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+						<bean class="org.hibernate.event.def.DefaultMergeEventListener" />
+					</list>
+				</entry>
+				<!-- post 在数据提交之后触发，在日志文件或是数据库中记录日志 -->
+				<entry key="post-delete">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+					</list>
+				</entry>
+				<!-- -->
+				<entry key="post-insert">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+					</list>
+				</entry>
+				<entry key="post-update">
+					<list>
+						<bean class="com.cosmosource.base.dao.AuditListener" />
+					</list>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<aop:config>
+		<aop:advisor id="sqlManagerTx" advice-ref="sqlTxAdvice"
+			pointcut="execution(* *..service.*Manager.*(..))" order="0" />
+		<aop:advisor id="sqlManagerTxEx" advice-ref="sqlTxAdvice"
+			pointcut="execution(* *..service..*Manager.*(..))" order="1" />
+		<aop:advisor id="sqlManagerTxExEx" advice-ref="sqlTxAdvice"
+			pointcut="execution(* *..serviceimpl..*Service.*(..))" order="2" />
+		<aop:advisor id="sqlManagerTxExExEx" advice-ref="sqlTxAdvice"
+			pointcut="execution(* *..serviceimpl..*Record.*(..))" order="3" />
+		<aop:advisor id="sqlManagerTxExExExEx" advice-ref="sqlTxAdvice"
+			pointcut="execution(* *..service.*Service.*(..))" order="4" />
+	</aop:config>
+	<tx:advice id="sqlTxAdvice" transaction-manager="sqlTransactionManager">
+		<tx:attributes>
+			<!--tx:method name="get*" read-only="true"/ -->
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="match*" propagation="REQUIRED" />
+			<tx:method name="confirm*" propagation="REQUIRED" />
+			<tx:method name="run*" propagation="REQUIRED" />
+			<tx:method name="import*" propagation="REQUIRED" />
+			<tx:method name="export*" propagation="REQUIRED" />
+			<tx:method name="dealWith*" propagation="REQUIRED" />
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="search*" propagation="REQUIRED" read-only="true" />
+			<!--hp添加 -->
+			<tx:method name="control*" propagation="REQUIRED" />
+			<tx:method name="close*" propagation="REQUIRED" />
+			<tx:method name="record*" propagation="REQUIRED" />
+			<tx:method name="saveDoor*" propagation="REQUIRES_NEW" />
+			<tx:method name="closeDoor*" propagation="REQUIRES_NEW" />
+		</tx:attributes>
+	</tx:advice>
+	<bean id="sqlManager" class="com.cosmosource.base.service.BaseManager">
+		<property name="dao" ref="sqlDao" />
+		<property name="sqlDao" ref="sqlIBatisDao" />
+	</bean>
+	<bean id="sqlBaseDao" class="com.cosmosource.base.dao.BaseDao">
+		<property name="sessionFactory" ref="sqlSessionFactory" />
+		<property name="jdbcTemplate" ref="sqlJdbcTemplate" />
+	</bean>
+	<bean id="sqlDao" class="com.cosmosource.base.dao.ComDao" parent="sqlBaseDao"></bean>
+	<bean id="sqlProxyManager" class="com.cosmosource.base.service.ProxyManager" parent="sqlManager"></bean>
+	<bean id="sqlDbMgr" class="com.cosmosource.base.service.DBManager" parent="sqlManager"></bean>
+	
+</beans>

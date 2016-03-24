@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+    
+	<!--目的：短信功能模块         开发者：hp    时间：2013-3-17	   -->
+   <bean id="smsMessage" class="com.cosmosource.app.transfer.serviceimpl.SendSmsMessageService">
+   </bean>
+   
+   <!--目的：智慧南京功能模块         开发者：hp    时间：2013-3-27	   -->
+   <bean id="wisdomNjToSystemService" class="com.cosmosource.app.transfer.serviceimpl.WisdomNjToSystemService">
+   </bean>
+   
+   <!--目的：市民卡功能模块        开发者：hp    时间：2013-3-27	   -->
+   <bean id="personCardQueryToSystemService" class="com.cosmosource.app.transfer.serviceimpl.PersonCardQueryToSystemService">
+   </bean>
+	
+    <!--目的：门锁功能模块      开发者：hp  时间：2013-3-23    -->
+    <bean id="doorControlToSystemService" class="com.cosmosource.app.transfer.serviceimpl.DoorControlToSystemService">
+    	<property name="logControlRecord" ref="logControlRecord"></property>
+    	<property name="commonManager" ref="commonManager"></property>
+    </bean>
+    
+    
+	<!--目的：日志记录        开发者：hp   时间：2013-3-25    -->
+    <bean id="logControlRecord" class="com.cosmosource.app.transfer.serviceimpl.LogControlRecord" parent="manager">
+    	<property name="csvUtil" ref="csvUtil"></property>
+    </bean>
+    
+    
+    <!--目的：设备权限测试action    开发者：hp  时间：2013-3-17   -->
+<!--   <bean id="appSmsAction" class="com.cosmosource.app.transfer.serviceimpl.SmsTestAction" scope="prototype">    -->
+<!--    	<property name="deviceService" ref="devicePermissionToApp"/>-->
+<!--    </bean>-->
+    
+    
+	<!--目的：短信测试action    开发者：hp  时间：2013-3-17   -->
+<!--   <bean id="appSmsAction" class="com.cosmosource.app.transfer.serviceimpl.SmsTestAction" scope="prototype">    -->
+<!--    	<property name="smsMessage" ref="smsSendMessage"/>-->
+<!--    </bean>-->
+
+    <!--	目的： 无线定位   开发者：qyq  时间：2013-04-12   -->
+   <bean id="wirelessLocationToSystemService" class="com.cosmosource.app.transfer.serviceimpl.WirelessLocationToSystemService" parent="manager">    
+    </bean>
+    
+      <!--	目的：  交通信息      开发者：qyq  时间：2013-05-01   -->
+   <bean id="travelInformationToSystemService" class="com.cosmosource.app.transfer.serviceimpl.TravelInformationToSystemService">    
+    </bean>
+
+  <!--目的： 传真      开发者：cjw  时间：2013-05-06   -->
+   <bean id="faxToSystemService" class="com.cosmosource.app.transfer.serviceimpl.FaxToSystemService">    
+    </bean>
+    
+    <!--目的： 闸机授权和取消授权      开发者：hj  时间：2013-07-31   -->
+    <bean id="accessAndGateService" class="com.cosmosource.app.transfer.serviceimpl.AccessAndGateService" parent="manager">
+    	<property name="logControlRecord" ref="logControlRecord"></property>
+   </bean>
+</beans>

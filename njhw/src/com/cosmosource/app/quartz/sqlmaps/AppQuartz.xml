@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AppQuartz">
+	<!--功能：加载用户通讯录分组并统计组内用户数	开发者：zh 	时间：2013-5-3  -->
+	<select id="getNjhwTscard" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT CARD_ID cardId, CARD_LOSTED lost, CARDSTATUS, cardStatus 
+		FROM NJHW_TSCARD
+	</select>
+</sqlMap>

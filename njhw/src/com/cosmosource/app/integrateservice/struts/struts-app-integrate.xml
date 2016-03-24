@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+ 	<package name="/app/integrateservice" extends="default" namespace="/app/integrateservice">
+ 		<!--功能：初始化		开发者：zh 	时间：2013-04-18  -->
+		<action name="init" class="integrateAction" method="init">
+			<!-- <result name="success">/app/integrateservice/tmpIndex.jsp</result>  -->
+			<result name="setParkings">/app/pro/setParkings.act</result>
+			<result name="e4Personnel">/app/integrateservice/IndexPage.jsp</result>
+			<result name="adminPage">/app/per/objMenuManager.act</result>
+			<result name="success">/app/integrateservice/tmpIndex.jsp</result>		
+			<result name="operationManageIndex" type="redirect">/app/omc/newIndex.jsp</result>
+			<result name="property1">/app/pro/propertyIndex1.act</result>
+			<result name="property2">/app/pro/propertyIndex2.act</result>
+			<result name="property3">/app/pro/propertyIndex3.act</result>
+			<result name="property4">/app/pro/propertyIndex4.act</result>
+			<result name="property5">/app/pro/propertyIndex5.act</result>
+			<result name="property6">/app/pro/propertyIndex6.act</result>
+			<result name="property7">/app/pro/propertyIndex7.act</result>
+			<result name="property8">/app/pro/propertyIndex8.act</result>
+			<result name="property9">/app/pro/propertyIndex9.act</result>
+			<result name="propertyA1">/app/pro/repairIndex_onlyAdd.act</result>
+			<result name="propertyA2">/app/pro/repairIndex_sbk.act</result>
+			<result name="propertyA3">/app/pro/propertyIndexA1.act</result>
+<!--  		<result name="propertyA1">/app/pro/propertyIndexA1.act</result>-->
+			<result name="parkingNew">/app/pro/parkingIndex.act</result>
+			<result name="property12">/app/personnel/property/queryNjhwAccess_kezhangb2.act</result>
+			
+			
+			<!-- 新城一期 -->
+			<result name="metro">/app/pro/propertyIndex10.act</result>
+			<!-- 政务服务中心 -->
+			<result name="adminService">/app/pro/propertyIndex11.act</result>
+			
+			
+			<result name="njhwAdminFcc">/app/personnel/njhwAdminIndexA.jsp</result>
+			<result name="njhwAdminDhb">/app/personnel/njhwAdminIndexC.jsp</result>
+			<result name="njhwAdminJnc">/app/personnel/njhwAdminIndexD.jsp</result>
+			<result name="njhwAdminSt">/app/personnel/njhwAdminIndexB.jsp</result>
+			<result name="njhwAdminBwc">/app/personnel/njhwAdminIndexE.jsp</result>		
+		</action>
+		
+		<action name="contact" class="integrateAction" method="init">
+			<result name="success">/app/integrateservice/contacts.jsp</result>
+			<result name="success1">/app/integrateservice/contacts.jsp</result>
+			<result name="property1">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property2">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property3">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property4">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property5">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property6">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property8">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="property9">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="metro">/app/integrateservice/contactsByWy.jsp</result>
+			<result name="adminService">/app/integrateservice/contactsByWy.jsp</result>
+		</action>
+		<action name="contactBy7" class="integrateAction" method="contactBy7">
+			<result name="success">/app/integrateservice/contactsByWy.jsp</result>	
+		</action>
+		<action name="jsonLight" class="integrateAction" method="jsonLight"></action>
+		<action name="jsonLightStatus" class="integrateAction" method="jsonLightStatus"></action>
+		
+		<!--功能：查询系统消息		开发者：zh 	时间：2013-04-18  -->
+		<action name="queryMsgBox" class="integrateAction" method="queryMsgBox"></action>
+		<!--功能：查询我的来访		开发者：zh 	时间：2013-04-18  -->
+		<action name="queryVmVisit" class="integrateAction" method="queryVmVisit"></action>
+		<!--功能：查询公告板			开发者：zh 	时间：2013-04-18  -->
+		<action name="queryMsgBoard" class="integrateAction" method="queryMsgBoard"></action>
+		<!--功能：未分派的报修单		开发者：zh 	时间：2013-04-18  -->
+		<action name="queryUntreatedSheet" class="integrateAction" method="queryUntreatedSheet"></action>
+		<!--功能：取得实时温度		开发者：zh 	时间：2013-04-18  -->
+		<action name="getWD" class="integrateAction" method="getWD"></action>
+		
+		
+		<!--功能：加载下级信息		开发者：zh 	时间：2013-05-01  -->
+		<action name="loadSonInfo" class="integrateAction" method="loadSonInfo"></action>
+		<!--功能：加载指定部门		开发者：zh 	时间：2013-05-05  -->
+		<action name="loadDepartmentByOrgId" class="integrateAction" method="loadDepartmentByOrgId"></action>
+		<!--功能：加载通讯录信息		开发者：zh 	时间：2013-05-05  -->
+		<action name="loadAddressInfo" class="integrateAction" method="loadAddressInfo"></action>
+		<!--功能：按条件筛选大厦/部门通讯录	开发者：zh 	时间：2013-05-01  -->
+		<action name="queryContact" class="integrateAction" method="queryContact"></action>
+		<!--功能：按条件筛选个人通讯录	开发者：zh 	时间：2013-05-01  -->
+		<action name="queryAddress" class="integrateAction" method="queryAddress"></action>
+		<!--功能：放大机构树		开发者：zh 	时间：2013-05-11  -->
+		<action name="amplify" class="integrateAction" method="amplify">
+			<result name="success">/app/integrateservice/amplifyPAB.jsp</result>
+		</action>
+		
+		<!--功能：拨号弹出页		开发者：zh 	时间：2013-05-11  -->
+		<action name="inputCallPhone" class="integrateAction" method="inputCallPhone">
+			<result name="success">/app/integrateservice/callPhone.jsp</result>
+		</action>
+		<!--功能：根据电话号码加载mac地址		开发者：zh 	时间：2013-05-07  -->
+		<action name="loadMACByTel" class="integrateAction" method="loadMACByTel"></action>
+		<!--功能：加载交通信息	开发者：zh 	时间：2013-05-07  -->
+		<action name="loadTraffic" class="integrateAction" method="loadTraffic"></action>
+		<!--功能：查询门状态	开发者：zh 	时间：2013-05-07  -->
+		<action name="refreshDoorStatus" class="integrateAction" method="refreshDoorStatus"></action>
+		
+		<!--功能：控制设备操作		开发者：zh 	时间：2013-04-18  -->
+		<action name="controllerDevice" class="integrateAction" method="controllerDevice"></action>
+        <!--功能：Ip通话		开发者：zh 	时间：2013-04-18  -->
+		<action name="ipCall" class="integrateAction" method="ipCall"></action>
+        
+        <!--功能 ：查看菜单详情		开发者：gxh 	 -->
+		<action name="weekMenusQuery" class="integrateAction" method="weekMenusQuery">
+			<result name="success">/app/integrateservice/weekMenusQuery.jsp</result>
+		</action>
+        <!--功能 ：Ajax 查看菜单详情		开发者：gxh 	 -->
+		<action name="ajaxWeekMenusQuery" class="integrateAction" method="ajaxWeekMenusQuery" >
+		<result name="success">/app/integrateservice/weekMenus.jsp</result>
+		</action>
+		
+		<action name="menusOneQuery" class="integrateAction" method="menusOneQuery">
+			<result name="success">/app/integrateservice/menusOneQuery.jsp</result>
+		</action>	
+		
+		<action name="refreshMenu" class="integrateAction" method="refreshMenu">
+		</action>	
+		
+		<action name="queryConditionerTemperature" class="integrateAction" method="queryConditionerTemperature">
+		</action>	
+		<action name="errorPage" class="integrateAction" method="error">
+			<result name="success">/app/integrateservice/noAuthPage.jsp</result>
+		</action>
+	</package>
+	
+	<!-- 短信发送平台 -->
+	<package name="/app/messagingplatform" extends="default" namespace="/app/messagingplatform">
+		<action name="messagingPlatformInit" class="messagingPlatformAction" method="messagingPlatformInit">
+			<result name="success">/app/integrateservice/messagingplatform/messagePlatform.jsp</result>
+		</action>
+		<action name="sendNoteInit" class="messagingPlatformAction" method="sendNoteInit">
+			<result name="success">/app/integrateservice/messagingplatform/sendNotePage.jsp</result>
+		</action>
+		
+		<action name="sendPhoneMessage" class="messagingPlatformAction" method="sendPhoneMessage">	
+		</action>
+		<action name="reutenPage" class="messagingPlatformAction" method="reutenPage">
+			<result name="success">/app/integrateservice/messagingplatform/returnPage.jsp</result>
+		</action>
+		<!-- 查看 -->
+		<action name="checkOutbox" class="messagingPlatformAction" method="chickPhoneMessage">
+			<result name="success">/app/integrateservice/messagingplatform/outboxPage.jsp</result>
+		</action>
+		<!-- 短信平台发送消息收件人弹出框 -->
+		<action name="orgUserToPhoneMess" class="messagingPlatformAction" method="orgUserToPhoneMess">
+    		<result name="success" >/app/personnel/orgUserToPhoneMess.jsp</result>
+		</action>
+	
+		<!-- 删除 -->
+		<action name="deleteOutBoxMessages" class="messagingPlatformAction" method="deleteOutBoxMessages">
+			<result name="success" >/app/integrateservice/messagingplatform/selectListMessage.jsp</result>
+		 </action>
+		
+		<action name="findMessageButton" class="messagingPlatformAction" method="findMessageButton">
+		  	<result name="success" >/app/integrateservice/messagingplatform/sendMailPage.jsp</result>
+		 </action>
+		 
+		 <action name="findMessageButton1" class="messagingPlatformAction" method="findMessageButton1">
+		  	<result name="success" >/app/integrateservice/messagingplatform/selectListMessage.jsp</result>
+		 </action>
+	</package>
+	
+	
+	<!-- 功能：短信发送平台	zh	2013-5-24 -->
+	<package name="/app/sendsms" extends="default" namespace="/app/sendsms">
+		<action name="init" class="sendSMSAction" method="init">
+			<result name="success">/app/integrateservice/sendsms/list.jsp</result>
+		</action>
+		<action name="list" class="sendSMSAction" method="list">
+			<result name="success">/app/integrateservice/sendsms/list.jsp</result>
+		</action>
+		<action name="inputSMS" class="sendSMSAction" method="inputSMS">
+			<result name="success">/app/integrateservice/sendsms/input.jsp</result>
+		</action>
+		<!-- 发送 	-->
+		<action name="saveSendSms" class="sendSMSAction" method="saveSendSms"></action>
+		<!-- 查看 -->
+		<action name="showSMS" class="sendSMSAction" method="showSMS">
+			<result name="success">/app/integrateservice/sendsms/show.jsp</result>
+		</action>
+		<!-- 删除 -->
+		<action name="deleteSMS" class="sendSMSAction" method="deleteSMS">
+			<result name="reload">list.act</result>
+		 </action>
+		<!-- 弹出单位树-->
+		<action name="showUnitTree" class="sendSMSAction" method="showUnitTree">
+    		<result name="success" >/app/integrateservice/sendsms/unitTree.jsp</result>
+		</action>
+		<!-- 加载单位树数据-->
+		<action name="getUnitTreeData" class="sendSMSAction" method="getUnitTreeData"></action>
+		<!-- 弹出个人树-->
+		<action name="showAddressTree" class="sendSMSAction" method="showAddressTree">
+    		<result name="success" >/app/integrateservice/sendsms/addressTree.jsp</result>
+		</action>
+		<!-- 加载个人树数据-->
+		<action name="getAddressTreeData" class="sendSMSAction" method="getAddressTreeData"></action>
+	</package>
+	
+</struts>

@@ -1,0 +1,396 @@
+
+.left_main_top1
+{
+	width:100%;
+	height:92px;
+	line-height:92px;
+	background:url(../images/left_main_top.gif) 0 0 repeat-x;
+	overflow:hidden;
+	min-width:690px;
+}
+.left_main_top_logo1
+{
+	width:70px;
+	height:74px;
+	background:url(../images/left_main_top_logo.png) 0 0 no-repeat;
+	overflow:hidden;
+	float:left;
+	margin:9px 0 0 20px;
+}
+.left_main_top_main1
+{
+	 height:74px;
+	 overflow:hidden;
+}
+.left_main_top_main1 table
+{
+	height:74px;
+	width:470px;
+	float:left;
+	overflow:hidden;
+}
+.left_main_top_main21
+{
+	width:100%;
+}
+.left_main_top_btn1
+{
+	width:117px;
+	height:40px;
+	margin-top:20px;
+	overflow:hidden;
+	float:left;
+	background:url(../images/left_main_top_btn.gif) 0 0 no-repeat;
+	cursor:pointer;
+}
+.card_right1
+{
+	width:232px;
+	height:278px;
+	position:absolute;
+	right:0;
+	top:0;
+	z-index:0;
+	background:url(../images/card_right.gif) 0 0 no-repeat;
+}
+.card_right_bg1
+{
+	width:100%;
+	height:380px;
+	background:url(../images/card_right_bg.gif) 0 -3px repeat-x;
+}
+.card_right_img1
+{
+	width:145px;
+	height:180px;
+	overflow:hidden;
+	cursor:pointer;
+	left:60px;
+}
+.card_right_img1
+{
+	float:left;
+}
+.card_right_table1
+{
+	float:right;
+	margin-right:65px;
+}
+.card_right_table1 tr td
+{
+	text-align:right;
+	word-break: keep-all;
+}
+.card_right_table1 tr
+{
+	height:40px;
+}
+.card_right_main11
+{
+	width:500px;
+	position:absolute;
+	top:60px;
+	left:50%;
+	margin-left:-250px;
+}
+.card_right_main1 span
+{
+	font-size:14px;
+	color:#333;
+}
+.card_right_main1 input
+{
+	border:1px solid #6da4cd;
+	line-height:26px
+}
+.card_right_table21
+{
+	position:absolute;
+	top:280px;
+	left:50%;
+	margin-left:-270px;
+	width:550px;
+}
+.card_right_table21 span
+{
+	font-size:14px;
+	color:#333;
+}
+.card_right_table21 input
+{
+	border:1px solid #6da4cd;
+	line-height:26px
+}
+.card_right_table2_table1 tr td
+{
+	text-align:right;
+}
+.card_right_table2_table1 tr
+{
+	height:40px;
+}
+.card_right_bg21
+{
+	background:#b1d5fc;
+  width: 100%;
+  text-align:center;
+}
+.card_right_bg31
+{
+	width:100%;
+	height:80px;
+	background:url(../images/card_right_bg3.gif) 0 0 repeat-x;
+	text-align:center;
+	overflow:hidden;
+}
+.card_right_bg3_btn1
+{
+	width:117px;
+	height:35px;
+	background:url(../images/card_refunded.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	display:none;
+}
+.card_right_bg3_btn21
+{
+	width:104px;
+	height:33px;
+	background:url(../images/card_right_bg3_btn2.png) 0 0 repeat-x;
+	float:right;
+	margin-top:-40px;
+	cursor:pointer;
+}
+.card_right_bg3_btn31
+{
+	width:154px;
+	height:47px;
+	background:url(../images/card_right_bg3_btn3.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	display:none;
+}
+.card_right_bg3_btn41
+{
+	width:154px;
+	height:47px;
+	background:url(../images/card_right_bg3_btn4.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	display:none;
+}
+.card_right_bg3_btn51
+{
+	width:117px;
+	height:39px;
+	background:url(../images/card_right_ok.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	
+}
+.card_right_bg3_btn5111
+{
+	width:117px;
+	height:39px;
+	background:url(../images/card_refunded.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	
+}
+
+.card_right_bg3_btn61
+{
+	width:117px;
+	height:39px;
+	background:url(../images/card_right_ok1.png) 0 0 repeat-x;
+	margin:0 auto;
+	cursor:pointer;
+	float:lrft;
+}
+.right_main_bottom1
+{
+	height:135px;
+	width:100%;
+	text-align:center;
+	margin:2px 2px 0 4px;
+	border:1px solid #90b3ed;
+	background:url(../images/right_main_bottom.gif) 0 0 repeat-x;
+	overflow:hidden;
+}
+.right_main1
+{
+	position:absolute;
+	left:55%;
+	top:0;
+	width:45%;
+}
+.right_main_bottom_left1
+{
+	height:112px;
+	width:162px;
+	float:left;
+	
+	overflow:hidden;
+	margin:12px 0 0 0px;
+}
+.right_main_bottom_left21
+{
+	height:74px;
+	width:111px;
+	background:url(../images/right_main_bottom_left2.gif) 0 0 no-repeat;
+	overflow:hidden;
+	float:left;
+	margin:50px 0 0 -25px;
+}
+.right_main_bottom_left21 span
+{
+	font-size:40px;
+	color:#d52e0c;
+	display:block;
+	width:60px;
+	height:40px;
+	line-height:40px;
+	float:right;
+	margin-top:30;
+	text-align:center;
+}
+.right_main_bottom_left31
+{
+	height:125px;
+	width:290px;
+	float:left;
+	background:url(../images/right_main_bottom_left3.png) 0 0 no-repeat;
+	overflow:hidden;
+	margin-left:8px;
+}
+.right_main_bottom_left3_span1
+{
+	font-size:30px;
+	color:#d52e0c;
+	display:block;
+	width:60px;
+	height:82px;
+	line-height:26px;
+	float:right;
+	margin-top:43px;
+	text-align:center;
+}
+.right_main_bottom_left3_span1 span
+{
+	width:60px;
+	display:block;
+	height:27px;
+	line-height:27px;
+	font-size:26px;
+	color:#2eab18;
+}
+.right_main_bottom_left4_span1
+{
+	font-size:30px;
+	color:#d52e0c;
+	display:block;
+	width:60px;
+	height:82px;
+	line-height:26px;
+	float:left;
+	margin:43px 0 0 85px;
+	text-align:center;
+}
+.right_main_bottom_left4_span1 span
+{
+	width:60px;
+	display:block;
+	height:27px;
+	line-height:27px;
+	font-size:26px;
+	color:#3182c6
+}
+.right_main_bottom_main1
+{
+	width:607px;
+	margin:0 auto;
+}
+.card_right_ok1
+{
+	width:117px;
+	height:39px;
+	position:absolute;
+	top:10px;
+	left:50%;
+	margin-left:-270px;
+	background:url(../images/new.gif) 0 0 repeat-x;
+	overflow:hidden;
+	cursor:pointer;
+}
+.card_right_table2_table11
+{
+	width:505px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:10px;
+	height:46px;
+}
+.card_div1
+{
+	background:#9ec7f9;
+	width:405px;
+	float:left;
+}
+.card_span1
+{
+	float:left;
+	display:block;
+	padding-top:15px;
+	padding-right:10px;
+}
+.card_div1 input
+{
+	border: 1px solid #6DA4CD;
+	float:left;
+	margin-right:5px;
+	margin-left:5Px;
+	margin-top:10px;
+	text-align:center;
+	color:#ccc;
+}
+.card_div_more1
+{
+	height:46px;
+}
+.card_spna1
+{
+	float:left;
+}
+.show_hide1
+{
+	position:absolute;
+	left:0;
+	top:50%;
+	margin-top:-40px;
+	width:16px;
+	height:79px;
+	background:url(../images/show_hide.png) 0 0 no-repeat;
+	cursor:pointer;
+}
+.show_hide21
+{
+	position:absolute;
+	left:0;
+	top:50%;
+	margin-top:-40px;
+	width:16px;
+	height:79px;
+	background:url(../images/show_hide2.png) 0 0 no-repeat;
+	cursor:pointer;
+	display:none;
+}
+.card_right_main12
+{
+	width:70px;
+	height:70px;
+	position:absolute;
+	right:0;
+	top:60px;
+	cursor:pointer;
+}
+

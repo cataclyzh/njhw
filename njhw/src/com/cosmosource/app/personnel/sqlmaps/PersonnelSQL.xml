@@ -1,0 +1,1992 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PersonnelSQL">
+    
+    <!-- 物业房间分配时  机构已分了房间且有人的房间    sqs -->
+	<select id="selectOrgRoom" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select a.ORG_ID,a.ORG_NAME,a.RES_ID,
+       	(select c.name from objtank c where c.node_id = a.res_id) ROOMNAME,b.ROOM_ID,case when b.ROOM_ID is null then 'n' else 'y' end ISYN
+  		from em_org_res a, njhw_users_exp b where a.res_id = b.room_id(+) and a.eor_type = '1' and a.org_id = #orgId#
+	</select>  
+      
+	<!-- 部门门禁分配时  查询机构   sqs -->
+	<select id="selectOrganList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select o.* from ORG o where o.p_id = 2
+		<dynamic>
+			<isNotEmpty prepend="and" property="name">
+				o.NAME  like '%'|| #name# || '%'
+            </isNotEmpty>
+		</dynamic>
+		order by o.order_num
+	</select>
+	
+	<!-- 包含E座的单位 -->
+	<select id="selectOrganListE" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select o.* from ORG o where o.p_id in (2,1070)
+		order by o.order_num
+	</select>
+	
+	<!-- 部门门禁的分配时  查询门禁 (显示没分的和已分的)   sqs -->
+	<select id="selectDoorList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from (
+		select O.NAME,O.EXT_RES_TYPE,O.NODE_ID,V.BUILD_NAME,V.FLOOR_NAME,V.ROOM_NAME,'n' yn FROM OBJTANK O, EM_ORG_RES RES ,V_OBJTANK_SMARTDEV V where V.NODE_ID = O.NODE_ID and O.NODE_ID = RES.RES_ID(+) and O.EXT_RES_TYPE = #EXT_RES_TYPE_2# and (RES.ORG_ID != #orgId# or RES.ORG_ID is null)
+        union
+        select O.NAME,O.EXT_RES_TYPE,O.NODE_ID,V.BUILD_NAME,V.FLOOR_NAME,V.ROOM_NAME,'y' yn FROM OBJTANK O, EM_ORG_RES RES ,V_OBJTANK_SMARTDEV V where V.NODE_ID = O.NODE_ID and O.NODE_ID = RES.RES_ID and O.EXT_RES_TYPE = #EXT_RES_TYPE_2# and RES.ORG_ID = #orgId#
+        ) tempa
+	</select>  
+	
+	<!-- 部门门禁的分配时  查询门禁 (显示没分的和已分的  点击下一页)   sqs -->
+	<select id="selectPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from (
+		select O.NAME,O.EXT_RES_TYPE,O.NODE_ID,V.BUILD_NAME,V.FLOOR_NAME,V.ROOM_NAME,'n' yn FROM OBJTANK O, EM_ORG_RES RES ,V_OBJTANK_SMARTDEV V where V.NODE_ID = O.NODE_ID and O.NODE_ID = RES.RES_ID(+) and O.EXT_RES_TYPE = #EXT_RES_TYPE_2# and (RES.ORG_ID != #orgId# or RES.ORG_ID is null)
+        union
+        select O.NAME,O.EXT_RES_TYPE,O.NODE_ID,V.BUILD_NAME,V.FLOOR_NAME,V.ROOM_NAME,'y' yn FROM OBJTANK O, EM_ORG_RES RES ,V_OBJTANK_SMARTDEV V where V.NODE_ID = O.NODE_ID and O.NODE_ID = RES.RES_ID and O.EXT_RES_TYPE = #EXT_RES_TYPE_2# and RES.ORG_ID = #orgId#
+        ) tempa
+	</select>  
+	
+	<!--功能：查询临时卡信息 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="queryTcTempcard" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from TC_TEMPCARD_RFID t where 1 = 1
+		<dynamic>
+            <isNotEmpty prepend="and" property="cardId">
+				t.CARD_ID = #cardId#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="rfid">
+				t.RFID = #rfid#
+            </isNotEmpty>
+		</dynamic>
+		order by t.CARD_ID
+	</select>
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectTellList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn, '未分配' orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '3' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and (RES.ORG_ID != #orgId# and RES.ORG_ID is not null)
+                        union
+                          select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID =  #orgId#
+                           and t.tel_id=to_number(nj.tel_num)
+                           and nj.userid=u.userid
+        				   and nj.tel_num is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID = #orgId#
+                           and t.tel_id not in
+                               (select to_number(nj.tel_num)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.tel_num is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	   <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num 
+	</select>
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectFAXList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn,'未分配'  orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '3' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and (RES.ORG_ID != #orgId# and RES.ORG_ID is not null)
+                        union
+                         select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID =#orgId#
+                           and t.tel_id=to_number(nj.uep_fax)
+                           and nj.userid=u.userid
+                   			and nj.uep_fax is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID = #orgId#
+                           and t.tel_id not in
+                               (select to_number(nj.uep_fax)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.uep_fax is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num 
+	</select>  
+	
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectWEBFAXList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn,'未分配' orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '3' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and (RES.ORG_ID != #orgId# and RES.ORG_ID is not null)
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID =#orgId#
+                           and t.tel_id=to_number(nj.web_fax)
+                           and nj.userid=u.userid
+                  		   and nj.web_fax is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                           and RES.ORG_ID = #orgId#
+                           and t.tel_id not in
+                               (select to_number(nj.web_fax)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.web_fax is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num  
+	</select>  
+	
+	
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectTellListAll" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn, '未分配' orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+                          select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+						 and t.tel_id=to_number(nj.tel_num)
+                           and nj.userid = u.userid
+        				   and nj.tel_num is not null
+        				   and RES.ORG_ID is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                          and  RES.ORG_ID is not null
+                           and t.tel_id not in
+                               (select to_number(nj.tel_num)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.tel_num is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	   <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num 
+	</select>
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectFAXListAll" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn,'未分配'  orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+					select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+                         and   RES.ORG_ID is not null
+                           and t.tel_id=to_number(nj.uep_fax)
+                           and nj.userid=u.userid
+                   			and nj.uep_fax is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                           and   RES.ORG_ID is not null
+                           and t.tel_id not in
+                               (select to_number(nj.uep_fax)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.uep_fax is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num 
+	</select>  
+	
+	
+	<!-- 部门IP电话的分配时  查询门IP电话(显示没分的和已分的  )   sqs -->
+	<select id="selectWEBFAXListAll" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select *
+                  from (select T.TEL_ID, T.TEL_NUM, t.tel_type, '2' yn,'未分配' orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID(+)
+                           and RES.ORG_ID is null
+                        union
+  
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '4' yn,RES.ORG_NAME orgname,trim(u.display_name) username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES,njhw_users_exp nj,users u
+                         where T.TEL_ID = RES.RES_ID
+                           and t.tel_id=to_number(nj.web_fax)
+                           and nj.userid=u.userid
+                  		   and nj.web_fax is not null
+                  		   and RES.ORG_ID is not null
+                        union
+                        select T.TEL_ID, T.TEL_NUM, t.tel_type, '1' yn,RES.ORG_NAME orgname,'' username
+                          FROM TC_IP_TEL T, EM_ORG_RES RES
+                         where T.TEL_ID = RES.RES_ID
+                         	and RES.ORG_ID is not null
+                           and t.tel_id not in
+                               (select to_number(nj.web_fax)
+                                  from NJHW_USERS_EXP nj
+                                 where nj.web_fax is not null)) tempa where 1 = 1
+        <dynamic>
+	          <isNotEmpty prepend="and" property="resType">
+			 		tempa.tel_type  = #resType#
+	          </isNotEmpty>
+	          <isEqual compareValue="1" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="2" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+          	  <isEqual compareValue="3" prepend="and" property="resStatus">
+          			(tempa.yn  = '3' or  tempa.yn  = '4')
+          	  </isEqual>
+          	  <isEqual compareValue="10" prepend="and" property="resStatus">
+          			(tempa.yn  = '1' or  tempa.yn  = '4' or  tempa.yn  = '3')
+          	  </isEqual>
+          	  <isEqual compareValue="11" prepend="and" property="resStatus">
+          			tempa.yn  = '2'
+          	  </isEqual>
+	          <isNotEmpty prepend="and" property="telNum">
+			 		tempa.TEL_NUM  like '%'|| #telNum# || '%'
+	          </isNotEmpty>
+		</dynamic>
+            order by tempa.tel_num  
+	</select>  
+	
+	
+	<!--功能：查询IP电话 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="selectPhoneList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from EM_ORG_RES t where t.EOR_TYPE =#EOR_TYPE_PHONE#
+		<dynamic>
+			<isGreaterThan compareValue="0"  prepend="and" property="orgId">
+				t.ORG_ID= #orgId#
+          	</isGreaterThan>
+            <isNotEmpty prepend="and" property="resName">
+				t.RES_NAME like '%'|| #resName# || '%'
+            </isNotEmpty>
+		</dynamic>
+		order by t.INSERT_DATE desc, t.ORG_ID desc
+	</select> 
+	
+	<!--功能：查询已分配的Ip电话信息 	开发者：sqs  -->
+	<select id="IpTellList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select e.* from EM_ORG_RES e where e.EOR_TYPE = #EOR_TYPE_PHONE#
+		<dynamic>
+			<isNotEmpty prepend="and" property="orgId">
+				e.ORG_ID  = #orgId#
+            </isNotEmpty>
+		</dynamic>
+		order by e.RES_ID asc
+	</select>
+	
+	<!--功能：查询未分配的Ip电话信息 	开发者：sqs 	时间：2013-03-19  -->
+	<select id="NoAllotIPList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.TEL_ID, t.TEL_NUM from TC_IP_TEL t where 1=1
+		<dynamic>
+          	<isGreaterThan compareValue="0" prepend="and" property="len">
+          		t.TEL_ID not in 
+          		<iterate property="ids" open="(" close=")" conjunction=","> 
+			    	#ids[]#
+			    </iterate>
+          	</isGreaterThan>
+       	</dynamic>
+       	order by t.TEL_ID asc 
+	</select>
+	
+	<!--功能：查询部门已分配的房间信息 	开发者：zh 	时间：2013-04-07  -->
+	<select id="allotRooms" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tank.*, eor.RES_ID, EOR.ORG_ID, EOR.EOR_ID, o.short_name
+		from V_OBJTANK_BFR tank 
+		LEFT JOIN EM_ORG_RES eor 
+		on tank.NODE_ID = EOR.RES_ID
+		LEFT JOIN org o
+		on fn_get_orgid(EOR.ORG_ID) = o.org_id
+		where 1 = 1
+		<dynamic>
+          	<isGreaterThan compareValue="0"  prepend="and" property="len">
+				tank.PARENT_ID in 
+          		<iterate property="ids" open="(" close=")" conjunction=","> 
+			    	#ids[]#
+			    </iterate>
+          	</isGreaterThan>
+          	<isEqual compareValue="1" prepend="and" property="isAllot">
+          		<isNotEmpty property="orgId">
+          			eor.ORG_ID = #orgId#
+          		</isNotEmpty>
+          		<isEmpty property="orgId">
+          			eor.ORG_ID is not null
+          		</isEmpty>
+          	</isEqual>
+          	<isEqual compareValue="2" prepend="and" property="isAllot">
+          		eor.ORG_ID is null
+          	</isEqual>
+          	<isEqual compareValue="3" prepend="and" property="isAllot">
+          		<isNotEmpty property="orgId">
+          			<![CDATA[ eor.ORG_ID  <>  #orgId# ]]>
+          		</isNotEmpty>
+          	</isEqual>
+       	</dynamic>
+       	ORDER BY TANK.NODE_ID
+	</select>
+	
+	<!--功能：查询分配的房间数量 	开发者：hj 	时间：2013-09-05  -->
+	<select id="countAllotRooms" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select count(tank.node_id) as COUNT
+		from V_OBJTANK_BFR tank 
+		LEFT JOIN EM_ORG_RES eor 
+		on tank.NODE_ID = EOR.RES_ID
+		where 1 = 1
+		<dynamic>
+          	<isEqual compareValue="1" prepend="and" property="isAllot">
+          		eor.ORG_ID is not null
+          	</isEqual>
+          	<isEqual compareValue="2" prepend="and" property="isAllot">
+          		eor.ORG_ID is null
+          	</isEqual>
+       	</dynamic>
+       	ORDER BY TANK.NODE_ID
+	</select>
+	
+	<!--功能：查询未分配房间数 	开发者：hj 	时间：2013-09-04  -->
+	<select id="countRoomsCanAllot" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select count(o.node_Id) as count
+  		from Em_Org_Res e, objtank o
+ 		where o.node_Id = e.res_Id(+)
+   		and o.ext_Res_Type = 'R'
+   		and e.eor_Type(+) = '1'
+   		and e.org_Id is null
+	</select>
+	
+	<!--功能：统计每个房间的人数 	开发者：zh 	时间：2013-04-07  -->
+	<select id="countPersonForRoom" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select e.room_id , count(e.room_id) num from "USERS" u, NJHW_USERS_EXP e
+			where u.userid = e.userid 
+			<dynamic>
+				<isGreaterThan compareValue="0" prepend="and" property="len">
+	          		e.room_id in 
+	          		<iterate property="ids" open="(" close=")" conjunction=","> 
+				    	#ids[]#
+				    </iterate>
+	          	</isGreaterThan>
+          	</dynamic>
+			GROUP BY e.room_id
+	</select>
+	
+	<!--功能：查询每个房间的开门权限 	开发者：hj 	时间：2013-09-17  -->
+	<select id="getAuthUserByRoomId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+(select t1.userid
+  from njhw_users_exp t1, njhw_tscard t2
+ where (t1.card_type = '1' and t1.userid = t2.user_id and t2.card_id in (select de.card_id
+from njhw_doorcontrol_exp de,
+objtank              l,
+objtank              r
+ where r.node_id = #nodeId#
+and r.ext_res_type = 'R'
+and r.node_id = l.p_id
+and l.ext_res_type = '3'
+and l.node_id =
+de.dlock_id)))union
+(select t1.userid from njhw_users_exp t1
+where ((t1.card_type = '2' or t1.card_type = '3') and t1.tmp_card in (select de.card_id
+from njhw_doorcontrol_exp de,
+objtank              l,
+objtank              r
+where r.node_id = #nodeId#
+and r.ext_res_type = 'R'
+and r.node_id = l.p_id
+and l.ext_res_type = '3'
+and l.node_id = de.dlock_id)))
+	</select>
+	
+	<!--功能：查询部门已分配的房间信息 	开发者：zh 	时间：2013-03-24  -->
+	<!--<select id="RoomList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.EOR_ID, t.ORG_NAME, t.RES_NAME, t.INSERT_DATE, t.POR_FLAG ,v.BULID, v.FLOOR, v.ROOM, v.NAME
+		from EM_ORG_RES t, V_OBJTANK_BFR v 
+		where t.EOR_TYPE=1 and v.NODE_ID = t.RES_ID
+		<dynamic>
+			<isGreaterThan compareValue="0"  prepend="and" property="orgId">
+				t.ORG_ID= #orgId#
+          	</isGreaterThan>
+       	</dynamic>
+       	order by t.ORG_ID asc, t.RES_ID asc
+	</select>-->
+		
+	<!--功能：查询未分配的房间信息 	开发者：zh 	时间：2013-03-24  -->
+	<!--<select id="NoAllotList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.NODE_ID, t.NAME from OBJTANK t where t.EXT_RES_TYPE = 'R'
+		<dynamic>
+			<isGreaterThan compareValue="0"  prepend="and" property="pid">
+				t.P_ID= #pid#
+          	</isGreaterThan>
+          	<isGreaterThan compareValue="0" prepend="and" property="len">
+          		t.NODE_ID not in 
+          		<iterate property="ids" open="(" close=")" conjunction=","> 
+			    	#ids[]#
+			    </iterate>
+          	</isGreaterThan>
+       	</dynamic>
+       	order by t.NODE_ID asc 
+	</select>-->
+	
+	<!--功能：查询未分配的IP话机	开发者：zh 	时间：2013-05-11  -->
+	<select id="NoAllotIpTelList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select ip.* from TC_IP_TEL ip where ip.tel_id in (
+			select e.res_id from EM_ORG_RES e where e.eor_type = #eorType# and e.ORG_ID = #orgId#
+			<dynamic>
+	          	<isGreaterThan compareValue="0" prepend="and" property="len">
+	          		e.res_id not in 
+	          		<iterate property="ids" open="(" close=")" conjunction=","> 
+				    	#ids[]#
+				    </iterate>
+	          	</isGreaterThan>
+	       	</dynamic>
+		)
+	</select>
+	
+	<!--功能：查询未分配的电话号码	开发者：zh 	时间：2013-05-11  -->
+	<select id="NoAllotTelNumList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from EM_ORG_RES e where e.eor_type = #eorType# and e.ORG_ID = #orgId#
+		<dynamic>
+          	<isGreaterThan compareValue="0" prepend="and" property="len">
+          		e.res_name not in 
+          		<iterate property="ids" open="(" close=")" conjunction=","> 
+			    	#ids[]#
+			    </iterate>
+          	</isGreaterThan>
+       	</dynamic>
+	</select>
+	
+	<!--功能：根据userId和市民卡号查询人员制定信息		开发者：zh 	时间：2013-03-24  -->
+	<!--以后一人多卡的时候需要使用卡号来查询：and card.card_id = #cityCard#-->
+	<select id="searchInfoByuidAndcard" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select u.DISPLAY_NAME, u.ORG_ID, u.USERID, u.IS_SYSTEM, o."NAME",
+			CARD.CARD_ID, CARD.CARD_TYPE, CARD.CARDSTATUS, CARD.CARD_LOSTED,
+			"EXP".UEP_MAIL,"EXP".PLATE_NUM,"EXP".TEL_NUM, "EXP".RESIDENT_NO, "EXP".UEP_TYPE,
+			"EXP".UEP_MOBILE, "EXP".UEP_SEX, "EXP".TEL_MAC, "EXP".ROOM_INFO, "EXP".UEP_PHOTO
+		from NJHW_USERS_EXP exp, NJHW_TSCARD card, USERS u , ORG o
+		where exp.USERID = u.USERID 
+			and u.USERID = card.USER_ID 
+			and o.org_id = u.org_id
+			and u.USERID = #userId#
+	</select>
+	
+	<!--功能：验证选定的房间是否已分配给非当前机构		开发者：zh 	时间：2013-03-24  -->
+	<select id="validRoom" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.RES_ID, t.RES_NAME from EM_ORG_RES t where t.EOR_TYPE = #eortype# and t.ORG_ID != #orgId#
+		<dynamic>
+          	<isGreaterThan compareValue="0" prepend="and" property="len">
+          		t.RES_ID in 
+          		<iterate property="ids" open="(" close=")" conjunction=","> 
+			    	#ids[]#
+			    </iterate>
+          	</isGreaterThan>
+       	</dynamic>
+	</select>
+	
+	<!--功能：查询车牌/Ip电话信息 	开发者：zh 	时间：2013-03-23  -->
+	<select id="queryNumList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from EM_ORG_RES t where t.EOR_TYPE = #eortype#
+		<dynamic>
+			<isGreaterThan compareValue="0"  prepend="and" property="orgId">
+				t.ORG_ID= #orgId#
+          	</isGreaterThan>
+            <isNotEmpty prepend="and" property="resName">
+				t.RES_NAME like '%'|| #resName# || '%'
+            </isNotEmpty>
+		</dynamic>
+		order by t.INSERT_DATE desc, t.ORG_ID desc
+	</select>
+	
+	<!--功能：统计已分配的固定车辆数 	开发者：zh 	时间：2013-03-23  -->
+	<select id="queryAllotCarFasten" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT * FROM NJHW_USERS_PLATENUM P WHERE P.NUP_FLAG = #nupFlag# AND P.USERID IN (SELECT U.USERID FROM USERS U WHERE FN_GET_PARKING_ORGID(U.ORG_ID) = FN_GET_PARKING_ORGID(#topOrgId#))
+		
+	</select>
+	
+	<select id="queryAllotCarFastens" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT *
+  FROM NJHW_USERS_PLATENUM P
+ WHERE P.NUP_FLAG = #nupFlag#
+   AND P.USERID IN (SELECT U.USERID
+                      FROM USERS U
+                     WHERE U.ORG_ID in
+                           (select org_id from org where p_id = #topOrgId#))
+	</select>
+	
+	<!-- 查询指定单位的已分配车位数 -->
+	<select id="queryAllocateCarNumber" parameterClass="map" resultClass="hashmap">
+		select count(0) as num from T_029_PARK_LICENSE a where fn_get_orgid(a.car_owner_parent_org_id) = #orgId#
+	</select>
+	
+	<insert id="insertAOM" parameterClass="java.util.Map" >
+		insert into ADMIN_ORG_MAP (org_id, userid, creator, create_date) values(#orgId#, #userid#, #creator#, #createDate#)
+	</insert>
+	
+	<delete id="delAOM"  parameterClass="java.util.Map" >
+		delete from ADMIN_ORG_MAP where userid = #userid#
+	</delete>
+	
+	<!--功能：查询车位信息  -->
+	<select id="queryCarPortNumList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select u.ORG_ID ,n.NUP_FLAG,u.DISPLAY_NAME,n.NUP_PN,n.INSERT_DATE,e.RES_NAME from USERS u,NJHW_USERS_PLATENUM n,EM_ORG_RES e WHERE u.USERID = n.USERID 
+        and e.ORG_ID=u.ORG_ID
+		<dynamic>
+			<isGreaterThan compareValue="0"  prepend="and" property="orgId">
+				u.ORG_ID= #orgId#
+          	</isGreaterThan>
+          	<isNotEmpty prepend="and" property="eorType">
+				e.EOR_TYPE = #eorType#
+            </isNotEmpty>
+		</dynamic>
+		order by n.NUP_FLAG desc,n.INSERT_DATE asc
+	</select>
+	
+	<!--功能：提交前验证所有车牌/Ip电话		开发者：zh 	时间：2013-03-24  -->
+	<select id="preSaveValid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.RES_NAME from EM_ORG_RES t where t.EOR_TYPE = #eortype#
+		<dynamic>
+        	and t.RES_NAME in 
+        	<iterate property="nums" open="(" close=")" conjunction=","> 
+		    	#nums[]#
+		    </iterate>
+       	</dynamic>
+	</select>
+	
+	<!--功能：三维——删除选定的房间		开发者：zh 	时间：2013-03-23  -->
+	<delete id="swDeleteAlreadyRooms" parameterClass="java.util.Map">
+		DELETE FROM EM_ORG_RES where ORG_ID= #orgId# and EOR_TYPE=#eorType#
+	</delete>
+	
+	<!--功能：删除选定的房间		开发者：zh 	时间：2013-03-23  -->
+	<delete id="deleteAlreadyRooms" parameterClass="java.util.Map">
+		DELETE FROM EM_ORG_RES where ORG_ID= #orgId# and EOR_TYPE=#eorType# and RES_ID in 
+		<dynamic>
+         	<iterate property="resIds" open="(" close=")" conjunction=","> 
+		    	#resIds[]#
+		    </iterate>
+		</dynamic>
+	</delete>
+	
+	<update id="updCardSetCardFlag">
+		update NJHW_TSCARD set card_flag = #cardFlag# where user_id = #userId#
+	</update>
+	
+	<!--功能：查询org信息 	开发者：cjw 	时间：2013-04-02  -->
+	<select id="getOrgByUserOrgId" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+		SELECT O.ORG_ID as orgId,O.NAME as name, O.P_ID as PId  FROM ORG O START WITH O.ORG_ID=#orgId# CONNECT BY  O.P_ID= PRIOR O.ORG_ID ORDER BY O.ORG_ID   ASC
+	</select>	
+	
+	<!--功能：查询出管理员管理范围的资源对象根节点信息 	开发者：WXJ 	时间：2013-04-14  -->
+	<select id="getObjByManager" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank" >
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+				o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum
+		from OBJTANK o 
+		where o.node_id in (
+		select t.node_id 
+		from OBJ_PERM_MAP t 
+		where t.type='user' and t.perm_code = 'res_mgt'
+		and t.deny_flag = 1 and t.person_id = #userid# )
+	</select>
+	
+	<select id="getTopStorey" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank" >
+		SELECT o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+				o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum
+		FROM OBJTANK o 
+		WHERE o.node_id = 6
+	</select>
+	
+	<!--功能：条件查出人员  gxh-->
+	<!--功能：查询出管理员管理范围的组织机构根节点信息 	开发者：WXJ 	时间：2013-05-04  -->
+	<select id="getOrgByManager" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+		select o.org_id orgId,o.name name,o.level_num levelNum
+		from ORG o 
+		where o.org_id in (
+		select t.org_id 
+		from ADMIN_ORG_MAP t 
+		where t.userid = #userid# )
+		order by o.order_num
+	</select>	
+	
+	<select id="getOrgAdminByManager" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+		select o.org_id orgId,o.name name,o.level_num levelNum
+		from ORG o 
+		where o.org_id in (
+		select t.org_id 
+		from ADMIN_ORG_MAP t 
+		where t.org_id = #userid# )
+		order by o.order_num
+	</select>
+	<!-- 查询该权限下所有的用户 	开发者：ywl		时间：2013-8-9 -->
+	<select id="queryUserAdminRoot" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select userid,node_Id,display_name,replace(type,' ','') as type from users u ,obj_perm_map obj where obj.node_id = #nodeId# and obj.person_id = u.userid
+	</select>
+	<select id="queryOrgAdminRoot" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select org_id as userid,node_Id,name as display_name,replace(obj.type,' ','') as type from org o ,obj_perm_map obj where obj.node_id = #nodeId# and obj.person_id = o.org_id and obj.type = 'org'
+	</select>
+	<select id="getOBJNodeId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select node_id,title from objtank where title like '%单位管理员%'
+	</select>
+	
+	<!--删除该权限下的用户 		开发者：ywl		时间：2013-8-9 -->
+	<delete id="delObjAdminRoot" parameterClass="java.util.Map">
+		delete obj_perm_map where person_id = #userid#  and node_id = #nodeId#
+	</delete>
+	
+	<insert id="insertAdminUserRoot" parameterClass="java.util.Map">
+		<![CDATA[
+		insert into obj_perm_map (MAPID, PERSON_ID, NODE_ID, PERM_CODE, DENY_FLAG, TYPE)
+		values ((select max(MAPID)+1 MAPID from obj_perm_map), #userid#, #nodeid#, 'obj_vis', 1, #type#)
+		]]>
+	</insert>
+	
+	<!--功能：取得当前登陆的用户所属单位的id 	开发者：zh 	时间：2013-05-04  -->
+	
+	<select id="getOrgIdByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select aa.display_name,
+       fn_get_orgid(org_id) TOP_ORG_ID,
+       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) top_org_name,
+       aa.org_id,
+       fn_get_orgid(org_id) TOP_ORG_ID,
+       (select name from org bb where bb.org_id = aa.org_id) org_name
+	  from users aa
+	 where aa.userid =  #userid#
+	</select>	
+	
+	<select id="getTopOrgIdByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select aa.display_name,
+	       fn_get_orgid(org_id) TOP_ORG_ID,
+	       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) org_name,
+	       aa.org_id
+		 from users aa
+		 	where aa.userid = #userid#
+	</select>
+	
+	<!--功能:功能菜单权限基础Sql    开发者：WXJ   时间：2013-4-4-->
+	<select id="getOrgAllUsers" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Users" >	
+	<![CDATA[	
+	select u.display_name displayName,u.userid userid
+	from USERS u
+	where u.org_id in (
+	select o.org_id
+	from ORG o
+	connect by prior o.p_id = o.org_id
+	start with o.org_id = #orgid# 
+	]]>
+	</select>
+	
+    <!--功能:人员查询    开发者：gxh   时间：2013-5-5-->
+	<select id="peInforQuery" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select v.*, uep.tel_num from v_platenum_list v, njhw_users_exp uep  where v.userid = uep.userid(+)
+  		<dynamic>
+			<isNotEmpty prepend="and" property="displayName">
+		    	trim(v.display_name) like '%'|| #displayName# || '%' 
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="and" property="residentNo">
+				trim(v.resident_no) like '%'|| #residentNo# || '%' 
+            </isNotEmpty> 
+            <isNotEmpty prepend="and" property="phone">
+				trim(v.uep_mobile) like '%'|| #phone# || '%' 
+            </isNotEmpty> 
+              <isNotEmpty prepend="and" property="tel">
+				v.tel  like '%'|| #tel# || '%' 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="telNo">
+            	uep.tel_num like '%'|| #telNo# || '%'
+            </isNotEmpty> 
+            <isNotEmpty prepend="and" property="carNum">
+				trim(v.platenum) like '%'|| #carNum# || '%' 
+            </isNotEmpty> 
+            <isNotEmpty prepend="and" property="roomInfo">
+		    	v.room_info = #roomInfo#
+		  	</isNotEmpty>
+		  	
+		  	<isNotEmpty prepend="and" property="cityCardType">
+		  	    v.card_type = #cityCardType#
+		  	</isNotEmpty>
+		  	
+		  	<isEqual compareValue="1" prepend="and" property="personType">
+				v.uep_type = '04'  
+			</isEqual>
+			
+			<isEqual compareValue="0" prepend="and" property="personType">
+				(v.uep_type != '04'  or  v.uep_type is null)
+			</isEqual>
+			
+			<isEqual compareValue="1" prepend="and" property="isAdmin">
+				v.u_type = 1 
+			</isEqual>
+			
+			<isEqual compareValue="0" prepend="and" property="isAdmin">
+				(v.u_type != 1 or  v.u_type is null)
+			</isEqual>
+			
+			<isEqual compareValue="0" prepend="and" property="cardIsnormal">
+				v.card_losted = '0' and 
+       			v.cardstatus = '0'   
+			</isEqual>
+			
+			<isEqual compareValue="1" prepend="and" property="cardIsnormal">
+				(v.card_losted != '0' or
+       			v.cardstatus != '0')
+			</isEqual>
+			
+			<isEqual compareValue="2" prepend="and" property="plateType">
+				v.platecount > 0  
+			</isEqual>
+			<isEqual compareValue="1" prepend="and" property="plateType">
+				v.platecount = 0 
+			</isEqual>
+			<isNotEqual compareValue="on" prepend="and" property="recu">
+				v.department_id = #orgId#  
+			</isNotEqual>
+			
+			<isEqual compareValue="on" prepend="and" property="recu"> 
+				v.department_id in ( select o.org_id from ORG o connect by prior o.org_id = o.p_id start with o.org_id = #orgId# )
+			</isEqual>
+			 order by org_order_num, department_order_num, order_num
+		</dynamic>
+	
+	</select>	
+	
+	<!--功能:人员查询    开发者：WXJ   时间：2013-5-6-->
+	<select id="peInforQueryRecu" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select u.userid,
+       u.display_name,
+       u.org_id,       
+       o.name,      
+       e.uep_sex,
+       e.resident_no,
+       e.uep_mobile,
+       e.uep_mail,
+       e.plate_num,
+       e.room_id,
+       e.room_info,     
+       e.tel_id,      
+       e.uep_bak1,      
+       e.uep_photo,
+       e.tel_mac,
+       e.tel_num,
+       e.fee_type,
+       e.tmp_card
+	  from  users u,org o ,njhw_users_exp e 
+	  where u.org_id= o.org_id and u.userid = e.userid 
+  		<dynamic>
+			<isNotEmpty prepend="and" property="displayName">
+		      trim(u.display_name) like '%'|| #displayName# || '%'
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="and" property="residentNo">
+				 trim(e.resident_no) like '%'|| #residentNo# || '%'
+            </isNotEmpty>     
+            <isNotEmpty prepend="and" property="orgId">       
+					o.org_id in (
+					select o.org_id
+					from ORG o
+					connect by prior o.org_id = o.p_id
+					start with o.org_id = #orgId# )      
+            </isNotEmpty>   
+		</dynamic>
+	</select>
+	
+	<!--功能:查询子部门列表    开发者：   时间：2013-5-5-->
+	<select id="getSonOrgs" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select o.org_id, o.name, o.short_name, o.level_num, o.p_id, o.order_num, o.memo, o.type, o.org_code, o.ext1, o.ext2 from org o where 1=1
+	 <dynamic>
+			 <isNotEmpty prepend="and" property="orgId">
+		      o.p_id = #orgId#
+		  </isNotEmpty>		
+		</dynamic>
+	</select>
+	<!--功能:查询部门人员    开发者：   时间：2013-5-5-->
+	<select id="getAllPerByOrg" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	     select u.userid, u.display_name, u.org_id, e.uep_sex,e.resident_no,e.uep_mobile, e.uep_mail,
+         e.plate_num,e.room_id, e.room_info,     
+         e.tel_id, e.uep_bak1, e.uep_photo, e.tel_mac,e.tel_num, e.fee_type, e.tmp_card, o.name
+         from  users u,njhw_users_exp e,org o
+         where e.userid(+)=u.userid and o.org_id(+)=u.org_id 
+	 <dynamic>
+			 <isNotEmpty prepend="and" property="orgId">
+		      u.org_id = #orgId#
+		  </isNotEmpty>		
+		</dynamic>
+	</select>
+	<!--功能:查询人员 信息   开发者：   时间：2013-5-6-->
+		<select id="findperManagerByid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+    select u.userid, u.display_name, u.login_uid, u.login_pwd, u.active_flag, u.is_system, 
+    u.creator, u.creat_date, u.last_update_by, u.last_update_date,u.memo, u.change_login_pwd_flag, u.validity, 
+    u.u_type, u.p_id, u.org_id, u.u_code, u.order_num ,
+    e.uep_id, e.uep_sex, e.resident_no, e.uep_mobile, e.uep_mail, e.plate_num, room_id, e.room_info, 
+    e.station_id, e.station_name, e.tel_id, e.uep_fax, e.job_id, e.uep_hobby, e.uep_type, e.uep_skill, e.uep_flag, e.uep_bak1, 
+    uep_bak2, uep_bak3, uep_bak4, insert_id, insert_date, modify_id, modify_date, uep_photo, tel_mac, 
+    e.tel_num, e.fee_type, e.tmp_card from users u, njhw_users_exp e where u.userid = e.userid (+)
+	 <dynamic>
+			 <isNotEmpty prepend="and" property="userid">
+		     u.userid = #userid#
+		  </isNotEmpty>		
+		</dynamic>
+	</select>
+	
+	<!--功能:机构排序   开发者：gxh   时间：2013-5-6-->
+	<select id="getMax" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+	select t.org_id as orgId, t.name as name, t.level_num as levelNum, t.p_id as PId, t.order_num as orderNum from ORG t where t.p_id = #PId# and t.level_num = #levelNum# and t.order_num in
+	(select max(t.order_num) from ORG t where t.p_id = #PId# and t.level_num = #levelNum#)
+	</select>
+	<select id="getMin" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+	select t.org_id as orgId, t.name as name, t.level_num as levelNum, t.p_id as PId, t.order_num as orderNum from ORG t where t.p_id = #PId# and t.level_num = #levelNum# and t.order_num in
+	(select min(t.order_num) from ORG t where t.p_id = #PId# and t.level_num = #levelNum#)
+	</select>
+	<select id="getMinUser" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Users" >
+	select min(t.order_num) as orderNum from USERS t where t.org_id=#orgId#
+	</select>
+	<select id="getMaxUser" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Users" >
+	select max(t.order_num) as orderNum from USERS t where t.org_id=#orgId#
+	</select>
+	
+	
+	<select id="getMaxOrg" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Org" >
+		select max(t.order_num) as orderNum from Org t where t.p_id=#orgId#
+	</select>
+	
+	<!--更新单位排序-->
+	<update id="updateOrgOrder" parameterClass="java.util.Map">
+		UPDATE Org t  SET t.order_num = t.order_num + 1 WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="start">
+				<![CDATA[ t.order_num >= #start# ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="end">
+				<![CDATA[ t.order_num < #end# ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="pid">
+				t.p_id = #pid#
+            </isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--更新单位排序  -->
+	<update id="updateOrgOrder2" parameterClass="java.util.Map">
+		UPDATE Org t  SET t.order_num = t.order_num - 1 WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="start">
+				<![CDATA[ t.order_num > #start#]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="end">
+				<![CDATA[ t.order_num <= #end#]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="pid">
+				t.p_id = #pid#
+            </isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!--功能:查询人员 信息   开发者：gxh   时间：2013-5-6-->
+	<select id="getUsers" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+     select u.userid, u.display_name,o.org_id from users u,org o  
+     where u.org_id = o.org_id 
+     and o.org_id in 
+     (select o.org_id
+		from ORG o
+		connect by prior o.org_id = o.p_id
+		start with o.org_id in
+		<iterate property="orgIdList" open="(" close=")" conjunction=",">
+		#orgIdList[]#
+		</iterate> 
+	 )
+     <dynamic >
+		<!--用户名称 -->
+		<isNotEmpty prepend="and" property="displayName">
+			u.display_name like '%' || #displayName# || '%' 
+           </isNotEmpty>			
+	</dynamic>
+	</select>
+	
+	<!--功能：查询本单位人员权限 	开发者：WXJ 	时间：2013-05-19  -->
+	<select id="getUsersLimit" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+     select v.userid,
+       		v.display_name,
+	       	v.login_uid,
+	       	v.org_id,
+	       	v.org_name,
+	       	v.dev1,
+	       	v.dev2,
+	       	v.dev3,
+	       	v.dev4
+     from v_users_limit v  
+     where v.org_id in 
+     (select o.org_id
+		from ORG o
+		connect by prior o.org_id = o.p_id
+		start with o.org_id in
+		<iterate property="orgIdList" open="(" close=")" conjunction=",">
+		#orgIdList[]#
+		</iterate> 
+	 )
+     <dynamic >
+		<!--用户名称 -->
+		<isNotEmpty prepend="and" property="displayName">
+			v.display_name like '%' || #displayName# || '%' 
+           </isNotEmpty>			
+	</dynamic>
+		ORDER BY ORG_ORDER_NUM,DEPART_ORDER_NUM,ORDER_NUM
+	</select>
+	
+	<select id= "getRootOrgId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			select o.org_id as ROOTORGID, o.name as ROOTORGNAME from org o where o.org_id =fn_get_orgid(#orgId#)   
+	</select>
+	
+	
+	<select id= "getRoomIdByCardId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			 select v.room_name,v.room_id,v.node_id from V_OBJTANK_ROOM v,Njhw_Doorcontrol_Exp t 
+    			where t.dlock_id = v.node_id and t.card_id  = #cardId# and (t.exp1 is null  or t.exp1 = '3')
+	</select>
+	
+	<select id= "getRoomIdByNodeId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			 select v.room_name,v.room_id,v.node_id from V_OBJTANK_ROOM v,Njhw_Doorcontrol_Exp t 
+    			where t.dlock_id = v.node_id and v.node_id = #nodeId#
+	</select>
+	
+	<select id= "getNodeIdByRoomId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			 select v.room_name,v.room_id,v.node_id from V_OBJTANK_ROOM v,Njhw_Doorcontrol_Exp t 
+    			where t.dlock_id = v.node_id and v.room_id = #roomId#
+	</select>
+	
+	<!-- 用于合并房间所使用的标签开始		开发者：ywl		时间：2013-8-7 -->
+	<update id="updateHome" parameterClass="java.util.Map">
+		update njhw_users_exp set room_id = #minrid# where room_id = #maxrid#
+	</update>
+	<update id="updateObjPid" parameterClass="java.util.Map">
+		update objtank set p_id = #minrid# where node_id = #maxrid#
+	</update>
+	
+	<delete id="delHome" parameterClass="java.util.Map">
+		delete objtank where ext_res_type = 'R' and node_id = #maxrid#
+	</delete>
+	<select id="searchHomePerple" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select count(*) cn from njhw_users_exp where room_id = #rid#
+	</select>
+	<!-- 用于合并房间所使用的标签结束		开发者：ywl		时间：2013-8-7 -->
+
+	<select id="getDoorStoreList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT adrs_comm, count(0) NUM, adrs_IP 
+		FROM njhw_doorcontrol_set t 
+		GROUP BY adrs_comm,adrs_IP order by length(adrs_comm), adrs_comm
+	</select>
+	
+	<!-- 查询通讯机列表 zhjiabiao -->
+	<select id="getDoorControllerList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select *
+		  from njhw_doorcontrol_comm t
+		 where 1 = 1 
+		<isNotEmpty prepend="AND" property="commId">
+			 t.comm_id = #commId# 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="commIp">
+			 t.comm_ip LIKE '%' || #commIp# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 t.memo LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		order by t.id
+	</select>
+	
+	<!-- 添加通讯机 zhujiabiao -->
+	<insert id="insertDoorControllerComm" parameterClass="java.util.Map" >
+	<![CDATA[
+		insert into njhw_doorcontrol_comm (comm_id, comm_ip, memo, bak,comm_bak1,comm_bak2,comm_bak3,id) 
+		values(#commId#, #commIp#, #memo#, #bak#,#commbak1#,#commbak2#,#commbak3#,seq_njhw_doorcontrol_comm.nextval)
+	]]>
+	</insert>
+	
+	<!-- 更新通讯机 zhujiabiao-->
+	<update id="updateDoorControllerComm" parameterClass="java.util.Map">
+		update njhw_doorcontrol_comm set comm_id = #commId# , comm_ip = #commIp# , memo = #memo# where id = #id#
+	</update>
+	
+	<!-- 根据id获取通讯机 zhujiabiao-->
+	<select id="getDoorControllerModelById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select *
+		  from njhw_doorcontrol_comm t
+		 where t.id = #id#
+	</select>
+	
+	<select id="getCommId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.comm_id commid
+		  from njhw_doorcontrol_comm t
+		 where t.comm_id = #commid#
+	</select>
+
+	<select id="getCommIp" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t.comm_id commip
+		  from njhw_doorcontrol_comm t
+		 where t.comm_ip = #commip#
+	</select>
+	
+	<!-- 删除通讯机 zhujiabiao-->
+	<delete id="deleteDoorControllerComm" parameterClass="java.util.Map">
+		delete from njhw_doorcontrol_comm t where t.id in 
+		<dynamic>
+         	<iterate property="ids" open="(" close=")" conjunction=","> 
+		    	#ids[]#
+		    </iterate>
+		</dynamic>
+	</delete>
+	
+	<select id="countStoreComm" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT SET_ID 
+		FROM njhw_doorcontrol_set t 
+		WHERE t.adrs_comm = #comm# and adrs_store = #store#
+	</select>
+	
+	<select id="getMaxIdOfObjtank" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT max(node_id) ID FROM OBJTANK
+	</select>
+	
+	<insert id="insertDoorControl" parameterClass="java.util.Map" >
+	<![CDATA[
+		INSERT INTO njhw_doorcontrol_set (SET_ID, NODE_ID, NAME, TITLE, KEYWORD, ADRS_STORE, ADRS_COMM, ADRS_NUM, ADRS_IP)
+		VALUES (((select max(SET_ID) from njhw_doorcontrol_set) + 1), #nodeId#, #name#, #name#, #name#, #store#, #comm#, null, #ip#);
+	]]>
+	</insert>
+	
+	<select id="getFloors" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM objtank WHERE p_id in(6001,6002) ORDER BY Ext_res_type, name
+	</select>
+	<select id="queryLightList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * from objtank where p_id in(6001,6002) order by Ext_res_type, name
+	</select>
+	<!-- 分页查询设备维护 -->
+	<select id="queryLightListByType" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		SELECT * FROM (select 
+		node_id nodeId,name,title,keyword,p_id,ext_res_type,memos memo,links link,ico,
+		ROWNUM RN from(
+		select obj.*,(select name from objtank o where o.node_id =obj.p_id) memos ,
+		(select name from objtank s where s.node_id = (select p_id from objtank d where d.node_id =obj.p_id )) links 
+		from objtank obj where obj.EXT_RES_TYPE = '6'
+		<isNotEmpty prepend="connect" property="nodeId">
+			by prior node_id=p_id start with node_id=#nodeId# order by name
+		</isNotEmpty>
+		) a
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMOS LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINKS LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		) D 
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+		<!-- 
+		SELECT ROWNUM,S.* from (select * from objtank where EXT_RES_TYPE = '6'
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id=p_id start with node_id=#nodeId# order by name
+		</isNotEmpty>
+		) S 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax
+		]]>
+		MINUS
+		SELECT ROWNUM,P.* FROM (select * from objtank where EXT_RES_TYPE = '6' 
+		<isNotEmpty prepend="connect" property="nodeId">
+			by prior node_id=p_id start with node_id=#nodeId# order by name) P
+		</isNotEmpty>
+		<![CDATA[
+			WHERE ROWNUM < #pageMin#
+		]]>
+		-->
+		<!--  
+		select * from objtank where EXT_RES_TYPE = '6' 
+		<isNotEmpty property="nodeId">
+			connect by prior node_id=p_id start with node_id=#nodeId# order by name
+		</isNotEmpty>
+		-->
+	</select>
+	<!-- 查询设备维护总数 -->
+	<select id="queryLightListCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	    SELECT COUNT(*) CUN FROM (select 
+		node_id,name,title,keyword,p_id,ext_res_type,memos memo,links link
+		,ROWNUM RN from(
+		select obj.*,(select name from objtank o where o.node_id =obj.p_id) memos ,
+		(select name from objtank s where s.node_id = (select p_id from objtank d where d.node_id =obj.p_id )) links 
+		from objtank obj where obj.EXT_RES_TYPE = '6'
+		<isNotEmpty prepend="connect" property="nodeId">
+			by prior node_id=p_id start with node_id=#nodeId# order by name
+		</isNotEmpty>
+		) a WHERE 1=1
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMOS LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINKS LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		) D 
+	</select>
+	
+	<select id="getObjPermMap" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM obj_perm_map WHERE node_id = #nodeId#
+	</select>
+	<update id="updateJzsbInfoLight" parameterClass="java.util.Map">
+		update objtank set name = #name# , title = #title# , keyword = #keyword# where node_id = #nodeId#
+	</update>
+	
+	<update id="updateJzsbInfoLock" parameterClass="java.util.Map">
+		update njhw_doorcontrol_set set name=#name#,title=#title#,keyword=#keyword#,adrs_store=#adrsStore#,adrs_comm=#adrsComm# where set_id=#setId#
+	</update>
+	
+	<!-- 设备列表 空调 -->
+	<select id="queryAirCondListByType" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		select * from (select P.*,ROWNUM RN from (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		 from (SELECT A.*, ROWNUM RN 
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '7' 
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id=#nodeId#
+		</isNotEmpty>
+		order by name) A ) o ) P 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		) d 
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+	</select>
+	<!-- 设备维护空调 -->
+	<select id="queryAirCondListCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   		select COUNT(*) CUN from (select P.*,ROWNUM RN from (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		 from (SELECT A.*, ROWNUM RN 
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '7' 
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id=#nodeId#
+		</isNotEmpty>
+		order by name) A ) o ) P where 1=1
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		) d 
+	</select>
+	
+	<!-- 获取单位门禁申请信息  hj 2013-8-16 -->
+	<select id="queryUserAccess" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select t.*, to_char(t.app_time,'YYYY-MM-DD HH24:MI:SS') apptime, u.display_name as NAME, chushi.short_name as CS_NAME, o.short_name as ORG_NAME,
+    decode(uep.uep_type, '04', '临时人员', '内部员工') user_type, uep.uep_type,
+    decode(t.auth_ids_a, 'all', '全部', (select wm_concat(distinct(ot.keyword)) from objtank ot where ot.ext_res_type = 'F' and ot.node_id in (select * from table(cast(tabstr(t.auth_ids_a) as tabstr_t))) )) ACCESS_AUTH,
+    decode(t.auth_ids_g, 'all', '全部', (select wm_concat(distinct(g.res_name)) from vm_machine_door_set g where g.res_bak in (select * from table(cast(tabstr(t.auth_ids_g) as tabstr_t))))) GUARD_AUTH
+    from njhw_users_access t,
+         users u,
+         org chushi,
+         org o,
+         njhw_users_exp uep
+    where t.userid = u.userid
+        and u.org_id = chushi.org_id
+        and fn_get_orgid(u.org_id) = o.org_id
+        and u.userid = uep.userid
+        <isNotEmpty prepend="AND" property="id">
+  			t.nuac_id = #id#
+  		</isNotEmpty>
+        <isNotEmpty prepend="AND" property="orgId">
+  			o.org_id = #orgId#
+  		</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isNjhw">
+  			<![CDATA[
+  				t.app_status <> '4'
+  			]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="appStatus">
+  				<isNotEmpty property="isOrg">
+  					<isEqual property="appStatus" compareValue="1">
+  						t.app_status in ('1', '5')
+  					</isEqual>
+  					<isNotEqual property="appStatus" compareValue="1">
+  						t.app_status = #appStatus#
+  					</isNotEqual>
+  				</isNotEmpty>
+  				<isNotEmpty property="isNjhw">
+  					t.app_status = #appStatus#
+  				</isNotEmpty>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="name">
+  				u.display_name like '%'||#name#||'%'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="appTime">
+  				<![CDATA[
+  					t.app_time >=  to_date(#appTime#,'YYYY-MM-DD')
+  				]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isTmp">
+  				uep.uep_type = '04'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isNor">
+  				<![CDATA[
+  					(uep.uep_type <> '04' or uep.uep_type is null)
+  				]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="orgName">
+  				o.short_name like '%'||#orgName#||'%'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="opt">
+  				t.nuac_exp1 = #opt#
+  			</isNotEmpty>
+  			order by t.update_date desc
+	</select>
+	
+	<select id="queryUserAccessById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select t.*, to_char(t.app_time,'YYYY-MM-DD HH24:MI:SS') apptime, u.display_name as NAME, chushi.short_name as CS_NAME, o.short_name as ORG_NAME,
+    decode(uep.uep_type, '04', '临时人员', '内部员工') user_type, uep.uep_type,
+    decode(t.auth_ids_a, 'all', '全部', (select wm_concat(distinct(ot.keyword)) from objtank ot where ot.ext_res_type = 'F' and ot.node_id in (select * from table(cast(tabstr(t.auth_ids_a) as tabstr_t))) )) ACCESS_AUTH,
+    decode(t.auth_ids_g, 'all', '全部', (select wm_concat(distinct(g.res_name)) from vm_machine_door_set g where g.res_bak in (select * from table(cast(tabstr(t.auth_ids_g) as tabstr_t))))) GUARD_AUTH
+    from njhw_users_access t,
+         users u,
+         org chushi,
+         org o,
+         njhw_users_exp uep
+    where t.userid = u.userid
+        and u.org_id = chushi.org_id
+        and fn_get_orgid(u.org_id) = o.org_id
+        and u.userid = uep.userid
+        <isNotEmpty prepend="AND" property="id">
+  			t.nuac_id = #id#
+  		</isNotEmpty>
+  	</select>
+	
+	<!-- 获取单位门禁申请信息数量  hj 2013-8-16 -->
+	<select id="countUserAccess" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select count(t.nuac_id) as count
+    from njhw_users_access t,
+         users u,
+         org chushi,
+         org o,
+         njhw_users_exp uep
+    where t.userid = u.userid
+        and u.org_id = chushi.org_id
+        and fn_get_orgid(u.org_id) = o.org_id
+        and u.userid = uep.userid
+  		<isNotEmpty prepend="AND" property="id">
+  			t.nuac_id = #id#
+  		</isNotEmpty>
+        <isNotEmpty prepend="AND" property="orgId">
+  			o.org_id = #orgId#
+  		</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isNjhw">
+  			<![CDATA[
+  				t.app_status <> '4'
+  			]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="appStatus">
+  				<isNotEmpty property="isOrg">
+  					<isEqual property="appStatus" compareValue="1">
+  						t.app_status in ('1', '5')
+  					</isEqual>
+  					<isNotEqual property="appStatus" compareValue="1">
+  						t.app_status = #appStatus#
+  					</isNotEqual>
+  				</isNotEmpty>
+  				<isNotEmpty property="isNjhw">
+  					t.app_status = #appStatus#
+  				</isNotEmpty>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="name">
+  				u.display_name like '%'||#name#||'%'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="appTime">
+  				<![CDATA[
+  					t.app_time >=  to_date(#appTime#,'YYYY-MM-DD')
+  				]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isTmp">
+  				uep.uep_type = '04'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="isNor">
+  				<![CDATA[
+  					(uep.uep_type <> '04' or uep.uep_type is null)
+  				]]>
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="orgName">
+  				o.short_name like '%'||#orgName#||'%'
+  			</isNotEmpty>
+  			<isNotEmpty prepend="AND" property="opt">
+  				t.nuac_exp1 = #opt#
+  			</isNotEmpty>
+	</select>
+	
+	
+	<!-- 获取人员门禁信息  hj 2013-8-21 -->
+	<select id="queryUserAccessInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select u.display_name, o.short_name, uep.uep_sex, uep.access_id, uep.resident_no,
+		decode(uep.card_type, '1', (select c.card_id from njhw_tscard c where u.userid = c.user_id),
+		'2', uep.tmp_card, (select c.card_id from njhw_tscard c where u.userid = c.user_id)) as card_id
+		from users u, njhw_users_exp uep, org o
+		where u.userid = uep.userid
+		  and fn_get_orgid(u.org_id) = o.org_id
+		  and u.userid = #userid#
+	</select>
+	
+	<!-- 获取门禁闸机权限串信息  hj 2013-8-21 -->
+	<select id="queryEquipRight" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select wm_concat(distinct(er.right_id)) as right_ids
+		from vm_equip_right er,
+		vm_machine_door_set s
+		where s.door_id = er.equip_id
+		<isNotEmpty prepend="AND" property="equipType">
+			s.equip_type = #equipType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="resBak">
+			s.res_bak in ($resBak$)
+		</isNotEmpty>
+		<![CDATA[
+			and er.right_id <> '5'
+		]]>
+	</select>
+	
+	<!-- 插入门禁闸机权限对应表  hj 2013-8-21 -->
+	<insert id="insertAccessPermMap" parameterClass="java.util.Map" >
+		INSERT INTO ACCESS_PERM_MAP (
+			MAPID,
+			PERSON_ID,
+			NODE_ID,
+			PERM_CODE,
+			DENY_FLAG
+		) values (
+			SEQ_ACCESS_PERM_MAP.nextval,
+			#personId#,
+			#nodeId#,
+			#permCode#,
+			#denyFlg#
+		)
+	</insert>
+	
+	<!-- 更新门禁闸机权限对应表  hj 2013-8-21 -->
+	<update id="updateAccessPermMap" parameterClass="java.util.Map">
+		UPDATE ACCESS_PERM_MAP  SET DENY_FLAG = #denyFlg# WHERE PERSON_ID = #personId#
+	</update>
+	
+	<!-- 删除门禁闸机权限对应表  hj 2013-8-21 -->
+	<delete id="deleteAccessPermMap"  parameterClass="java.util.Map" >
+		delete from ACCESS_PERM_MAP where PERSON_ID = #personId#
+	</delete>
+	
+	<!-- 查询所有闸机的信息  hj 2013-8-21 -->
+	<select id="getGuardInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select distinct (t.res_bak), t.res_name
+  		from vm_machine_door_set t
+ 		where t.equip_type = #type#
+ 		order by to_number(t.res_bak)
+	</select>
+	
+	<!-- 查询人员申请中的条数  hj 2013-8-23 -->
+	<select id="countApplyAccessInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select count(ua.nuac_id) as count
+	from njhw_users_access ua
+	where ua.userid = #userid#
+	  and ua.app_status = '1'
+	</select>
+	
+	<!-- 查询人员闸机门禁的信息  hj 2013-8-21 -->
+	<select id="getAccessId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	(select uep.access_id as access_id, trim(apm.perm_code) as type, apm.node_id as node_id
+    from njhw_users_exp uep, access_perm_map apm
+    where uep.access_id = apm.person_id
+      and uep.userid = #userid#
+      and apm.mapid is not null
+      and trim(apm.perm_code) = 'A') union (
+    select uep.access_id as access_id, trim(apm.perm_code) as type, apm.node_id as node_id
+    from njhw_users_exp uep, access_perm_map apm
+    where uep.access_id = apm.person_id
+      and uep.userid = #userid#
+      and apm.mapid is not null
+      and trim(apm.perm_code) = 'G')
+	</select>
+	
+	<!-- 查询人员市民卡信息  hj 2013-8-21 -->
+	<select id="countUnnormalCard" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select count(c.card_id) as count
+	from njhw_users_exp uep, njhw_tscard c
+	where uep.userid = c.user_id
+	and uep.card_type = '1'
+	and uep.userid = #userid#
+	and (c.card_losted = '1' or c.cardstatus = '1')
+	</select>
+	
+	<!-- 查询人员门禁信息  hj 2013-8-22 -->
+	<select id="getAccessInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select wm_concat(ot.name) as access_ids
+		from objtank ot
+		where ot.node_id in ($ids$)
+		and ot.ext_res_type = 'F'
+	</select>
+	
+	<!-- 查询人员闸机信息  hj 2013-8-22 -->
+	<select id="getGateInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select wm_concat(distinct(s.res_name)) as gate_ids
+    from vm_machine_door_set s
+    where s.res_bak in ($ids$)
+    and s.equip_type = '1'
+	</select>
+	
+	<!-- 设备列表 门禁-->
+	<select id="queryLockListByType" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		SELECT * FROM (select s.*,ROWNUM RN from (select o.node_id nodeId,o.names name,o.titles title,o.title keyword,o.set_id PId,commId objAttrib,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		from (select d.*,ROWNUM RN from (SELECT A.*,
+		(select adrs_store from njhw_doorcontrol_set t where node_id = A.node_Id) names,
+		(select set_id from njhw_doorcontrol_set t where node_id = A.node_Id) set_id,
+		(select memo from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) titles,
+		(select comm_id from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) commId
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '3'
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id=#nodeId#
+		</isNotEmpty>
+		order by name) A) d where 1=1) o WHERE 1=1)s 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 OBJATTRIB LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		) D
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+	</select>
+	<!-- 设备维护门禁 -->
+	<select id="queryLockListCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*) CUN FROM (select s.* from (select o.node_id nodeId,o.names name,o.titles title,o.title keyword,o.set_id PId,commId objAttrib,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		from (select d.*,ROWNUM RN from (SELECT A.*,
+		(select adrs_store from njhw_doorcontrol_set t where node_id = A.node_Id) names,
+		(select set_id from njhw_doorcontrol_set t where node_id = A.node_Id) set_id,
+		(select memo from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) titles,
+		(select comm_id from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) commId
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '3'
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id=#nodeId#
+		</isNotEmpty>
+		order by name) A) d where 1=1) o WHERE 1=1)s WHERE 1=1
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 OBJATTRIB LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		) D
+	</select>
+	
+	<select id="queryNjhwDoorComm" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select comm_id,memo,id,comm_ip from njhw_doorcontrol_comm where 1=1
+		<isNotEmpty prepend="AND" property="commId">
+			  ID = #commId# 
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryNjhwDoorCommById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COMM_ID,COMM_IP,MEMO,ID FROM NJHW_DOORCONTROL_COMM NJHW WHERE NJHW.ID =(SELECT ADRS_COMM FROM NJHW_DOORCONTROL_SET WHERE 1=1
+		<isNotEmpty prepend="AND" property="commId">
+			  SET_ID = #commId# 
+		</isNotEmpty>
+		)
+	</select>
+	
+	<insert id="insertNjhwDoor" parameterClass="java.util.Map">
+		<![CDATA[
+			insert into njhw_doorcontrol_set (SET_ID, NODE_ID, NAME, TITLE, KEYWORD, ADRS_STORE, ADRS_COMM, ADRS_IP)
+			values (SEQ_NJHW_DOORCONTROL_SET.NEXTVAL, #nodeId#, #name#, #title#, #keyword#, #adrsStore#, #adrsComm#, #adrsIp#)
+		]]>
+	</insert>
+	
+	<delete id="delJzsbLockCheck" parameterClass="java.util.Map">
+		delete njhw_doorcontrol_set where set_id = #setId#
+	</delete>
+	<select id="queryJzsbByUpdate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select name,adrs_store,(select title from objtank where node_id = #nodeId#) title from njhw_doorcontrol_set where node_id = #nodeId#
+	</select>
+	<!-- zhangquanwei 设备授权管理页面 -->
+	<select id="deviceAuthList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * from device_auth_list where 1 = 1
+    <isNotEmpty prepend="AND" property="displayName">
+        display_name like '%' || #displayName# || '%' 
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="status">
+       	app_status = #status#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="orgName">
+        org_name like '%' || #orgName# || '%' 
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="appTime">
+         app_time > to_date(#appTime#, 'yyyy-mm-dd hh24:mi:ss')
+    </isNotEmpty>
+	</select>
+  	<!-- 根据条件来查询是否存在数据，如果门锁ID 被占用，提示用户。 -->
+	<select id="queryListLockCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select set_id from njhw_doorcontrol_set where adrs_comm = #adrsComm# and adrs_store = #adrsStore#
+		
+		<isNotEmpty prepend="AND" property="setId">
+			<![CDATA[
+				set_id <> #setId#
+			]]>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 设备维护照明 	开发者：ywl	-->
+	<select id="queryLightListByFath" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		SELECT * FROM (
+		SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM(SELECT A.* FROM (SELECT * FROM objtank where EXT_RES_TYPE = '6' 
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		)A)O)P 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		)D 
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+	</select>
+	
+	<!-- 设备维护空调 	开发者：ywl	-->
+	<select id="queryAirCondListByFath" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		SELECT * FROM (
+		SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM(SELECT A.* FROM (SELECT * FROM objtank where EXT_RES_TYPE = '7' 
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		)A)O)P 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		)D 
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+	</select>
+	
+	<!-- 设备维护门禁 	开发者：ywl	 -->
+	<select id="queryLockListByFath" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.Objtank">
+		SELECT * FROM (SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.names name,o.titles title,o.title keyword,o.set_id PId,commId objAttrib,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM (SELECT D.* FROM (SELECT A.*,
+		(select adrs_store from njhw_doorcontrol_set t where node_id = A.node_Id) names,
+		(select set_id from njhw_doorcontrol_set t where node_id = A.node_Id) set_id,
+		(select memo from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) titles,
+		(select comm_id from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) commId
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '3' 
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		order by name) A)D WHERE 1=1 )o) P 
+		<![CDATA[
+			WHERE ROWNUM <=#pageMax#
+		]]> 
+		<isNotEmpty prepend="AND" property="title">
+			 OBJATTRIB LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		)S 
+		<![CDATA[
+			WHERE RN > #pageMin#
+		]]>
+	</select>
+	
+	<!-- 设备维护照明 	开发者：ywl	-->
+	<select id="queryLightCountByFath" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*)CUN FROM (
+		SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM(SELECT A.* FROM (SELECT * FROM objtank where EXT_RES_TYPE = '6' 
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		)A)O)P WHERE 1=1 
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		)D 
+	</select>
+	
+	<!-- 设备维护空调 	开发者：ywl	-->
+	<select id="queryAirCondCountByFath" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*)CUN FROM (SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.name name,o.title title,o.keyword keyword,o.p_id pId,
+		o.ext_res_type extResType,o.ext_is_bottom extIsBottom,o.level_num levelNum,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM(SELECT A.* FROM (SELECT * FROM objtank where EXT_RES_TYPE = '7' 
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="title">
+			 TITLE LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		)A)O)P WHERE 1=1 
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		)D 
+	</select>
+	
+	<!-- 设备维护门禁	开发者：ywl	 -->
+	<select id="queryLockCountByFath" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(*) CUN FROM (SELECT P.*,ROWNUM RN FROM (
+		select o.node_id nodeId,o.names name,o.titles title,o.title keyword,o.set_id PId,commId objAttrib,
+		(select name from objtank where node_id =o.p_id ) memo
+		,(select Ext_res_type from objtank where node_id =o.p_id ) ico,
+		(select name from objtank where node_id = (select p_id from objtank where node_id =o.p_id )) link
+		FROM (SELECT D.* FROM (SELECT A.*,
+		(select adrs_store from njhw_doorcontrol_set t where node_id = A.node_Id) names,
+		(select set_id from njhw_doorcontrol_set t where node_id = A.node_Id) set_id,
+		(select memo from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) titles,
+		(select comm_id from njhw_doorcontrol_comm where id = (select adrs_comm from njhw_doorcontrol_set t where node_id = A.node_Id)) commId
+		FROM (SELECT * FROM objtank where EXT_RES_TYPE = '3' 
+		<isNotEmpty prepend="connect" property="nodeId"> 
+			by prior node_id = p_id start with node_id in (select node_id from objtank where p_id in(6001,6002))
+		</isNotEmpty>
+		order by name) A)D WHERE 1=1 )o) P  WHERE 1=1
+		<isNotEmpty prepend="AND" property="title">
+			 OBJATTRIB LIKE '%' || #title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyword">
+			 KEYWORD LIKE '%' || #keyword# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="memo">
+			 MEMO LIKE '%' || #memo# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="link">
+			 LINK LIKE '%' || #link# || '%' 
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="name">
+			 NAME LIKE '%' || #name# || '%' 
+		</isNotEmpty>
+		)S
+	</select>
+	<!-- 查询用户门禁权限  zhangqw  2013年8月22日17:57:35-->
+	<select id="queryAccessFloor" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select ac.node_id, o.name from njhw_users_exp ue,access_perm_map ac,objtank o where   
+	    to_char(o.node_id(+))= ac.node_id
+		and ue.access_id =  ac.person_id 
+		and ue.userid = #userId# and perm_code = 'A'
+	</select>
+	
+	<select id="queryOrgCountByName" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT COUNT(ORG_ID) CUN FROM ORG WHERE NAME = #name#
+		<isNotEmpty prepend="AND" property="orgId">
+			<![CDATA[
+				ORG_ID <> #orgId#
+			]]>
+		</isNotEmpty>
+	</select>
+	
+	<select id="getGongYongAccountOrgName" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT a.name as ORGNAME FROM org a,users b 
+		WHERE a.org_id = b.org_id AND b.userid = #userid#
+	</select>
+	
+	<select id="getLockIdByUserId" parameterClass="long" resultClass="java.util.HashMap">
+		select a.NODE_ID from NJHW_DOORCONTROL_SET a, obj_perm_map b 
+		where a.node_id = b.node_id and b.person_id = #userId#
+	</select>
+	
+	<delete id="deleteUserLockPerm" parameterClass="map">
+		delete from OBJ_PERM_MAP where person_id = #userId# and node_id = #nodeId#
+	</delete>
+	
+	
+	<select id="getTopOrgById" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select aa.display_name,
+	       fn_get_orgid(org_id) TOP_ORG_ID,
+	       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) org_name,
+	       aa.org_id
+		 from users aa
+		 	where aa.userid = #userid#
+	</select>
+</sqlMap>

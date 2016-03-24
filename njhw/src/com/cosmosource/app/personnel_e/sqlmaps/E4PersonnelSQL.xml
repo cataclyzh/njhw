@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="E4PersonnelSQL">
+    
+    <!-- 查询E座的指定用户 -->
+	<select id="selectE4PersonnelByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT * FROM USERS 
+		WHERE FN_GET_ORGID(ORG_ID) IN (SELECT ORG_ID FROM ORG WHERE P_ID=1070) 
+		AND USERID = #USERID#
+	</select>  
+	
+</sqlMap>

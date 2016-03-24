@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<exchange>
+    <excel>
+        <sheet>0</sheet>
+        <startRow>1</startRow> 
+        <class>com.cosmosource.app.entity.Org</class>
+        <mappings>
+            <mapping index="0" property="sellname" type="string" length="100" desc="销方单位"/>
+            <mapping index="1" property="selltaxno" type="string" length="20" desc="销方税号"/>
+            <mapping index="2" property="inputdate" type="date" length="7" desc="录入日期"/>
+            <mapping index="3" property="vatdate" type="date" length="7" desc="开票日期"/>
+            <mapping index="4" property="autheddate" type="date" length="7" desc="认证日期" required="false"/>
+            <mapping index="5" property="vatno" type="string" length="20" pattern="pattern:^\d*$" desc="发票号码"/>
+            <mapping index="6" property="discountamount" type="double" length="18" desc="折扣金额"/>
+            <mapping index="7" property="vatrate" type="double" length="18" desc="税率"/>
+            <mapping index="8" property="vatlevy" type="double" length="18" desc="税额"/>
+            <mapping index="9" property="vattype" type="string" length="100" desc="发票类型" required="true" map="s:增值税专用发票,c:增值税普通发票,a:农产品发票,n:非税控增值税普通发票,y:运输类发票"/>
+            <mapping index="10" property="authedstatus" type="string" length="20" desc="认证状态"/>
+            <mapping index="11" property="department" type="string" length="100" desc="部门" required="true" map="1:固定资产,2:IT数码采销部,3:消费电子采销部,4:百货采销部,5:图书音像采销部,6:POP,7:通讯汽车采销部,8:家电采销部"/>
+            <mapping index="12" property="vatcode" type="string" length="30" pattern="pattern:^\d*$" desc="发票代码"/>
+            <mapping index="13" property="discountrate" type="double" length="18" desc="折扣比率"/>
+            <mapping index="14" property="buytaxno" type="string" length="20" desc="购方税号"/>
+            <mapping index="15" property="vatcost" type="double" length="18" desc="不含税金额"/>
+            <mapping index="16" property="discountstatus" type="string" length="20" desc="折扣标志" required="true" map="Y:有,N:无"/>
+       </mappings>
+    </excel>
+</exchange>

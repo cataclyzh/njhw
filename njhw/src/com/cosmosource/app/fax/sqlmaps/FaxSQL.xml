@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FaxSQL">
+	<!-- 获取最近浏览编号 -->
+	<select id="getFaxRecentId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select SEQ_FAX_RECENT.nextval from dual 
+	</select>
+	
+	<!-- 更具用户ID查找网络传真号码  By: CJ 2013-09-02 -->
+	<select id="queryWebFaxNumByLoginUid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.tel_num from tc_ip_tel t where t.tel_id = 
+			(select t1.web_fax from njhw_users_exp t1 where t1.userid = 
+				(select t2.userid from users t2 where t2.login_uid = #loginUid#)) 
+	</select>
+	
+	
+	<!--插入最近浏览列表  -->
+	<insert id="insertFaxRecentContact" parameterClass="java.util.Map">
+		insert into T_003_FAX_RECENT
+  			(FC_ID,USER_ID,FAX_ID,FAX_TYPE,FAX_NO,FAX_TIME,INSERT_TIME)
+		values
+  			(#fc_id#,#userid#,#fax_id#,#fax_type#,#fax_no#,#fax_time#,#insert_time#)
+	</insert>
+	<!-- 获取最近浏览列表 -->
+	<select id="getFaxRecentList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<!-- select * from T_003_FAX_RECENT where fc_id in (select max(fc_id) from T_003_FAX_RECENT) and USER_ID =#userid# -->
+		<!-- select FAX_NO from (select * from T_003_FAX_RECENT where USER_ID = #userid# ) t group by FAX_NO  -->
+		select fax_no,MAX(FAX_TIME)
+  			from (select * from T_003_FAX_RECENT
+	         	where USER_ID = #userid#
+	           	and FC_ID in (select max(FC_ID) from T_003_FAX_RECENT)
+	         	order by FAX_TIME desc)
+ 		group by fax_no order by MAX(FAX_TIME) desc
+	</select>
+	<!-- 根据传真号获取名字 -->
+	<select id="getUsernameFromFax" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from NJHW_USERS_ALIST where userid = #userid# and NUA_TEL3 like '%' || #fax_no# || '%'
+	</select>
+	<!-- 根据ID删除个人通讯录 -->
+	<delete id="deletePersonalContact"  parameterClass="java.util.Map" >
+		delete from NJHW_USERS_ALIST where NUA_ID = #nuaid#
+	</delete>
+	<!--功能：加载指定通讯录信息 开发者：zh 时间：2013-5-3 -->
+	<select id="getPersonalContactList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select * from NJHW_USERS_ALIST where userid = #userid#
+		<dynamic>
+			<isNotEmpty property="searchVal" prepend="and">
+				(
+				nua_tel3 like '%' || #searchVal# || '%'
+				or nua_name like '%' || #searchVal# || '%'
+				)
+			</isNotEmpty>			
+			order by NUA_TEL3 asc
+		</dynamic>
+	</select>
+	<!--功能 : 查询已发送传真 开发者：qiyanqiang 时间：2013-05-07 -->
+	<select id="sendFaxList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT t.FL_ID , t.CREATE_ON , t.CALLER,t.CALLED, t.RECEIVER
+		,t.STATUSNAME , t.SUBJECT , t1.EOFA_DESC FROM EXT_IN_FAX_LIST t,
+		EXT_OUT_FAX_ATTACH t1 WHERE t.FL_ID= t1.EOFC_ID(+) and t.FL_FLAG='2'
+		and t.USERID = #userId#
+
+		<dynamic>
+			<!-- 发送账号 -->
+			<isNotEmpty prepend="and" property="sendAccount">
+				t.USER_ID=
+				#sendAccount#
+			</isNotEmpty>
+			<!-- 收件人 -->
+			<isNotEmpty prepend="and" property="receive">
+				t.RECEIVER= #receive#
+			</isNotEmpty>
+			<!-- 主题 -->
+			<isNotEmpty prepend="and" property="title">
+				t.SUBJECT= #title#
+			</isNotEmpty>
+			<!-- 状态 -->
+			<isNotEmpty prepend="and" property="sendsStauts">
+				t.STATUS= #sendsStauts#
+			</isNotEmpty>
+
+			<!-- 时间 -->
+			<isNotEmpty prepend="and" property="sendFaxStartDate">
+				 <![CDATA[ t.CREATE_ON >=to_date(#sendFaxStartDate#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+
+			<isNotEmpty prepend="and" property="sendFaxEndtDate">
+				 <![CDATA[ t.CREATE_ON <=to_date(#sendFaxEndtDate#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+
+		</dynamic>
+		order by t.FL_ID desc
+	</select>
+
+
+	<!--功能 : 查询已接收传真 开发者：qiyanqiang 时间：2013-05-07 -->
+	<select id="receiveFaxList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+
+		SELECT t.FL_ID , t.CREATE_ON , t.CALLER,t.CALLED, t.RECEIVER
+		,t.STATUSNAME , t.USERID, t.SUBJECT , t.DURATION,
+		t1.EOFA_DESC,t.FAX_ID FROM EXT_IN_FAX_LIST t,
+		EXT_OUT_FAX_ATTACH t1
+		WHERE t.FL_ID= t1.EOFC_ID(+) and t.FL_FLAG='1' and t.USERID =
+		#userId#
+
+		<dynamic>
+			<!-- 主叫号 -->
+			<isNotEmpty prepend="and" property="callerNumber">
+				t.CALLER=
+				#callerNumber#
+			</isNotEmpty>
+			<!-- 被叫号 -->
+			<isNotEmpty prepend="and" property="calledNumber">
+				t.CALLED=
+				#calledNumber#
+			</isNotEmpty>
+			<!-- 接收账号 -->
+			<isNotEmpty prepend="and" property="receiveNumber">
+				t.USERID=
+				#receiveNumber#
+			</isNotEmpty>
+			<!-- 状态 -->
+			<isNotEmpty prepend="and" property="sendsStauts">
+				t.STATUS= #sendsStauts#
+			</isNotEmpty>
+
+			<!-- 时间 -->
+			<isNotEmpty prepend="and" property="receiveFaxStartDate">
+				 <![CDATA[ t.CREATE_ON >=to_date(#receiveFaxStartDate#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+
+			<isNotEmpty prepend="and" property="receiveFaxEndtDate">
+				 <![CDATA[ t.CREATE_ON <=to_date(#receiveFaxEndtDate#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+			</isNotEmpty>
+		</dynamic>
+
+		order by t.FL_ID desc
+
+	</select>
+
+</sqlMap>

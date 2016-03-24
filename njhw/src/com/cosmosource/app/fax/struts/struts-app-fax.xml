@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<!-- 网络传真的操作 qiyanqiang 时间 2013-5-7 -->
+	<package name="/app/fax" extends="struts-default" namespace="/app/fax">
+		<!-- 初始化页面 -->
+		<!-- <action name="index" class="faxAction" method="init"> <result name="init">/app/fax/mainFax.jsp</result> 
+			</action> -->
+		<action name="index" class="faxQuery" method="login">
+			<result name="success">/app/fax/fax_index.jsp</result>
+			<result name="error">/app/fax/fax_index_error.jsp</result>
+		</action>
+		<action name="init" class="faxQuery" method="init">
+		</action>
+		
+		<!-- 获取当前登录用户网络传真号码  By:CJ 2013-09-03-->
+		<action name="getWebFaxNum" class="faxQuery" method="getWebFaxNumByLoginUid"></action>
+		
+		
+		<!-- 查询已经发送传真操作 -->
+		<action name="sendFaxList" class="faxAction" method="sendFaxList">
+			<result name="success">/app/fax/sendFaxList.jsp</result>
+		</action>
+
+		<!-- 查询已经接收传真操作 -->
+		<action name="receiveFax" class="faxAction" method="receiveFaxList">
+			<result name="success">/app/fax/receiveFaxList.jsp</result>
+		</action>
+		
+		<!-- 查找发传真输入号码是否在通讯录目录 -->
+		<action name="getUserName" class="faxQuery" method="getUserNameByFaxNumber"></action>
+
+		<!-- 删除已经发送传真操作返回已经接收的列表 -->
+		<action name="deleteSendFax" class="faxAction" method="deleteSendFax"></action>
+
+		<!-- 删除已经接收的传真操作返回已经接收的列表 -->
+		<action name="deleteReceiveFax" class="faxAction" method="deleteReceiveFax"></action>
+		<!-- 外发附件下载 -->
+		<action name="downLoadAttach" class="faxAction" method="downLoadAttach">
+		</action>
+
+		<!--当点击附件更改已读状态 -->
+		<action name="upDateReadMark" class="faxAction" method="upDateReadMark">
+		</action>
+		<!-- 同步已发传真 -->
+		<action name="synSendFax" class="faxAction" method="synSendFax">
+		</action>
+		<!-- 同步收到的传真 -->
+		<action name="synReceiveFax" class="faxAction" method="synReceiveFax">
+		</action>
+
+
+		<!-- 新的Action -->
+		<!-- 收件箱列表 -->
+		<action name="getReceivedFaxesList" class="faxQuery"
+			method="getReceivedFaxesList">
+		</action>
+		<!-- 发件箱列表 -->
+		<action name="getSentFaxesList" class="faxQuery" method="getSentFaxesList">
+		</action>
+		<!-- 获取个人通讯录  -->
+		<action name="getPersonalContactList" class="faxQuery" method="getPersonalContactList">
+		</action>
+		<!-- 获取最近通讯录  -->
+		<action name="getFaxRecentContact" class="faxQuery" method="getFaxRecentContact">
+		</action>
+		<action name="fiDownload" class="faxQuery" method="fiDownload">
+		</action>
+		<action name="foDownload" class="faxQuery" method="foDownload">
+		</action>
+		<!-- 删除个人通讯录 -->
+		<action name="deletePersonalContact" class="faxQuery" method="deletePersonalContact">
+		</action>
+		
+		
+		<!--功能：加载用户的通讯录分组	开发者：zh 	时间：2013-05-1  -->
+		<action name="loadGroupList" class="pAddressBookAction" method="loadGroupList"> </action>
+		<!--功能：显示编辑页面	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupInput" class="pAddressBookAction" method="groupInput">
+			<result name="input">/app/fax/fax_contact_group_input.jsp</result>
+		</action>
+		<!--功能：删除指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupDelete" class="pAddressBookAction" method="groupDelete">
+			<result name="reload">contactInit.act</result>
+		</action>
+		<!--功能：保存通讯录详情	开发者：zh 	时间：2013-05-1  -->
+		<action name="groupSave" class="pAddressBookAction" method="groupSave">
+			<result name="success">/app/fax/fax_contact_group_input.jsp</result>
+		</action>
+		<!--功能：显示编辑页面	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactEdit" class="pAddressBookAction" method="addressInput">
+			<result name="input">/app/fax/fax_contact_edit.jsp</result>
+		</action>		
+		<!--功能：查看联系人信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactDetail" class="pAddressBookAction" method="addressShow">
+			<result name="success">/app/fax/fax_contact_detail.jsp</result>
+		</action>
+		<!--功能：保存通讯录详情	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactSave" class="pAddressBookAction" method="addressSave"></action>
+		<!--功能：初始化通讯录	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactInit" class="pAddressBookAction" method="init">
+			<result name="success">/app/fax/fax_contact_init.jsp</result>
+		</action>
+		<!--功能：加载指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactList" class="pAddressBookAction" method="addressList">
+			<result name="success">/app/fax/fax_contact_list.jsp</result>
+		</action>
+		<!--功能：删除指定通讯录信息	开发者：zh 	时间：2013-05-1  -->
+		<action name="contactDelete" class="pAddressBookAction" method="addressDelete">
+			<result name="reload">contactList.act</result>
+			<result name="success">contactInit.act</result>
+		</action>
+		<!-- by chun jing -->
+		<!-- 发送传真 CJ 时间 2013-07-08 -->
+
+		<action name="sendFax" class="faxAction" method="sendFax">
+			<result name="success">/app/fax/fax_send_success.jsp</result>
+		</action>
+
+		<!-- 预览传真 时间2013-07-09 CJ -->
+		<action name="faxPreview" class="faxAction" method="faxPreview">
+			<result name="success">/app/fax/fax_preview_success.jsp</result>
+		</action>
+
+		<!-- 查询当前传真 时间2013-07-09 CJ -->
+		<action name="queryFax" class="faxAction" method="queryCurrentFax">
+		</action>
+		<!-- 下载收传真操作 -->
+		<action name="downloadFax" class="faxAction" method="downloadFaxAttach">
+			<result name="success">/app/fax/receiveFaxList.jsp</result>
+		</action>
+
+		<!-- 取消队列中收传真操作 -->
+		<action name="faxCancel" class="faxAction" method="faxCancel">
+		</action>
+
+		<!-- 发送队列中收传真操作 -->
+		<action name="faxConfirm" class="faxAction" method="faxConfirm">
+		</action>
+		
+		
+	</package>
+
+
+
+
+</struts>

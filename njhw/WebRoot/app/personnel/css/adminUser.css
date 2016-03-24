@@ -1,0 +1,53 @@
+@charset "utf-8";
+/* CSS Document */
+.from_list_table_f{
+	width:100%;
+}
+.from_list_td1{
+	width:30px;
+	text-align: center;
+	height:32px;
+}
+.from_list_td2{
+	width:46%;
+	padding-left:20px;
+	height:32px;
+}
+.from_background{
+	background:rgb(236, 236, 228);
+}
+.table {
+	border:none;
+}
+.from_tr_list{
+	background:rgb(246, 245, 241);
+	border-bottom:dotted 1px #808080;
+}
+.from_tr_list_trst_a{
+	margin:0 atuo;
+	width: 68px;
+	height: 22px;
+	background:#8090b2;
+	color:#fff;
+	line-height:22px;
+	display:inline-block;
+	text-align:center;
+	background:#7f90b3;
+	font-family:"微软雅黑";
+	text-decoration:none;
+	margin:0 auto;
+}
+.from_tr_list_trst_a:hover{
+	margin:0 atuo;
+	width: 68px;
+	height: 22px;
+	background:#8090b2;
+	color:#fff;
+	line-height:22px;
+	display:inline-block;
+	text-align:center;
+	background:#ffc600;
+	font-family:"微软雅黑";
+	text-decoration:none;
+	margin:0 auto;
+}

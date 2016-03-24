@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="WirelessSql">
+	<!-- 历史轨迹查询-->
+	<select id="selectHistoryList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<isNotEmpty property="TagMac">
+			select history_T.WriteTime,history_T.CoordinatesId
+	        from device_Tag device_t
+	        left join history_TagPositionLog history_T
+	          on device_t.Id = history_T.TagId
+	       where device_t.TagMac = #TagMac#
+	       <isNotEmpty property="beginTime">
+	       	 <![CDATA[
+	       	 and history_T.WriteTime>=#beginTime#
+	       	 ]]>
+	       </isNotEmpty>
+	       <isNotEmpty property="endTime">
+	         <![CDATA[
+	       	 and history_T.WriteTime<=#endTime#
+	       	 ]]>
+	       </isNotEmpty>
+	       order by history_T.WriteTime desc
+		</isNotEmpty>
+	</select>
+	
+	<!-- 即时位置查询-->
+	<select id="selectMonitorList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<isNotEmpty property="idCradNum">
+			select monitor_T.X, monitor_T.Y, monitor_T.Z
+			  from Vis_RFIDAndID vis_r
+			  left join device_Tag device_t
+			    on vis_r.TagMac = device_t.TagMac
+			  left join monitor_TagStatus monitor_T
+			    on device_t.Id = monitor_T.TagId
+			 where vis_r.IDCradNum = #idCradNum#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 根据证件号查询TagMac-->
+	<select id="selectTagMacByIDCradNum" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT vis_r.TagMac from Vis_RFIDAndID vis_r 
+		WHERE vis_r.IDCradNum = #iDCradNum#
+	</select>
+	<!-- 根据坐标查询楼层-->
+	<select id="selectFloorByCoordinates" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from beacon where placeId = #placeId#
+	</select>
+	
+	
+</sqlMap>

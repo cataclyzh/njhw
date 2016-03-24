@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="/app/3d" extends="default" namespace="/app/3d">
+
+		<!-- 功能：房间定位 				作者：MZY   		时间：2013-07-26-->
+		<action name="roomPosition" class="roomAction" method="getRoomIds"></action>
+        <!-- 功能：单位定位 				作者：MZY   		时间：2013-07-28-->
+        <action name="unitPosition" class="unitAction" method="getOrgId"></action>
+        <!-- 功能：访客 				作者：ZC   		时间：2013-08-07-->
+        <action name="visitorList" class="visitorAction" method="visitorList">
+            <result name="success">/app/buildingmon/pageIndex/visitorList.jsp</result>
+        </action>
+        <!-- 功能：访客异常			作者：ZC   		时间：2013-08-15-->
+        <action name="visitorErrorList" class="visitorAction" method="visitorErrorList">
+            <result name="success">/app/buildingmon/pageIndex/visitorErrorList.jsp</result>
+        </action>
+        <!-- 功能：三维物业-按路线查看 		作者：ZC   		时间：2013-08-09-->
+        <action name="getUserByOrg" class="propAction" method="getUserByOrg"></action>
+        <action name="getTimeByUser" class="propAction" method="getTimeByUser"></action>
+        <!-- 功能：三维物业-按路线查看 		作者：ZC   		时间：2013-08-12-->
+        <action name="getLineByOrg" class="propAction" method="getLineByOrg"></action>
+        <action name="getUserByLine" class="propAction" method="getUserByLine"></action>
+        <action name="getTime" class="propAction" method="getTime"></action>
+        <action name="getOrgIds" class="propAction" method="getOrgIds"></action>
+        <!-- 功能：三维物业-查看巡查异常信息 		作者：ZC   		时间：2013-08-19-->
+        <action name="patrolExceptionList" class="propAction" method="patrolExceptionList">
+        <result name="success">/app/buildingmon/pageIndex/patrolList.jsp</result>
+        </action>
+        <!-- 功能：三维物业-查看巡查异常详情 		作者：ZC   		时间：2013-08-19-->
+        <action name="patrolExceptionDetail" class="propAction" method="patrolExceptionDetail">
+        <result name="success">/app/buildingmon/pageIndex/patrolDetail.jsp</result>
+        </action>
+        <!-- 功能：三维物业-取楼层电能耗 		作者：ZC   		时间：2013-08-12-->
+        <action name="getElectricityEnergy" class="energyAction" method="getElectricityEnergy"></action>
+        <!-- 功能:能耗总监控 -水				作者：MZY   		时间：2013-08-12-->
+		<action name="getWaterEnergy" class="energyAction" method="getWaterEnergy">
+		</action>	
+		<!-- 功能:能耗总监控 -气				作者：MZY   		时间：2013-08-12-->
+		<action name="getFlowEnergy" class="energyAction" method="getFlowEnergy">
+		</action>
+		<!-- 功能:能耗总监控 -水、电、气				作者：MZY   		时间：2013-08-13-->
+		<action name="getEnergyOfFloors" class="energyAction" method="getEnergyOfFloors">
+		</action>
+		<!-- 根据访客姓名查询访客在实际开始访问和实际结束访问的时间内经过的一组设备的ID（门禁、闸机、无线定位器） -->
+		<action name="getVisitorIDs" class="visitorAction" method="visitorIds"></action>
+		<!-- 根据物业人员姓名和执勤时间查询经过的无线设备ID -->
+		<action name="getStaffIDs" class="propAction" method="getPropertyInformation"></action>
+		<!-- 三维访客管理位入口 -->
+		<action name="visitorLocation" class="com.cosmosource.app.threedimensional.action.EntranceAction" method="searchVisitor">
+		<result name="success">/app/buildingmon/pageIndex/visitorManage.jsp</result>
+		</action>
+		<!-- 三维设备管理入口 -->
+		<action name="deviceSearch" class="com.cosmosource.app.threedimensional.action.EntranceAction" method="searchDevice">
+		<result name="success">/app/buildingmon/pageIndex/deviceManage.jsp</result>
+		</action>
+		<!-- 三维能耗监控入口 -->
+		<action name="energySearch" class="com.cosmosource.app.threedimensional.action.EntranceAction" method="searchEnergy">
+		<result name="success">/app/buildingmon/pageIndex/checkEnergyConsumption.jsp</result>
+		</action>
+		<!-- 三维物业管理入口 -->
+		<action name="propertySearch" class="com.cosmosource.app.threedimensional.action.EntranceAction" method="searchProperty">
+		<result name="success">/app/buildingmon/pageIndex/propertyManagement.jsp</result>
+		</action>
+		<!-- 根据访客证件号和访客证件类型查询访客经过的一组点位 -->
+		<action name="getVisitIDs" class="visitorAction" method="getVisitIDs"></action>
+		<!-- 功能：根据访客信息查询历史轨迹			作者：ZC   		时间：2013-08-27-->
+        <action name="getHistoryList" class="visitorAction" method="getHistoryList"></action>
+	</package>
+</struts>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CsmSQL">
+
+	<!--功能：查询cms内容 	开发者：qiyanqiang	时间：2013-05-04  -->
+	<select id="selectCmsList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT T.* FROM CMS_ARTICLE T where 1=1 
+       <dynamic>
+			<isNotEmpty prepend="and" property="title">
+				 T.TITLE  like '%'|| #title# || '%' 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cartFlag">
+				 T.CART_FLAG = #cartFlag# 
+            </isNotEmpty>
+			<isGreaterThan compareValue="0" prepend="and" property="mid">
+				T.MID = #mid#
+			</isGreaterThan>
+		</dynamic>
+		order by T.WEIGHT ,T.EDITTIME desc
+	</select>
+	
+	<select id="selectIpHelpList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT T.* FROM CMS_ARTICLE T where T.MID = 3
+       <dynamic>
+			<isNotEmpty prepend="and" property="title">
+				 T.TITLE  like '%'|| #title# || '%' 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cartFlag">
+				 T.CART_FLAG = #cartFlag# 
+            </isNotEmpty>
+		</dynamic>
+		order by T.WEIGHT
+	</select>
+	<select id="selectIpHelpCount" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM CMS_ARTICLE WHERE MID = 3 ORDER BY WEIGHT 
+	</select>
+	<update id="updateIpHelpWeightById" parameterClass="java.util.Map">
+		UPDATE CMS_ARTICLE SET WEIGHT = #WEIGHT# WHERE ID = #ID#
+	</update>
+	<update id="updateIpHelpWeightByIds" parameterClass="java.util.Map">
+		UPDATE CMS_ARTICLE SET WEIGHT = #WEIGHT#,TITLE = #TITLE#,CONTENT = #CONTENT# WHERE ID = #ID#
+	</update>
+	<select id="queryCmsListById" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM CMS_ARTICLE WHERE MID = 3 AND ID = #ID# ORDER BY WEIGHT 
+	</select>
+	
+	<select id="queryCmsList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT * FROM CMS_ARTICLE WHERE MID = 3 ORDER BY WEIGHT 
+	</select>
+</sqlMap>

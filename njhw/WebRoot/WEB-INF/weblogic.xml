@@ -1,0 +1,52 @@
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 8.1//EN" "weblogic810-web-jar.dtd">
+
+<weblogic-web-app>
+	<!-- 
+	<session-descriptor>
+		<session-param>
+			<param-name>PersistentStoreType</param-name>
+			<param-value>replicated</param-value>
+		</session-param>
+		<session-param>
+			<param-name>CookieMaxAgeSecs</param-name>
+			<param-value>-1</param-value>
+		</session-param>
+		<session-param>
+			<param-name>InvalidationIntervalSecs</param-name>
+			<param-value>60</param-value>
+		</session-param>
+		<session-param>
+			<param-name>TimeoutSecs</param-name>
+			<param-value>3600</param-value>
+		</session-param>
+		<session-param>
+			<param-name>CookieName</param-name>
+			<param-value>CosmosourceSESSION</param-value>
+		</session-param>
+
+	</session-descriptor>
+	 -->
+	<jsp-descriptor>
+		<jsp-param>
+			<param-name>precompile</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>precompileContinue</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>compileFlags</param-name>
+			<param-value>-g</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>keepgenerated</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+	</jsp-descriptor>
+	<context-root>/jcosmo</context-root>
+</weblogic-web-app>

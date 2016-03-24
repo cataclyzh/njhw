@@ -1,0 +1,502 @@
+@charset "utf-8";
+/* CSS Document */
+/*********************通用页面样式********************/
+html,body,div,p,h1,h2,h3,h4,h5{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+body{width:100%;}
+*{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+.bgsgl_clear{clear:both;width:100%;height:1px; overflow:hidden;}
+/*************************通用页面样式***************/
+/*************************通用装饰器1****************/
+.bgsgl_border_left{
+	background:url(../images/border_right.jpg) right top no-repeat;
+}
+.bgsgl_border_right{
+	background:url(../images/border_left.jpg) left top no-repeat;
+	height:36px;
+	line-height:36px;
+	font-family:"微软雅黑";
+	font-size:18px;
+	font-weight:bold;
+	color:#fff;
+	padding-left:30px;
+	text-align:left;
+}
+.bgsgl_conter{
+	border:solid 1px #7F90B3; 
+	border-top:none;
+	padding:10px;
+}
+/*************************通用装饰器1****************/
+/*************************通用装饰器****************/
+.bgsgl_right_list_border{
+	border-bottom: solid 4px #99A7BE;
+	height:24px;
+	padding-top:6px;
+	clear:both;
+}
+.bgsgl_right_list_left{
+	float:left;
+	width:40%;
+	background:url(../images/border_list_bne.jpg) left center no-repeat;
+	padding-left:12px;
+	color:#808080;
+	font-size:14px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.bgsgl_right_left_move{
+	float:right;
+	width:50%;
+	text-align:right;
+	padding-right:10px;
+}
+/************************通用装饰器*********************/
+/************************通用表单样式******************/
+.from_css{
+	width:744px;
+	padding:10px;
+	margin:0 auto;
+}
+.input_from{
+	width:236px;
+	border:none;
+	background:#EEEFF3;
+	padding-left:10px;
+	height:25px;
+	line-height:25px;
+	color:#818284;
+}
+.from_table td{
+	padding:10px 0;
+	font-size:12px;
+	color:#808080;
+}
+.from_table_td{
+	text-align:right;
+}
+.botton_from{
+	text-align:center;
+	margin:10px 0;
+}
+.botton_from a{
+	width:110px;
+	height:32px;
+	display:inline-block;
+	background:#8090B2;
+	color:#fff;
+	font-family:"微软雅黑";
+	font-size:18px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:32px;
+	margin:0 20px;
+}
+/************************通用表单样式******************/
+/**********通卡WIZARD页面 - 管理员确*******************/
+.wizard_index{
+	width:1338px;
+	background:#fff;
+	margin:0 auto;
+}
+.wizard_main{
+	margin:0 10px 10px 10px;
+}
+.wizard_mbx{
+	background:url(../images/wizard_bacrground.jpg) left top no-repeat;
+	width:1280px;
+	height:72px;
+	margin:0 auto;
+}
+.wizard_mbx a{
+	text-decoration:none;
+	height:44px;
+	display:inline-block;
+	margin:14px 0px;
+	margin-left:30px;
+}
+.wizard_mbx span{
+	width:100%;
+	display:block;}
+.wizard_mbx_a1{
+	width:160px;
+	padding-left:60px;
+	background:url(../images/wizard_list_01.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a1.disabled{
+	width:160px;
+	padding-left:60px;
+	background:url(../images/wizard_list_01_next.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a2{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_02.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a2.disabled{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_02_next.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a3{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_03.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a3.disabled{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_03_next.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a4{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_04.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a4.disabled{
+	width:170px;
+	padding-left:50px;
+	background:url(../images/wizard_list_04_next.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a5{
+	width:180px;
+	padding-left:40px;
+	background:url(../images/wizard_list_05.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx_a5.disabled{
+	width:180px;
+	padding-left:40px;
+	background:url(../images/wizard_list_05_next.jpg) left center no-repeat;
+	cursor: none;
+}
+.wizard_mbx a .wizard_mbx_span1{
+	color:#ffb400;
+	font-family:"微软雅黑";
+	font-size:10px;
+	font-weight:bold;
+	text-align:left;
+}
+.wizard_mbx a .wizard_mbx_span1.disabled{
+	color:#808080;
+}
+.wizard_mbx a .wizard_mbx_span2{
+	color:#7f90b3;
+	font-family:"微软雅黑";
+	font-size:20px;
+	font-weight:bold;
+	text-align:left;
+}
+.wizard_mbx a .wizard_mbx_span2.disabled{
+	color:#808080;
+}
+.wizard_list_border{
+	border-bottom: solid 1px #7f90b3;
+	height:10px;
+	line-height:10px;
+	overflow:hidden;
+	margin-bottom:20px;
+}
+/***********************/
+.wizard_list{
+	width:820px;
+	margin:0 auto;
+}
+.wizerd_border{
+	text-align:center;
+	font-size:24px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	color:#7f90b3;
+	margin-bottom:10px;
+}
+.wizerd_border1{
+	text-align:center;
+	font-size:24px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	color:#7f90b3;
+	margin:10px 0;
+	margin-top:10px;
+}
+.wizard_list_conter{
+	width:820px;
+	height:128px;
+	overflow-x:hidden;
+	overflow-y:auto;	
+	margin:0 auto;
+}
+.wizard_list_conter1{
+	width:820px;
+	margin:0 auto;
+}
+.wizard_list_conter td{
+	height:32px;
+	line-height:32px;
+	width:20%;
+	text-align:center;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	color:#7f90b3;
+	border-right: solid 1px #fff;
+}
+.wizard_list_td{
+	background:#ecebe4;
+}
+.wizard_list_tds{
+	background:#f6f5f1;
+}
+.wizard_tdno{
+	background:#dce2ed;
+}
+.wizard_left{
+	width:258px;
+	height:139px;
+	float:left;
+	background:url(../images/wizard_border.jpg) center center no-repeat;
+	padding:3px 0;
+	text-align:center;
+	line-height:139px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:48px;
+	color:#7f90b3;
+	padding-left:44px;
+}
+.wizard_right{
+	width:506px;
+	height:145px;
+	float:right;
+	background:url(../images/wizard_sk_poto.jpg) center center no-repeat;
+}
+.wizard_botton{
+	height:32px;
+	background:#ecebe4;
+	padding:6px;
+	width:808px;
+	margin:10px auto;
+}
+.wizard_botton_left{
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	float:left;
+	background:#7f90b3;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.wizard_botton_right{
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	float:right;
+	background:#ffc600;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+/**********通卡WIZARD页面 - 管理员确*******************/
+/*************通卡WIZARD页面 完成*********************/
+.wizard_list_wangchen{
+	width:100%;
+	height:417px;
+	overflow-x:hidden;
+	overflow-y:auto;	
+}
+.wizard_list_wangchen td{
+	height:32px;
+	line-height:32px;
+	width:20%;
+	text-align:center;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	color:#7f90b3;
+	border-right: solid 1px #fff;
+}
+.wizerd_sqconter{
+	width:820px;
+	margin:0 auto;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.wizerd_read_color{
+	background:#EBCDCD;
+}
+.wizerd_green_color{
+	background:#C8DDB6;
+}
+.wizard_grbne{
+	width:38px;
+	height:12px;
+	display:inline-block;
+	margin-right:10px;
+}
+.wizard_sqs_color span{
+	font-size:12px;
+	font-weight:bold;
+	color:#7f90b3;}
+.wizard_sqs_color{
+	padding:20px;
+	border-top:solid 1px #7f90b3;
+	margin-top:10px;}
+.wizard_bottons{
+	height:32px;
+	background:#ecebe4;
+	padding:6px;
+	width:808px;
+	margin:0 auto;
+}
+
+/**************通卡WIZARD页面 完成********************/
+/**************房间选择********************/
+.wizard_kh_no{
+	height:40px;
+	overflow:hidden;
+	margin-bottom:10px;}
+.wizard_no{
+	background:#ecebe4;
+	font-family:"微软雅黑";
+	font-size:21px;
+	color:#7f90b3;
+	width:40%;
+	height:40px;
+	line-height:40px;
+	display:inline-block;
+	text-align:center;
+}
+.wizard_data{
+	width:60%;
+	font-size:24px;
+	background:#f6f5f1;
+	color:#868686;
+	font-family:Arial;
+	height:40px;
+	line-height:40px;
+	display:inline-block;
+	text-align:center;
+	margin:0;
+}
+.wizard_list_border1{
+	border-bottom: solid 1px #7f90b3;
+	height:10px;
+	line-height:10px;
+	overflow:hidden;
+	margin-bottom:10px;
+}
+.wizard_list_wangchens{
+	width:100%;
+	height:288px;
+	overflow-x:hidden;
+	overflow-y:auto;	
+}
+.wizard_list_wangchens td{
+	height:32px;
+	line-height:32px;
+	text-align:center;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	color:#7f90b3;
+	border-right: solid 1px #fff;
+}
+/****************房间选择******************/
+/******************提示******************/
+.wizerd_sqconters{
+	background:url(../images/wizard_sksb.jpg) center center no-repeat;
+	width:563px;
+	height:342px;
+	margin:0 auto;
+}
+.wizerd_sqconterfs{
+	background:url(../images/wizard_qsbjmk.jpg) center center no-repeat;
+	width:563px;
+	height:342px;
+	margin:0 auto;
+}
+.wizerd_borders{
+	text-align:center;
+	font-size:18px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	color:#ffc600;
+}
+.room_content{
+	width:80%;
+	overflow-x:hidden;
+	overflow-y:auto;
+	padding-left:3%;
+}
+.room{
+	height:32px;
+	line-height:32px;
+	width:19%;
+	text-align:center;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	color:#7f90b3;
+	border-right: solid 1px #fff;
+}
+.room_content .odd{
+	float:left;
+	background:#ecebe4;
+}
+.room_content .even{
+	float:left;
+	background:#f6f5f1;
+}
+
+.room_content .ok{
+	float:left;
+	background:#C8DDB6;
+}
+.room_content .ng{
+	float:left;
+	background:#EBCDCD;
+}
+.buttonFinish{
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	background:#ffc600;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	font-size:18px;
+}
+.buttonFinish:hover{
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	background:#8090B2;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	font-size:18px;
+}
+/******************提示*********************/

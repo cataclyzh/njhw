@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+	
+	<bean id="ldapManager" class="com.cosmosource.base.service.LDAPManager" />	
+	
+	<bean id="ldapService" class="com.cosmosource.app.ldap.service.LDAPService" parent="manager" />
+	
+	<bean id="ldapServiceTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="ldapJobDetail" />
+		<!-- 每10秒 -->
+		<!-- <property name="cronExpression" value="0/15 * * * * ?" /> -->
+		<!-- 每天上午23:59触发-->
+		<property name="cronExpression" value="0 59 23 * * ?" />
+	</bean>
+	
+	<bean id="ldapJobDetail" class="org.springframework.scheduling.quartzx.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="ldapService" />
+		<property name="targetMethod" value="doScheduler" />
+		<property name="concurrent" value="false"></property>
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">  
+        <property name="triggers">  
+            <list>  
+        		<ref local="ldapServiceTaskTrigger"/>  
+            </list>  
+        </property>  
+    </bean> 
+</beans>

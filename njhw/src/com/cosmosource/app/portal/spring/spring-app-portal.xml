@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+    <!-- 访客管理-->
+	<bean id="portalAction" class="com.cosmosource.app.portal.action.PortalAction" scope="prototype">    
+		<property name="authorityManager" ref="authorityManager"/> 
+    </bean>
+     <!-- 智慧城市 -->
+	<bean id="cityNavAction" class="com.cosmosource.app.portal.action.CityNavAction" scope="prototype">    
+    	<property name="devicePermissionToApp" ref="devicePermissionToApp"/>
+    	<property name="authorityManager" ref="authorityManager"/>    
+    </bean>
+     <!-- 权限管理 -->
+	<bean id="navAction" class="com.cosmosource.app.portal.action.NavAction" scope="prototype"> 
+		<property name="navManager" ref="navManager"/>
+		<property name="devicePermissionToApp" ref="devicePermissionToApp"/>   
+    </bean>
+    <bean id="navManager" class="com.cosmosource.app.portal.service.NavManager" parent="manager">    
+    </bean>
+</beans>
+

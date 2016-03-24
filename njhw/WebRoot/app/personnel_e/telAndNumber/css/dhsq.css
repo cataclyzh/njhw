@@ -1,0 +1,169 @@
+body{border:0; margin:0; padding:0; font-size:12px; color:#444; line-height:24px; text-align:center; background-image:url('../images/bg.png')}
+html,body,dl,dt,dd,ul,li,p,a,h1,h2,h3,h4,h5,h6,div,select,input,span,img,form,table,td,tr,th{margin:0; padding:0;}
+li{list-style:none;}
+img{display:block; border:0;}
+.clear{clear:both; height:0; line-height:0; font-size:0; *height:1px; *line-height:1px; *font-size:1px;}
+.big_box{
+	width:800px; margin:0 auto; height:auto;
+}
+.big01_box{
+	width:800px; height:350px; background-image:url('../images/bg01.gif');border-right: 1px solid #89abed;border-bottom: 1px solid #89abed;
+}
+.long_input{
+	width:650px; height:26px; border:1px solid #6fa3cc; margin-left:5px; line-height:26px; font-size:12px; background-image:url('../images/input_bg.gif'); float:left; display:inline;
+}
+.shot_input{
+	width:268px; height:26px; border:1px solid #6fa3cc; margin-left:5px; line-height:26px; font-size:12px; background-image:url('../images/input_bg.gif');
+}
+.quanxian{
+	height:30px; margin-left:5px; width:260px;line-height: 30px;
+}
+.panel-header panel-header-noborder window-header{
+	border-bottom: solid 4px #99A7BE;
+	height:24px;
+	padding-top:6px;
+	clear:both;
+}
+
+.input_box{
+	width:260px; height:49px; margin:0 auto;
+}
+.baocun{
+	width:115px; height:46px; background-image:url('../images/baocun00.png'); border:0; float:left;
+}
+.close01{
+	width:157px; height:49px; background-image:url('../images/close00.gif'); border:0; float:left; margin:0 10px; display:inline;
+}
+.daochu{
+	width:115px;height:46px; background-image:url('../images/daochu00.png'); border:0; float:left;
+
+}
+html,body,div,p,ul,li,h1,h2,h3,h4,h5{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+body{width:100%;}
+*{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+/*************************通用页面样式***************/
+/*************************通用装饰器****************/
+.bgsgl_right_list_border{
+	border-bottom: solid 4px #99A7BE;
+	height:24px;
+	padding-top:6px;
+	clear:both;
+}
+.bgsgl_right_list_left{
+	float:left;
+	width:40%;
+	background:url(../images/border_list_bne.jpg) left center no-repeat;
+	padding-left:12px;
+	color:#808080;
+	font-size:14px;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	text-align:left;
+}
+.bgsgl_right_left_move{
+	float:right;
+	width:50%;
+	text-align:right;
+	padding-right:10px;
+}
+/************************通用装饰器*********************/
+/************************通用表单样式******************/
+.from_css{
+	width:100%;
+	height:100%;
+	
+	padding-left:20px;
+	/*padding:auto;padding-right:10px;padding-left:15px;*/
+	margin:0 auto;
+	background:#ffffff;
+}
+
+.input_from{
+	width:236px;
+	border:none;
+	background:#EEEFF3;
+	padding-left:10px;
+	height:25px;
+	line-height:25px;
+	color:#818284;
+	disabled:true;
+	readonly:readonly;
+}
+
+/*.input_from_checkbox{
+	width:23px;
+	border:none;
+	background:#EEEFF3;
+	padding-left:10px;
+	height:25px;
+	line-height:25px;
+	color:#818284;
+	disabled:true;
+	readonly:readonly;
+}*/
+.from_table_tr{
+	padding-left:20px;
+	height:30px;
+}
+.from_table td{
+	padding:10px 0;
+	font-size:12px;
+	color:#808080;
+	text-align:left;
+}
+.from_table_td{
+	text-align:right;
+}
+.from_table_td1{
+    padding:5px 0px;
+	font-size:12px;
+	color:#808080;
+	text-align:left;
+}
+.from_table_td2{
+	text-align:right;
+}
+/*.from_table_td_checkbox{
+	font-size:12px;
+	
+}*/
+.botton_from{
+	text-align:center;
+	margin:10px 0;
+}
+.botton_from a{
+	width:110px;
+	height:32px;
+	display:inline-block;
+	background:#8090B2;
+	color:#fff;
+	font-family:"微软雅黑";
+	font-size:18px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:32px;
+	margin:0 20px;
+	float: right;
+}
+.botton_from a:hover{
+	width:110px;
+	height:32px;
+	display:inline-block;
+	background:#ffc300;
+	color:#fff;
+	font-family:"微软雅黑";
+	font-size:18px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:32px;
+	margin:0 20px;
+	float: right;
+}

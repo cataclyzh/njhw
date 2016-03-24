@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="IntegrateSQL">
+	<!--功能：我的系统消息	开发者：zh 	时间：2013-04-18  -->
+	<select id="queryMsgBox" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from T_COMMON_MSG_BOX t where t.RECEIVERID = #receiverid# and rownum <![CDATA[ <= ]]> 20 ORDER BY t.MSGTIME DESC , t.status ASC
+	</select>
+	
+	<!--功能：我的来访	开发者：zh 	时间：2013-04-18  
+	<select id="queryVmVisit" parameterClass="java.util.Map" loadOrgresultClass="java.util.HashMap" >
+		select t.* from VM_VISIT t where t.USER_ID = #userId# and t.VS_FLAG = #vsFlag# ORDER BY t.INSERT_DATE DESC
+	</select>-->
+	
+	<!--功能：公告信息	开发者：zh 	时间：2013-04-18  -->
+	<select id="queryMsgBoard" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.*, to_char(t.MSGTIME,'YYYY-MM-DD') MSGDATE from T_COMMON_MSG_BOARD t where rownum <![CDATA[ <= ]]> 10 ORDER BY t.MSGTIME DESC
+	</select>
+	
+	<!--功能：根据用户ID查询出对应的设备ID	开发者：zh 	时间：2013-04-18  -->
+	<select id="loadDeviceId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select v.* from  NJHW_USERS_EXP e, V_OBJTANK_SMARTDEV v
+		where e.ROOM_ID = v.ROOM_ID and v.TYPE = #deviceType#
+			and e.USERID = #userId#
+	</select>
+	
+	<!--功能：根据输入的IP电话号码显示mac及用户名称	开发者：zh 	时间：2013-05-29  -->
+	<select id="loadMacByTelNum" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT S.DISPLAY_NAME,T.TEL_MAC,T.TEL_NUM,O.SHORT_NAME FROM USERS S, NJHW_USERS_EXP E,TC_IP_TEL T, ORG O
+	    WHERE S.USERID = E.USERID 
+	    AND E.TEL_NUM = T.TEL_ID 
+      	AND S.ORG_ID = O.ORG_ID
+	    AND T.TEL_NUM = #inputTel#
+	</select>
+	<select id="selectTelNum" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT S.DISPLAY_NAME,T.TEL_NUM,O.NAME FROM USERS S, NJHW_USERS_EXP E,TC_IP_TEL T, ORG O
+		WHERE S.USERID = E.USERID 
+		AND E.TEL_NUM = T.TEL_ID 
+    	AND S.ORG_ID = O.ORG_ID
+    	<isNotEmpty prepend="AND" property="userid">
+    		S.USERID = #userid#
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="telNum">
+    		T.TEL_NUM = #telNum#
+    	</isNotEmpty>
+	</select>
+	<!--功能：根据房间ID查询出对应的设备ID	开发者：zh 	时间：2013-04-18  -->
+	<select id="loadDeviceByRoomId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select v.* from  V_OBJTANK_SMARTDEV v where v.TYPE = #deviceType# and v.room_id  = #roomId#
+	</select>
+	
+	<!--功能：加载交通信息	开发者：zh 	时间：2013-03-24  -->
+	<select id="queryTraffic" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from EXT_IN_TRAFFIC t where TO_CHAR(t.SEND_TIME,'yyyy-MM-dd') = #today#
+		<dynamic>
+         	and t.ROADID in 
+         	<iterate property="roadIds" open="(" close=")" conjunction=","> 
+		    	#roadIds[]#
+		    </iterate>
+       	</dynamic>
+	</select>
+	
+	<!--功能：取得最新的交通更新日期	开发者：zh 	时间：2013-03-24  -->
+	<select id="getLastSendTime" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select TO_CHAR(t.SEND_TIME, 'YYYY-MM-DD HH24:MI:SS') SEND_TIME from EXT_IN_TRAFFIC t GROUP BY t.SEND_TIME ORDER BY t.send_time desc 
+	</select>
+	
+	<!--功能：未分派报修单 	开发者：zh 	时间：2013-04-18  -->
+	<select id="queryUntreatedSheet" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.* from CS_REPAIR_FAULT t where  1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="crfFlag">
+				t.CRF_FLAG= #crfFlag#
+			</isNotEmpty>
+		</dynamic>
+		order by t.CRF_RT desc
+	</select>
+	
+	<!--功能：根据用户ID查询所属房间门锁状态 	开发者：zh 	时间：2013-04-18  -->
+	<select id="queryDoorStatusByUserID" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select s.* from NJHW_DOORCONTROL_SET s where s.NODE_ID = ( 
+			select v.NODE_ID from  NJHW_USERS_EXP e, V_OBJTANK_SMARTDEV v 
+			where e.ROOM_ID = v.ROOM_ID 
+			and v.TYPE = #deviceType# 
+			and e.USERID = #userId#
+		)
+	</select>
+	
+	<!--功能：根据用户顶级机构ID查询所属部门房间门锁状态	开发者：zh 	时间：2013-04-18  -->
+	<select id="queryDoorStatusByUserTopOrgID" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tempa.room_id,s.node_id as nodeId,s.adrs_store as adrsStore,s.adrs_comm as adrsComm,s.adrs_ip as adrsIp,exp.adrs_num as adrsNum from NJHW_DOORCONTROL_SET s,njhw_doorcontrol_exp exp
+		,(
+		      select v.NODE_ID,v.room_id from V_OBJTANK_SMARTDEV v WHERE v.room_id in (
+		        select eor.res_id from EM_ORG_RES eor where eor.org_id = #orgid# and eor.eor_type = #eortype#
+		      )
+		  ) tempa 
+		 where s.NODE_ID = tempa.node_id
+		  and s.node_id = exp.dlock_id
+	</select>
+	
+	<!--功能：根据机构加载下属人员信息		开发者：zh 	时间：2013-05-01  -->
+	<select id="loadUserByOrgid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from users u , NJHW_USERS_EXP e where e.USERID = u.USERID and u.ORG_ID = #orgid#
+	</select>
+	
+	<!--功能：通讯录-加载单位		开发者：zh 	时间：2013-05-01  -->
+	<select id="loadFirstOrg" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT * FROM ORG WHERE p_id=#orgId# ORDER BY order_num
+	</select>
+	<!--功能：通讯录-加载直属人员 	开发者：zh 	时间：2013-05-01  -->
+	<select id="loadPerson" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<!-- select * from v_address_list where department_id = #orgId# order by order_num -->
+		select v.userid,
+       v.display_name,
+       v.UEP_SEX,
+       v.org_id,
+       v.pId,
+       v.org_name,
+       v.org_order_num,
+       v.department_id,
+       v.department_name,
+       v.department_order_num,
+       v.room_info,
+       v.STATION_ID,
+       v.JOB_ID,
+       v.UEP_MOBILE,
+       v.tel_ext,
+       v.UEP_FAX,
+       v.WEB_FAX,
+       v.UEP_MAIL,
+       v.order_num,
+       CASE v.tel_ext
+         when '1' THEN
+          ''
+         when '2' THEN
+          v.TEL
+       end tel
+  from v_address_list v
+ where v.department_id = #orgId#
+ order by v.order_num
+	</select>
+	<!--功能：通讯录-加载下级部门	开发者：zh 	时间：2013-05-01  -->
+	<select id="loadOrg" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from ORG where P_ID = #orgId# order by order_num
+	</select>
+	<!--功能：筛选大厦/部门通讯录 	开发者：zh 	时间：2013-05-01  -->
+	<select id="queryContact" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<dynamic>
+			<isEqual compareValue="0" property="orgId">
+				select * from v_address_list v
+				where (v.display_name like '%' || #tjVal# || '%'  
+				or v.TEL like '%' || #tjVal# || '%' 
+				or v.UEP_FAX like '%' || #tjVal# || '%' 
+				or v.WEB_FAX like '%' || #tjVal# || '%')				
+				and (select a.p_id from org a where a.org_id=v.org_id) = '2'
+				order by v.org_order_num, v.department_order_num, v.order_num
+			</isEqual>
+			<isGreaterThan compareValue="0" property="orgId">
+				select * from v_address_list 
+				where ORG_ID = #orgId# 
+				and (display_name like '%' || #tjVal# || '%'  
+				or TEL like '%' || #tjVal# || '%' 
+				or UEP_FAX like '%' || #tjVal# || '%' 
+				or WEB_FAX like '%' || #tjVal# || '%'  
+				or UEP_MOBILE like '%' || #tjVal# || '%')
+				order by org_order_num, department_order_num, order_num
+			</isGreaterThan>
+		</dynamic>
+		
+	</select>
+	
+	<!-- 查询E4座大厦通讯录 -->
+	<select id="queryE4Contact" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<dynamic>
+			<isEqual compareValue="0" property="orgId">
+				select * from v_address_list v
+				where (v.display_name like '%' || #tjVal# || '%'  
+				or v.TEL like '%' || #tjVal# || '%' 
+				or v.UEP_FAX like '%' || #tjVal# || '%' 
+				or v.WEB_FAX like '%' || #tjVal# || '%')
+				and (select a.p_id from org a where a.org_id=v.org_id) = '1070'
+				order by v.org_order_num, v.department_order_num, v.order_num
+			</isEqual>
+			<isGreaterThan compareValue="0" property="orgId">
+				select * from v_address_list 
+				where ORG_ID = #orgId# 
+				and (display_name like '%' || #tjVal# || '%'  
+				or TEL like '%' || #tjVal# || '%' 
+				or UEP_FAX like '%' || #tjVal# || '%' 
+				or WEB_FAX like '%' || #tjVal# || '%'  
+				or UEP_MOBILE like '%' || #tjVal# || '%')
+				order by org_order_num, department_order_num, order_num
+			</isGreaterThan>
+		</dynamic>
+	</select>
+	
+	<!--功能：筛选个人通讯录 	开发者：zh 	时间：2013-05-01  -->
+	<select id="queryAddress" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from NJHW_USERS_ALIST 
+			where userid = #userId# 
+			and (nua_name like '%' || #tjVal# || '%' or nua_phone like '%' || #tjVal# || '%'  or nua_tel2 like '%' || #tjVal# || '%')
+	</select>
+	
+	<!--功能：查询短信发送列表 	开发者：zh 	时间：2013-05-24  -->
+	<select id="querySendList" parameterClass="java.util.Map" resultClass="com.cosmosource.app.entity.TCommonSmsBox" >
+		select * from T_COMMON_SMS_BOX where senderid = #senderId# 
+			<dynamic>
+				<isNotEmpty prepend="and" property="receiverName">
+			      receiver like '%' || #receiverName# || '%'  
+			 	</isNotEmpty>	
+			    <isNotEmpty prepend="and" property="receiverMobile">
+			       receivermobile like '%' || #receiverMobile# || '%' 
+			  	</isNotEmpty>
+			  	ORDER BY smstime desc
+			</dynamic>
+	</select>
+	
+	<!--功能：菜单查询 	开发者：gxh 	时间：2013-05-02  -->
+	<select id="queryMenus" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.fdi_id, t.fdi_type, t.fdi_flag, t.fd_id, m.fm_id, m.fd_name,m.fd_main, m.fd_dosing, m.fd_pract,m.fd_price,
+        m.fd_photo1, m.fd_photo2,m.fd_photo3,m.fd_desc, m.fd_class, m.fd_st, m.fd_et, m.fd_flag, sm.fm_name, sm.fm_bak2
+        from fs_dishes m ,fs_dishes_issue t, fs_menu sm where t.fd_id = m.fd_id and m.fd_class = sm.fm_id
+		 <dynamic>
+			<!-- 周几 -->
+			<isNotEmpty prepend="and" property="fdiType">
+		      trim(t.fdi_type)=#fdiType#
+		 	</isNotEmpty>
+		    <isNotEmpty prepend="and" property="fdFlag">
+		       trim(t.fdi_flag)=#fdFlag#
+		  	</isNotEmpty>
+		  	ORDER BY to_number(sm.fm_bak1)
+		</dynamic>
+	</select>
+	
+	  <!--  加载CMS 失物招领   开发者qiyanqiang  时间： 2013- 05-14  -->
+	  <select id="loadCmsLostFound" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT   T.EDITTIME ,  T1.NAME ,T.ID, T.MID, T.USERID, T.TITLE ,T.WEIGHT ,T.CONTENT, T.EUID ,T.FLAG ,T.CREATETIME FROM CMS_ARTICLE T , CMS_CHANNEL T1  
+			WHERE   T1.ID = T.MID 
+       	<dynamic>
+			<isNotEmpty prepend="and" property="cmsLostFound">
+					T.MID = #cmsLostFound#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cartFlag">
+					T.CART_FLAG = #cartFlag#
+            </isNotEmpty>
+		</dynamic>
+		order by T.WEIGHT ,T.EDITTIME desc
+	</select>
+	
+	<!--功能：短信发送平台 查询按钮   -->
+	<select id="findMessageButton" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from T_COMMON_SMS_BOX t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="sendMessagePeople">
+					t.RECEIVER like '%' || #sendMessagePeople# || '%' 
+            </isNotEmpty>
+			<isNotEmpty prepend="or" property="sendMessagePeople">
+					t.CONTENT like '%' || #sendMessagePeople# || '%' 
+            </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--功能：短信发送平台 查询 收件人信息   -->
+	<select id="findRecipientMessage" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT n.TEL_ID, n.TEL_NUM from NJHW_USERS_EXP n,USERS u WHERE u.USERID = n.USERID
+		<dynamic>
+			<isNotEmpty prepend="and" property="userSendMessageId">
+					n.USERID = #userSendMessageId#
+            </isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="queryCall" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT TEL_ID,TEL_MAC,TEL_NUM FROM TC_IP_TEL WHERE TEL_ID = (SELECT TEL_NUM FROM NJHW_USERS_EXP WHERE  USERID = #userId#)
+	</select>
+	<select id="queryCallByTelNum" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT TEL_ID,TEL_MAC,TEL_NUM FROM TC_IP_TEL WHERE TEL_NUM = #telNum#
+	</select>
+</sqlMap>

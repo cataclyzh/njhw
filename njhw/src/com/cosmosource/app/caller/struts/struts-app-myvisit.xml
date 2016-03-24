@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+ 	<package name="/app/myvisit" extends="default" namespace="/app/myvisit">
+ 		<!--功能：初始进入列表页面		开发者：zh 	时间：2013-03-18  -->
+		<action name="init" class="myVisitAction" method="init">
+			<result name="success">/app/caller/myvisit/visitList.jsp</result>
+		</action>
+		<!--功能：列表页面		开发者：zh 	时间：2013-03-18  -->
+		<action name="list" class="myVisitAction" method="list">
+			<result name="success">/app/caller/myvisit/visitList.jsp</result>
+		</action>
+		<!--功能：操作页面		开发者：zh 	时间：2013-03-18  -->
+		<action name="showOpt" class="myVisitAction" method="showOpt">
+			<result name="success">/app/caller/myvisit/optVisit.jsp</result>
+			<result name="newSuccess">/common/pages/message/receiverVisitorDetail.jsp</result>
+		</action>
+		<!--功能：拒绝来访申请		开发者：zh 	时间：2013-03-18  -->
+		<action name="repulse" class="myVisitAction" method="repulse"></action>
+		<!-- 功能：拒绝来访申请		开发者：ywl	时间：2013-7-9 -->
+		<action name="newRepulse" class="myVisitAction" method="newRepulse"></action>
+		<!-- 功能呢：取消预约		开发者：ywl	时间:2013-9-1 -->
+		<action name="newCannel" class="myVisitAction" method="newCannel"></action>
+		<!--功能：确认来访申请		开发者：zh 	时间：2013-03-18  -->
+		<action name="affirm" class="myVisitAction" method="affirm"></action>
+		<!-- 功能：确认来访申请		开发者：ywl	时间：2013-7-9 -->
+		<action name="newAffirm" class="myVisitAction" method="newAffirm"></action>
+		
+		<!--功能：取消来访		开发者：zh 	时间：2013-04-10  -->
+		<action name="cancel" class="myVisitAction" method="cancel"></action>
+		<!--功能：显示取消		开发者：zh 	时间：2013-04-10  -->
+		<action name="showOptCancel" class="myVisitAction" method="showOptCancel">
+			<result name="success">/app/caller/myvisit/optVisitCancel.jsp</result>
+		</action>
+		
+		<!--功能：弹出版-查询访问事物		开发者：zh 	时间：2013-04-07  -->
+		<action name="queryPopup" class="myVisitAction" method="init">
+			<result name="success">/app/caller/myvisit/popupMyVisitList.jsp</result>
+		</action>
+		<!--功能：弹出版-显示访客访问详情		开发者：zh 	时间：2013-04-07  -->
+		<action name="showPopupOpt" class="myVisitAction" method="showPopupOpt">
+			<result name="success">/app/caller/myvisit/popupOptVisit.jsp</result>
+		</action>
+		<!--功能：弹出版-拒绝来访申请		开发者：zh 	时间：2013-04-07  -->
+		<action name="repulsePopup" class="myVisitAction" method="repulse"></action>
+		<!--功能：弹出版-确认来访申请		开发者：zh 	时间：2013-04-07  -->
+		<action name="affirmPopup" class="myVisitAction" method="affirm"></action>
+		
+		<!--功能：访客统计		开发者：zh 	时间：2013-04-24  -->
+		<action name="visitorStatistics" class="myVisitAction" method="visitorStatistics">
+			<result name="success">/app/caller/myvisit/visitorStatistics.jsp</result>
+		</action>
+		<!--功能：访客导航		开发者：zh 	时间：2013-04-27  -->
+		<action name="visitorNavigation" class="myVisitAction" method="visitorNavigation">
+			<result name="success">/app/caller/myvisit/visitorNavigation.jsp</result>
+		</action>
+ 	</package>
+ 	
+ 	<package name="/app/prebyvisit" extends="default" namespace="/app/prebyvisit">
+ 		<!--功能：被访者预约页面		开发者：zh 	时间：2013-03-19  -->
+		<action name="byVisitInput" class="myVisitAction" method="byVisitInput">
+			<!--
+			<result name="success">/app/caller/myvisit/prebyvisit.jsp</result>
+			-->
+			<result name="success">/app/integrateservice/prebyvisit.jsp</result>
+		</action>
+		<!--功能：验证市民卡		开发者：zh 	时间：2013-03-19  -->
+		<action name="validCityCard" class="myVisitAction" method="validCityCard"></action>
+		<!--功能：加载访客信息		开发者：zh 	时间：2013-03-19  -->
+		<action name="loadVisitorInfo" class="myVisitAction" method="loadVisitorInfo"></action>
+		<!--功能：保存被访者预约		开发者：zh 	时间：2013-03-19  -->
+		<action name="save" class="myVisitAction" method="save"></action>
+ 	</package>
+</struts>

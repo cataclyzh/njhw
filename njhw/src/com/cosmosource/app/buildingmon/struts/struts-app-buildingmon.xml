@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/buildingmon" extends="default" namespace="/app/buildingmon">
+		 <!-- 初始化页面   sqs  -->
+		 <action name="initBuild" class="roomAssignmentsAction" method="init">
+			<result name="success">/app/buildingmon/roomAssignments.jsp</result>		
+		 </action>
+		 <!-- 查楼层  -->
+		 <action name="roomAssignments" class="roomAssignmentsAction" method="roomAssignments">
+			<result name="success">/app/buildingmon/roomAssignments.jsp</result>		
+		 </action>
+		 
+		 <!-- 摄像头监控主页 -->
+		 <action name="sxtMonMain" class="sxtMonAction" method="sxtMonMain">
+			<result name="success">/app/buildingmon/sxtMon/main.jsp</result>		
+		 </action>
+		 <action name="sxtMonList" class="sxtMonAction" method="sxtMonList">
+			<result name="success">/app/buildingmon/sxtMon/list.jsp</result>		
+		 </action>
+		 
+		 <!-- 电梯监控主页 cjw 2013-3-27 -->
+		 <action name="dtMonMain" class="buildingAction" method="buildMain">
+			<result name="success">/app/buildingmon/building/main.jsp</result>		
+		 </action>
+		 <action name="dtList" class="buildingAction" method="list">
+			<result name="success">/app/buildingmon/building/objList.jsp</result>
+		 </action>
+		 <action name="objTreeData" class="buildingAction" method="orgTreeData"></action>
+		 <action name="objTree" class="buildingAction" method="orgTree">
+    		<result name="success" >/app/buildingmon/monTree.jsp</result>
+		 </action>
+		
+		<!-- 功能：闸机监控  		作者：zh   		时间：2013-03-27-->
+		 <action name="zjMain" class="zjMonAction" method="zjMain">
+			<result name="success">/app/buildingmon/zjMon/main.jsp</result>		
+		 </action>
+		 <action name="refreshZJStatus" class="zjMonAction" method="refreshZJStatus"></action>
+		 <action name="zjList" class="zjMonAction" method="zjList">
+			<result name="success">/app/buildingmon/zjMon/objList.jsp</result>
+		 </action>
+		
+		<!-- 功能：门禁监控  		作者：zh   		时间：2013-03-27-->
+		 <action name="mjMain" class="mjMonAction" method="mjMain">
+			<result name="success">/app/buildingmon/mjMon/main.jsp</result>		
+		 </action>
+		  <action name="refreshMJStatus" class="mjMonAction" method="refreshMJStatus"></action>
+		 <action name="mjList" class="mjMonAction" method="mjList">
+			<result name="success">/app/buildingmon/mjMon/objList.jsp</result>
+		 </action>
+		 
+		 <!-- 功能：楼宇监控管理首页  		作者：zh   		时间：2013-04-03-->
+		 <action name="indexInit" class="buildMonAction" method="indexInit">
+			 <!-- <result name="success">/app/buildingmon/pageIndex/buildingIndex.jsp</result>
+		    <result name="success">/app/buildingmon/pageIndex/propertyManagement.jsp</result>
+			<result name="success">/app/buildingmon/pageIndex/checkEnergyConsumption.jsp</result>
+			<result name="success">/app/buildingmon/pageIndex/deviceManage.jsp</result>
+			<result name="success">/app/buildingmon/pageIndex/visitorManage.jsp</result>-->
+			<result name="success">/app/buildingmon/pageIndex/roomAndUnitSearch.jsp</result>
+		 </action>
+		 <!-- 功能：定时刷新报警设备  		作者：zh   		时间：2013-04-04-->
+		 <action name="refreshWarningDevice" class="buildMonAction" method="refreshWarningDevice"></action>
+		 <!-- 功能：访客定位 				作者：zh   		时间：2013-05-04-->
+		 <action name="visitorPosition" class="buildMonAction" method="visitorPosition"></action>
+		 
+	</package>
+</struts>

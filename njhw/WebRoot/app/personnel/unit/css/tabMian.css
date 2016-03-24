@@ -1,0 +1,135 @@
+/* ����ͼƬ */
+/*
+body
+{
+	list-style:none;
+	padding:0;
+	margin:0;
+	background:url(../images/backgrund.jpg) left top repeat-x;
+}
+*/
+span{font-size:12px;}
+.nav_btn
+{
+    width: 188px;
+    height: 62px;
+    background:url(../images/nav_btn1.png) left top repeat-x;
+	line-height:62px;
+	cursor: pointer;
+	display: block;
+	margin-left: 160px;
+}
+.nav_btn_orange
+{
+    width: 188px;
+    height: 62px;
+    background:url(../images/nav_btn2.png) left top repeat-x;
+	line-height:62px;
+	cursor: pointer;
+	margin-left: 160px;
+	display: block;
+}
+.nav_btn:hover
+{
+    width: 188px;
+    height: 62px;
+    background:url(../images/nav_btn_hover1.png) left top repeat-x;
+	line-height:62px;
+	cursor: pointer;
+	display: block;
+	margin-left: 160px;
+}
+.nav_btn_orange:hover
+{
+    width: 188px;
+    height: 62px;
+    background:url(../images/nav_btn_hover2.png) left top repeat-x;
+	line-height:62px;
+	cursor: pointer;
+	display: block;
+	margin-left: 160px;
+}
+/*
+.main_index
+{
+	width:1338px;
+	background:#fff;
+}
+*/
+.main_left
+{
+	width:27%;
+	padding:0;
+	FLOAT:LEFT;
+	height: 600px;
+	position: relative;
+}
+.main_right
+{
+	width:73%;
+	padding:0;
+	FLOAT:LEFT;
+	height: 600px;
+	position: relative;
+}
+.btn1
+{
+    width: 192px;
+    height: 62px;
+    position: absolute;
+    top:0;
+    left:0;
+    background:url(../images/btn1.png) 0 0 no-repeat;
+    cursor: pointer;
+}
+.btn2
+ {
+     width: 192px;
+     height: 62px;
+     position: absolute;
+     top:75px;
+     left:0;
+     background:url(../images/btn1.png) 0 -100px no-repeat;
+    cursor: pointer;
+ }
+.btn3
+{
+    width: 192px;
+    height: 62px;
+    position: absolute;
+    top:150px;
+    left:0;
+    background:url(../images/btn1.png) 0 -200px no-repeat;
+    cursor: pointer;
+}
+.btn4
+{
+    width: 192px;
+    height: 62px;
+    position: absolute;
+    top:225px;
+    left:0;
+    background:url(../images/btn1.png) 0 -300px no-repeat;
+    cursor: pointer;
+}
+.btn5
+{
+    width: 192px;
+    height: 62px;
+    position: absolute;
+    top:150px;
+    left:0;
+    background:url(../images/btn1.png) 0 -400px no-repeat;
+    cursor: pointer;
+}
+.btn6
+{
+    width: 192px;
+    height: 62px;
+    position: absolute;
+    top:225px;
+    left:0;
+    background:url(../images/btn1.png) 0 -500px no-repeat;
+    backgroundPosition:-250px -500px;
+    cursor: pointer;
+}

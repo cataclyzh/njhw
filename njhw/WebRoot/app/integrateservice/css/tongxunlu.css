@@ -1,0 +1,102 @@
+@charset "utf-8";
+/* CSS Document */
+.tongxunlu_main{
+	background:#fff;
+	width:1004px;
+	height:458px;
+	padding:10px;
+}
+.tongxunlu_main_top{
+	width:100%; 
+}
+.tongxunlu_tools{
+	width:96%;
+	height:25px;
+	padding:10px;
+	border-bottom:solid 1px #98A6BE;
+}
+.tongxunlu_top_btn4{
+	width:80px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn1.jpg) left center no-repeat;
+	padding-left:28px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+}
+.tongxunlu_top_btn5{
+	width:80px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn2.jpg) left center no-repeat;
+	padding-left:28px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+}
+.tongxunlu_top_btn6{
+	width:80px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn3.jpg) left center no-repeat;
+	padding-left:28px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+	border-right:solid 1px #98A6BE;
+}
+.tongxunlu_top_btn1{
+	width:44px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn4.jpg) left center no-repeat;
+	padding-left:30px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+	margin-left:30px;
+}
+.tongxunlu_top_btn2{
+	width:44px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn5.jpg) left center no-repeat;
+	padding-left:30px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+}
+.tongxunlu_top_btn3{
+	width:44px;
+	height:25px;
+	background:url(../images/icon/tongxunlu_btn6.jpg) left center no-repeat;
+	padding-left:30px;
+	line-height:25px;
+	color:#7F90B3;
+	font-size: 12px;
+	float:left;
+}
+.tongxunlu_conter_div{
+	width:96%;
+	padding:10px;
+	height:300px;
+}
+.tongxunlu_main_main_left{
+	width:16%;
+	height:370px;
+	border-right:solid 1px #E8E8E8;
+	float:left;
+}
+.tongxunlu_main_main_right{
+	width:800px;
+	height:370px;
+	float:right;
+}
+.tongxunlu_right3_input{
+	background:url(../images/main_sou.jpg) left top no-repeat;
+	height:22px;
+	padding-left:40px;
+	width:28%;
+	float:right;
+}

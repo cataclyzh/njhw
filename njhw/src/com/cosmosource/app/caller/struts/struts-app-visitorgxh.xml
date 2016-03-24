@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/visitor" extends="default" namespace="/app/visitor">
+
+		<!-- 功能：查询未访问的访客 gxh-->
+	
+		 <action name="visitorListIn" class="visitorqueryAction" method="visitorListIn">
+			<result name="success">/app/caller/visitorRegister/visitorRegister.jsp</result>	
+		</action>
+	 
+		 <action name="visitorList" class="visitorqueryAction" method="visitorList">
+			<result name="success">/app/caller/visitorRegister/visitorRegister.jsp</result>	
+		</action>
+	   <!--功能：查询到访的访客 gxh  -->
+		 <action name="visitorList1" class="visitorqueryAction" method="visitorList1">
+			<result name="success">/app/caller/visitorRegister/inExitCard.jsp</result>	
+		</action>
+		
+		
+	   <!--功能： 根据省份证加载基本信息 gxh -->
+	  <action name="loadVisiInfo" class="nothaveOrderAction" method="loadVisiInfo"/>
+		<!--功能： 访客前台预约 gxh -->
+		<action name="noOrderInput" class="nothaveOrderAction" method="initOrd">
+			<result name="init">/app/caller/visitorRegister/nohaveOederRe.jsp</result>	
+		</action>	
+		<!--功能：保存访问信息  gxh -->
+		<action name="savenoOrder" class="nothaveOrderAction" method="save">
+			<result name="success" type="redirectAction">noOrderInput?message=1</result>	
+		</action>
+		<!--功能：根据部门得到人员  gxh -->
+		<action name="getUsersByOrgId" class="nothaveOrderAction" method="getUsersByOrgId"/>
+			
+		<!--功能： 发放临时卡 gxh -->
+			<action name="getvisifoByid" class="visitorqueryAction" method="getvisifoByid">
+			<result name="success">/app/caller/visitorRegister/giveCard.jsp</result>	
+		</action>
+
+		<action name="getVisitByid" class="visitorqueryAction" method="getVisitByid">
+			<result name="success">/app/caller/visitorRegister/giveCard.jsp</result>
+		</action>
+		<!--功能： 发放副卡 gxh -->
+		<action name="getvisifoByid1" class="visitorqueryAction" method="getAllInfor">
+			<result name="success">/app/caller/visitorRegister/giveSonCard.jsp</result>
+		</action>
+		<!-- 功能：删除副卡 gxh -->
+		<action name="deleteVmVisitAuxi" class="visitorqueryAction" method="deleteVmVisitAuxi"/>
+		<action name="flshVmVisitAuxi" class="visitorqueryAction" method="flshVmVisitAuxi"/>
+		
+			
+		<!-- 功能：查看 gxh -->
+		<action name="getAllInfor" class="visitorqueryAction" method="getAllInfor">
+			<result name="success">/app/caller/visitorRegister/lookupinfo.jsp</result>				
+		</action>
+	
+			
+					
+		<!-- 发放副卡gxh  -->
+		<!--<action name="boundSonCard" class="visitorqueryAction" method="boundSonCard">
+			<result name="success">/app/caller/visitorRegister/cardNum.jsp</result>	
+			
+		</action>
+		
+		-->
+		<action name="saveSoncard" class="visitorqueryAction" method="saveSoncard">
+		<!--  	<result name="success">/app/caller/visitorRegister/giveSonCard.jsp</result>	 -->
+			
+		</action>
+		<!--功能： 退卡  gxh -->
+		<action name="inputExitCard" class="visitorqueryAction" method="inputExitCard">
+			<result name="success">/app/caller/visitorRegister/inExitCard.jsp</result>	
+		</action>	
+		<action name="getAllInfor1" class="visitorqueryAction" method="getAllInfor1">
+			<result name="success">/app/caller/visitorRegister/refundCard.jsp</result>				
+		</action>
+		<action name="exitCard" class="visitorqueryAction" method="exitCard">
+			<result name="success">/app/caller/visitorRegister/refundCard.jsp</result>	
+			
+		</action>
+ 	</package>
+</struts>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <package name="/app/caller" extends="default" namespace="/app/caller">
+   		
+   		<!-- 功能：用户注册  cjw -->
+        <action name="regUser" class="registerAction" method="input">
+			<result name="init">/app/caller/register/register.jsp</result>		
+		</action>
+		<!-- 功能：用户登录  cjw -->
+		<action name="login" class="registerAction" method="login">
+			<result name="login">/app/caller/register/login.jsp</result>		
+		</action>
+		
+		<!-- 功能：取回密码初始化  cjw -->
+        <action name="getPassword" class="registerAction" method="getPassword">
+            <result name="success">/app/caller/register/findPassword.jsp</result>
+        </action>
+        <!-- 功能：通过电话或者邮箱取回密码  cjw -->
+		<action name="sendPassword" class="registerAction" method="sendPassword">
+            <result name="success">/app/caller/register/findPassword.jsp</result>
+            <result name="error">/app/caller/register/findPassword.jsp</result>
+        </action> 
+        <!-- 功能：用户修改  cjw -->
+		<action name="saveUser" class="registerAction" method="save">
+			<result name="success">userList.act</result> 
+		</action>
+		<!-- 功能：删除用户对象  cjw -->
+		<action name="delete" class="registerAction" method="delete">
+		    <result name="reload">userList.act</result>
+		</action> 
+		<!-- 功能：校验用户名  cjw -->
+		<action name="checkUserName" class="registerAction" method="checkUserName"/>
+		
+		<action name="checkUser" class="registerAction" method="checkUser">
+			<result name="success">/app/caller/order/myOrder.jsp</result>
+		</action>
+		<action name="userList" class="registerAction" method="userList">
+			<result name="success">/app/caller/register/registerList.jsp</result>
+		</action>
+		<!-- 访客预约初始化 cjw -->
+		<action name="orderInput" class="callerAction" method="init">
+			<result name="init">/app/caller/order/myOrder.jsp</result>	
+		</action>
+		<!-- 功能：预约  cjw -->
+		<action name="saveOrder" class="callerAction" method="save">
+			<result name="success">/app/caller/order/myOrder.jsp</result>	
+		</action>
+		<!-- 功能：预约查询  cjw -->
+		<action name="listOrders" class="callerAction" method="listOrders">
+			<result name="success">/app/caller/order/myOrderList.jsp</result>	
+		</action>
+		<!-- 功能：修改预约  cjw -->
+		<action name="updateVist" class="callerAction" method="updateVist">
+			<result name="success">/app/caller/order/myOrder.jsp</result>	
+		</action>
+		<!-- 功能：查看预约  cjw -->
+		<action name="lookVist" class="callerAction" method="lookVist">
+			<result name="success">/app/caller/order/myOrderDeal.jsp</result>	
+		</action>
+		<!-- 功能：确认预约  cjw -->
+		<action name="sureVist" class="callerAction" method="sureVist"/>
+		<!-- 功能：取消预约  cjw -->
+		<action name="canceVist" class="callerAction" method="canceVist"/>
+		
+		<!--初始进入列表页面     sqs -->
+		<action name="init" class="visitorsTraceAction" method="init">
+			<result name="success">/app/caller/queryVisitors/queryVisitors.jsp</result>
+		</action>
+		<!-- 访客查询 -->
+		 <action name="queryVisitors" class="visitorsTraceAction" method="queryVisitors">
+			<result name="success">/app/caller/queryVisitors/queryVisitors.jsp</result>		
+		 </action>
+		 <!-- 访客查询ForTempCard -->
+		 <action name="queryVisitorsForTempCard" class="visitorsTraceAction" method="queryVisitors">
+			<result name="success">/app/caller/queryVisitors/queryVisitorsForTempCard.jsp</result>		
+		 </action>
+		 <!--访客统计量报表  -->
+		 <action name="visitorsReport" class="visitorsTraceAction" method="visitorsReport">
+			<result name="success">/app/caller/queryVisitors/visitorsReport.jsp</result>		
+		 </action>
+		 <action name="lookVisitors" class="visitorsTraceAction" method="lookVisitors">
+			<result name="lookvi">/app/caller/queryVisitors/visitorsMes.jsp</result>		
+		 </action>
+		 <!--访问事务查看  sqs  -->
+		 <action name="visitorsTransaction" class="visitorsTraceAction" method="visitorsTransaction">
+			<result name="visitorsTransaction">/app/caller/queryVisitors/visitorsTransaction.jsp</result>		
+		 </action>
+		 <action name="showVideo" class="visitorsTraceAction" method="showVideo">
+			<result name="success">/app/caller/queryVisitors/swGG.jsp</result>
+		 </action>
+		 <action name="selectVmVisit" class="visitorsTraceAction" method="selectVmVisit">
+			<result name="selectVmVisit">/app/caller/queryVisitors/queryVisitors.jsp</result>		
+		 </action>
+		 <!-- 访客管理 初始化黑名单管理  -->
+		 <action name="initBlackList" class="blackListAction" method="initBlackList">
+			<result name="success">/app/caller/blackList/blackList.jsp</result>		
+		 </action>
+		 <!-- 访客管理 黑名单管理  访客信息列表  -->
+		 <action name="queryBlackList" class="blackListAction" method="queryBlackList">
+			<result name="success">/app/caller/blackList/blackList.jsp</result>		
+		 </action>
+		 <!-- 访客管理 黑名单管理  加入黑名单页面  -->
+		 <action name="addBlackList" class="blackListAction" method="addBlackList">
+			<result name="success">/app/caller/blackList/blackListInput.jsp</result>		
+		 </action>
+		 <!-- 访客管理 黑名单管理   保存按钮使用  -->
+		 <action name="saveBlackList" class="blackListAction" method="saveBlackList">
+			<result name="success">/app/caller/blackList/blackListInput.jsp</result>		
+		 </action>
+		 <!-- 访客管理 黑名单管理  取消黑名单页面  -->
+		 <action name="delBlackList" class="blackListAction" method="delBlackList">
+			<result name="success">/app/caller/blackList/delblackList.jsp</result>		
+		 </action>
+		 <!-- 访客管理 黑名单管理  取消黑名单 按钮使用   -->
+		 <action name="delBlackListButton" class="blackListAction" method="delBlackListButton">
+			<result name="success">/app/caller/blackList/delblackList.jsp</result>		
+		 </action>
+ 	</package>
+</struts>

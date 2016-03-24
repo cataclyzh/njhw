@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+       
+    <bean id="parkingAction" name="parkingAction" class="com.cosmosource.app.parking_lot.action.ParkingAction" scope="prototype">
+		<property name="wirelessManager" ref="wirelessManager" />
+		<property name="wirelessSqlManager" ref="wirelessSqlManager" />
+		<property name="parkingLotManager" ref="parkingLotManager" />
+	</bean>
+	
+	<!-- 停车场监控，展示在运营管理主页 -->
+	<bean id="parkingMonitor" name="parkingMonitor" class="com.cosmosource.app.parking_lot.action.ParkingMonitorAction">
+		<property name="parkingLotManager" ref="parkingLotManager" />
+	</bean>
+	
+	<bean id="parkingLotManager" name="parkingLotManager" class="com.cosmosource.app.parking_lot.service.ParkingLotManager" parent="manager"></bean>
+</beans>

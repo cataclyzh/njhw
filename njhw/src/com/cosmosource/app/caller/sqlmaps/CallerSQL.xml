@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CallerSQL">
+	<!-- 目的：访客跟踪查询 sqs  -->
+	<select id="selectTraceCallerPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	 <![CDATA[ select t.name VI_NAME,t.userName USER_NAME,t.return VS_RETURN,t.flag VS_FLAG,t.start1 VS_ST,t.end1 VS_ET, t.cardId CARD_ID from 
+	 ((select t2.va_bak1 name,t2.VA_RETURN return ,t1.USER_NAME userName,t1.Vs_Flag flag,t1.Vs_St start1,t1.Vs_Et end1,
+	 t2.CARD_ID cardId ,t2.CARD_TYPE cardType from vm_visit t1, vm_visit_auxi t2 where t1.vs_id = t2.vs_id 
+	 and t1.card_type = '2'and t2.card_type='2' and t1.STATUS='1' and t1.VS_RETURN <> '3' and t2.VA_RETURN <> '3') 
+     union all (select vi_name name,VS_RETURN return,t2.USER_NAME userName,t2.Vs_Flag flag,t2.Vs_St start1,t2.VS_ET end1,
+     t2.CARD_ID cardId ,t2.CARD_TYPE cardType from vm_visit t2)) t where 1=1 and (t.return ='1' or t.return ='2')]]>
+		<dynamic >
+			<!--用户名称 -->
+			<isNotEmpty prepend="and" property="viName">
+				t.name like '%' || #viName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="userName">
+				t.userName like '%' || #userName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cardId">
+				t.cardId= #cardId# 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cardType">
+				t.cardType= #cardType# 
+            </isNotEmpty>
+			<!--访问开始时间 -->
+			<isNotEmpty prepend="and" property="beginTime">
+				<![CDATA[ t.start1 >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endTime">
+           		 <![CDATA[ t.start1 <=  to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+          	<isGreaterThan compareValue="0" prepend="and" property="vsFlag">
+				t.flag = #vsFlag#
+          	</isGreaterThan>
+          	<isGreaterThan compareValue="0" prepend="and" property="vsReturn">
+				t.return = #vsReturn#
+          	</isGreaterThan> 
+            
+		</dynamic>
+		order by t.start1               
+	</select>  
+	<!-- 目的：访客黑名单查询   开发者：sqs -->
+	<select id="selectBlackList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select v.* from VM_VISITORINFO v where 1=1
+		<dynamic >
+			<isNotEmpty prepend="and" property="viName">
+				v.VI_NAME like '%' || #viName# || '%'
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="residentNo">
+				v.RESIDENT_NO= #residentNo# 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="resBak1">
+				v.RES_BAK1 = #resBak1#
+            </isNotEmpty>
+            <isNotEmpty property="nvrId">
+            	<isEqual property="nvrId"  prepend="and"  compareValue="1" >
+					<![CDATA[
+						(v.NVR_ID is null)
+					]]>
+				</isEqual>	
+				<isEqual property="nvrId"  prepend="and"  compareValue="2" >
+					<![CDATA[
+						(v.NVR_ID is not null)
+					]]>
+				</isEqual>	
+            </isNotEmpty>
+            <isGreaterThan compareValue="0" property="isBlack"  prepend="and" > 
+            	v.IS_BLACK = #isBlack#
+            </isGreaterThan>
+		</dynamic>
+		order by v.VI_ID
+	</select>  
+	<!-- 目的：前台登记设计查询列表　开发者：gxh 　　时间：2011-02-28 -->
+	<select id="selectRegCallerPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.*,v.resident_no from VM_VISIT t ,VM_VISITORINFO v where t.vi_id = v.vi_id 
+		<dynamic >
+			<!--用户名称 -->
+			<isNotEmpty prepend="and" property="viName">
+				t.vi_name= #viName# 
+            </isNotEmpty>
+			<!--访问开始时间 -->
+			<isNotEmpty prepend="and" property="vsSt">
+				<![CDATA[ to_char(t.vs_st,'yyyy-mm-dd') >= #vsSt#  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="vsEt">
+				 <![CDATA[ to_char(t.vs_st,'yyyy-mm-dd') <= #vsEt#  ]]>
+            </isNotEmpty>
+               
+            <isNotEmpty prepend="and" property="residentNo">
+				 v.resident_no = #residentNo# 
+            </isNotEmpty>
+             <isNotEmpty prepend="and" property="vsFlag">
+				 t.vs_flag = #vsFlag# 
+            </isNotEmpty>     
+		</dynamic>
+		order by t.VS_ST	                   
+	</select>  
+	<!--new 目的：前台登记设计查询列表　开发者：gxh 　　-->
+	<select id="selectRegCallerPageList1" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		select t.vs_id, t.vi_id,t.vi_name, t.user_id,t.user_name ,t.org_name,t.vs_info,t.vs_num,to_char(t.vs_st,'yyyy-mm-dd hh24:mi:ss') vs_st ,to_char(t.vs_et,'yyyy-mm-dd hh24:mi:ss') vs_et ,t.card_id,t.card_type,
+    t.vs_st1_lea,t.vs_st1_acc,t.vs_return,t.vs_ret_sub,t.vs_flag,t.vs_type, v.resident_no, v.vi_mobile from VM_VISIT t ,VM_VISITORINFO v where t.vi_id = v.vi_id and t.STATUS='1'
+		<dynamic >
+			<!--用户名称 -->
+			<isNotEmpty prepend="and" property="viName">
+				t.vi_name like '%' || #viName# || '%' 
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="residentNo">
+				 v.resident_no = #residentNo# 
+            </isNotEmpty>       
+            <isNotEmpty prepend="and" property="cardId">
+				 v.res_Bak1 = #cardId# 
+            </isNotEmpty>
+			<!-- 时间-->
+			<isNotEmpty prepend="and" property="vsSt">
+				<![CDATA[ to_char(t.vs_st,'yyyy-MM-dd hh24:mi:ss') >= #vsSt#  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="vsEt">
+				 <![CDATA[ to_char(t.vs_st,'yyyy-MM-dd hh24:mi:ss') <= #vsEt#  ]]>
+            </isNotEmpty>
+            <isGreaterThan compareValue="0" prepend="and" property="vsFlag">
+				t.VS_FLAG = #vsFlag#
+          	</isGreaterThan>
+		</dynamic>
+		order by t.VS_ST desc                   
+	</select>  
+	
+	<!--功能：查询来访基本信息根据id gxh-->
+	<select id="findVisitorsinformation" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select v.vi_id,v.vi_name,v.vi_type,v.resident_no,v.vi_mobile,v.vi_mail,v.plate_num,v.vi_flag,v.use_flag,
+    t.vs_id,t.user_id,t.user_name ,t.org_name,t.vs_info,t.vs_num,to_char(t.vs_st,'yyyy-mm-dd hh24:mi:ss') vs_st ,to_char(t.vs_et,'yyyy-mm-dd hh24:mi:ss') vs_et ,t.card_id,t.card_type,
+    t.vs_st1_lea,t.vs_st1_acc,t.vs_return,t.vs_ret_sub
+    from VM_VISITORINFO v , VM_VISIT t  where t.vi_id = v.vi_id 
+	  <dynamic>
+		  <!-- 事物id -->
+		  <isNotEmpty prepend="and" property="vsId">
+		       t.vs_id=#vsId#
+		  </isNotEmpty>
+	  </dynamic>
+	</select>
+   <!--功能：New查询来访基本信息根据id 和 市民卡号 gxh-->
+	<select id="findVisitorsinformation1" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  select v.vi_id,v.vi_name,v.vi_type,v.resident_no,v.vi_mobile,v.vi_mail,v.plate_num,v.vi_flag,v.use_flag,v.res_Bak1,
+    t.vs_id,t.user_id,t.user_name ,t.org_name,t.vs_info,t.vs_num,to_char(t.vs_st,'yyyy-mm-dd hh24:mi:ss') vs_st ,to_char(t.vs_et,'yyyy-mm-dd hh24:mi:ss') vs_et ,t.card_id,t.card_type,
+    t.vs_st1_lea,t.vs_st1_acc,t.vs_return,t.vs_ret_sub
+    from VM_VISITORINFO v , VM_VISIT t  where t.vi_id = v.vi_id   and rownum = 1
+	  <dynamic>
+		  <!-- 事物id -->
+		  <isNotEmpty prepend="and" property="vsId">
+		       t.vs_id=#vsId#
+		  </isNotEmpty>
+		  <isNotEmpty prepend="and" property="residentNo">
+				 v.resident_no = #residentNo# 
+            </isNotEmpty>       
+     
+            <isNotEmpty prepend="and" property="resBak1">
+				 v.res_Bak1 = #resBak1# 
+            </isNotEmpty>   
+          
+           Order By t.vs_st 
+              
+	  </dynamic>
+	</select>
+	<!--功能：New方法实现查询当天的所有访客信息，为访客统计用 gxh-->
+	<select id="dailyVMCountInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select v.resident_no,to_char(t.vs_st, 'yyyy-MM-dd hh24:mi:ss') VS_ST,to_char(t.vs_et, 'yyyy-MM-dd hh24:mi:ss') VS_ET, to_char(t.vs_et1,'yyyy-MM-dd hh24:mi:ss') vs_et1 ,t.vs_flag from VM_VISIT t ,VM_VISITORINFO v where t.vi_id = v.vi_id 
+		<dynamic >	
+			<!--访问开始时间 -->
+			<isNotEmpty prepend="and" property="vsSt">
+				<![CDATA[ t.VS_ST >= to_date(#vsSt#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="vsEt">
+           		 <![CDATA[ t.VS_ET <=  to_date(#vsEt#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+             <isNotEmpty prepend="and" property="vsFlagList">
+				t.vs_flag in <iterate property="vsFlagList" open="(" close=")" conjunction=",">
+    			#vsFlagList[]#
+           	</iterate> 
+          </isNotEmpty>
+		</dynamic>
+		
+	</select>
+	
+	<!--功能：查询orgId对应的所有的受访人 	开发者：gxh 	 -->	
+	<select id="getUserByOrgId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT *  FROM USERS U,NJHW_USERS_EXP N WHERE N.USERID  (+) =  U.USERID and U.ORG_ID = #orgId# 
+		<dynamic>
+			<isNotEmpty prepend="and" property="userName">
+			   trim(U.DISPLAY_NAME) = #userName#  
+            </isNotEmpty>
+        </dynamic>
+	</select>
+	
+	
+	<!-- herb 根据卡号 查询全部事务信息 -->  
+	<select id="findVmVisitByCardId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<![CDATA[
+		select * from (
+		select t.vs_id,t.vi_id,t.vi_name,t.user_id,t.user_name,
+       	t.org_name,
+       t.vs_info,
+       t.vs_num_yn,
+       t.vs_num,
+       to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss') VS_ST,
+       to_char(t.VS_ET, 'yyyy-MM-dd hh24:mi:ss') VS_ET,
+       t.vs_st1,
+       t.vs_st1_lea,
+       t.vs_st1_acc,
+       t.vs_et1,
+       t.vs_yn,
+       t.vs_type,
+       t.card_id,
+       t.card_type,
+       t.vs_flag,
+       t.vs_commets,
+       t.vs_return,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4,
+       t.insert_id,
+       t.insert_date,
+       t.modify_id,
+       t.modify_date,
+       t.vs_ret_sub,
+       t.org_id,
+       t.cancel_info,
+		v.RESIDENT_NO,v.VI_ORIGIN,v.PLATE_NUM,v.VI_MOBILE,v.RES_BAK2 PIC,v.RES_BAK1 CITY_CARD from VM_VISIT t ,VM_VISITORINFO v where t.vi_id = v.vi_id and to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss')  >= #startTime#  
+		and to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss') <= #endTime# and t.vs_flag in ('02','03' ,'04' ,'05','06') and t.CARD_ID = #cardId#
+		union
+		select t.vs_id,t.vi_id,t.vi_name,t.user_id,t.user_name,
+       	t.org_name,
+       t.vs_info,
+       t.vs_num_yn,
+       t.vs_num,
+       to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss'),
+       to_char(t.VS_ET, 'yyyy-MM-dd hh24:mi:ss'),
+       t.vs_st1,
+       t.vs_st1_lea,
+       t.vs_st1_acc,
+       t.vs_et1,
+       t.vs_yn,
+       t.vs_type,
+       t.card_id,
+       t.card_type,
+       t.vs_flag,
+       t.vs_commets,
+       t.vs_return,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4,
+       t.insert_id,
+       t.insert_date,
+       t.modify_id,
+       t.modify_date,
+       t.vs_ret_sub,
+       t.org_id,
+       t.cancel_info,
+		v.RESIDENT_NO,v.VI_ORIGIN,v.PLATE_NUM,v.VI_MOBILE,v.RES_BAK2 PIC,v.RES_BAK1 CITY_CARD from VM_VISIT t ,vm_visit_auxi x ,VM_VISITORINFO v where t.vi_id = v.vi_id and x.vs_id = t.vs_id and to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss')  >= #startTime#  
+		and to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss') <= #endTime#
+		and t.vs_flag in ('02','03' ,'04' ,'05','06') and  x.card_id = #cardId#
+		) tempa order by vs_id
+		]]>
+	</select>
+	
+	<!-- herb 根据事务id 查询全部事务信息 -->  
+	<select id="findVmVisitInfoByVsId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<![CDATA[
+		select t.vs_id,t.vi_id,t.vi_name,t.user_id,t.user_name,
+       	t.org_name,
+       t.vs_info,
+       t.vs_num_yn,
+       t.vs_num,
+       to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss') VS_ST,
+       to_char(t.VS_ET, 'yyyy-MM-dd hh24:mi:ss') VS_ET,
+       t.vs_st1,
+       t.vs_st1_lea,
+       t.vs_st1_acc,
+       t.vs_et1,
+       t.vs_yn,
+       t.vs_type,
+       t.card_id idcradnum,
+       t.card_type,
+       t.vs_flag,
+       t.vs_commets,
+       t.vs_return,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4,
+       t.insert_id,
+       t.insert_date,
+       t.modify_id,
+       t.modify_date,
+       t.vs_ret_sub,
+       t.org_id,
+       t.cancel_info,v.RESIDENT_NO,v.VI_ORIGIN,v.PLATE_NUM,v.VI_MOBILE,v.RES_BAK2 PIC,v.RES_BAK3 CERTIFICATE ,v.RES_BAK4 CERTIFICATENAME ,v.RES_BAK1 CITY_CARD from VM_VISIT t ,VM_VISITORINFO v where t.vi_id(+) = v.vi_id and t.vs_id = #vsId#
+		]]>
+	</select>
+	
+	<!-- herb 根据事务id 查询全部事务信息2 -->  
+	<select id="findVmVisitInfoByVsId2" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<![CDATA[
+		select t.vs_id,t.vi_id,t.vi_name,t.user_id,t.user_name,
+         t.org_name,
+       t.vs_info,
+       t.vs_num_yn,
+       t.vs_num,
+       to_char(t.VS_ST, 'yyyy-MM-dd hh24:mi:ss') VS_ST,
+       to_char(t.VS_ET, 'yyyy-MM-dd hh24:mi:ss') VS_ET,
+       t.vs_st1,
+       t.vs_st1_lea,
+       t.vs_st1_acc,
+       t.vs_et1,
+       t.vs_yn,
+       t.vs_type,
+       t.card_id,
+       r.idcradnum,
+       t.card_type,
+       t.vs_flag,
+       t.vs_commets,
+       t.vs_return,
+       t.res_bak1,
+       t.res_bak2,
+       t.res_bak3,
+       t.res_bak4,
+       t.insert_id,
+       t.insert_date,
+       t.modify_id,
+       t.modify_date,
+       t.vs_ret_sub,
+       t.org_id,
+       t.cancel_info,v.RESIDENT_NO,v.VI_ORIGIN,v.PLATE_NUM,v.VI_MOBILE,v.RES_BAK2 PIC,v.RES_BAK3 CERTIFICATE ,v.RES_BAK4 CERTIFICATENAME ,v.RES_BAK1 CITY_CARD from VM_VISIT t ,VM_VISITORINFO v,vis_rfidandid r where t.vi_id(+) = v.vi_id and t.card_id=r.visid and t.vs_id = #vsId#
+		]]>
+	</select>
+	
+	<select id="selectFatherCardIdList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.visid, t.idcradnum, t.tagmac from vis_rfidandid t
+	</select>
+	
+	<select id="findVis" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from vis_rfidandid r where r.visid=(select t.card_id from vm_visit t where t.vs_id=#vsId#) 
+	</select>
+	
+	<!--功能：查询来访记录 	开发者：zh 	时间：2013-03-19  -->
+	<select id="selectVisitList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.VS_ID, t.VI_NAME, t.VS_FLAG, t.USER_NAME, t.ORG_NAME,
+		to_char(t.VS_ST,'YYYY-MM-DD HH24:MI') VSST, 
+		to_char(t.VS_ET,'YYYY-MM-DD HH24:MI') VSET 
+		from VM_VISIT  t where t.USER_ID = #userId#
+		<dynamic>
+			<isNotEmpty prepend="and" property="flag">
+				t.VS_FLAG= #flag#
+            </isNotEmpty>
+			<isNotEmpty prepend="and" property="beginTime">
+				<![CDATA[ t.VS_ST >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endTime">
+           		 <![CDATA[ t.VS_ST <=  to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss')  ]]>
+            </isNotEmpty>
+		</dynamic>
+		order by t.VS_ID desc, t.VS_FLAG asc
+	</select>
+	
+	
+	
+	<select id="findVisitorsByTimeFormVM" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<![CDATA[
+		select t.VS_ID
+		from VM_VISIT  t where t.CARD_TYPE =1 and t.CARD_ID= #cardId# and (t.VS_FLAG ='01' or t.VS_FLAG ='02' or t.VS_FLAG ='04') and t.STATUS='1' and
+		((t.VS_ST <= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.VS_ET )
+		or (t.VS_ST <= to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.VS_ET)
+		or (t.VS_ST >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') >=t.VS_ET)
+		 )]]>
+	</select>
+	
+	<select id="findVisitorsByTimeFormAuxi" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	    <![CDATA[
+		select t.VS_ID
+		from VM_VISIT t ,VM_VISIT_AUXI v where t.VS_ID = v.VS_ID and t.CARD_TYPE =1 and v.CARD_ID= #cardId# and (t.VS_FLAG ='01' or t.VS_FLAG ='02' or t.VS_FLAG ='04') and t.STATUS='1' and
+		((t.VS_ST <= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.VS_ET )
+		or (t.VS_ST <= to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') <=t.VS_ET)
+		or (t.VS_ST >= to_date(#beginTime#, 'yyyy-MM-dd hh24:mi:ss') and to_date(#endTime#, 'yyyy-MM-dd hh24:mi:ss') >=t.VS_ET)
+		 )]]>
+	</select>
+	
+	<!--功能：加载访客及访问信息	开发者：zh 	时间：2013-04-07  -->
+	<select id="loadVisitByVsid" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select t.*, t1.RESIDENT_NO, t1.IS_BLACK, t1.RES_BAK1,
+		to_char(t.VS_ST,'YYYY-MM-DD HH24:MI') VSST, 
+		to_char(t.VS_ET,'YYYY-MM-DD HH24:MI') VSET 
+		from VM_VISIT t, VM_VISITORINFO t1
+		where t.VI_ID = t1.VI_ID and t.VS_ID = #vsId# and t.USER_ID = #userId#
+	</select>
+	
+	<!--功能：加载访客位置点 	开发者：zh 	时间：2013-05-4  -->
+	<select id="loadVisitorPoints" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		
+		<dynamic>
+			<isNotEmpty prepend="and" property="visitorName">
+				
+			</isNotEmpty>
+       	</dynamic>
+	</select>
+	<!-- 查询内部人员 -->
+	<select id="findIndorUser" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select u.userid, u.display_name, o.org_id, e.uep_mobile,e.resident_no,e.uep_photo,e.uep_bak1, o.name
+         from users u,njhw_users_exp e,org o where u.userid = e.userid and  u.org_id =o.org_id 
+		<dynamic>
+			<isNotEmpty prepend="and" property="residentNo">
+				trim(e.resident_no) = #residentNo#
+			</isNotEmpty>
+       	</dynamic>
+	</select>
+	
+		<!--功能：取得当前登陆的用户所属单位的id 	开发者：zh 	时间：2013-05-04  -->
+	<select id="getTopOrgIdByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select aa.display_name,
+	       fn_get_orgid(org_id) TOP_ORG_ID,
+	       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) org_name,
+	       aa.org_id
+		 from users aa
+		 	where aa.userid = #userid#
+	</select>
+	
+	<!--功能：根据输入的IP电话号码显示mac及用户名称	开发者：zh 	时间：2013-05-29  -->
+	<select id="loadMacAndNumByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+    SELECT T.TEL_MAC,
+    CASE T.TEL_EXT
+          WHEN '1'
+             THEN  ''
+          WHEN '2' 
+             THEN T.TEL_NUM  
+     END TEL_NUM   
+    from NJHW_USERS_EXP E,TC_IP_TEL T  
+		WHERE E.USERID = #userid# 
+		AND T.TEL_ID = E.TEL_NUM
+	</select>
+		
+	<!--功能:查询人员 信息   开发者：gxh   时间：2013-5-6-->
+	<select id="getUsersAndOrg1" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+     select aa.display_name,aa.userid,
+	       fn_get_orgid(org_id) TOP_ORG_ID,
+	       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) org_name,
+	       aa.org_id
+		 from users aa where aa.login_uid != 'admin' and fn_get_orgid(org_id)= #orgId#
+     <dynamic >
+		<!--用户名称 -->
+		<isNotEmpty prepend="and" property="displayName">
+			aa.display_name like '%' || #displayName# || '%' 
+           </isNotEmpty>
+	</dynamic>
+	</select>
+	<select id="getUsersAndOrg" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+     select aa.display_name,aa.userid,
+	       fn_get_orgid(org_id) TOP_ORG_ID,
+	       (select name from org bb where bb.org_id = fn_get_orgid(aa.org_id)) org_name,
+	       aa.org_id
+		 from users aa where aa.login_uid != 'admin'
+     <dynamic >
+		<!--用户名称 -->
+		<isNotEmpty prepend="and" property="displayName">
+			aa.display_name like '%' || #displayName# || '%' 
+           </isNotEmpty>
+	</dynamic>
+	</select>
+	
+	<!-- 修改确认/取消申请状态 -->
+	<update id="updateFlagMyCall" parameterClass="java.util.Map">
+		UPDATE VM_VISIT  SET VS_FLAG = #vsFlag# WHERE VS_ID = #vsId#
+	</update>
+	
+	<select id="getUserVisitInfos" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	<![CDATA[
+		SELECT a.USER_NAME, TO_CHAR(a.VS_ST,'YYYY-MM-DD HH24:MI') as VS_ST, TO_CHAR(a.VS_ET,'YYYY-MM-DD HH24:MI') as VS_ET 
+    	FROM vm_visit a, vm_visitorinfo b where a.vi_id=b.vi_id
+		AND (a.card_id = #cityId# OR b.resident_no = #cardId# OR b.res_bak1= #cityId#)
+		AND vs_flag <> '03' AND vs_flag <> '04' AND vs_flag <> '05' 
+		AND vs_flag <> '06' AND vs_flag <> '99'
+		AND a.STATUS = '1'
+		ORDER BY vs_id desc
+	]]>
+	</select>
+</sqlMap>

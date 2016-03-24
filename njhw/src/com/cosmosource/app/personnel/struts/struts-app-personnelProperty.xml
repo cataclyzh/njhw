@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- 管理局管理 -->
+   <package name="/app/personnel/property" extends="default" namespace="/app/personnel/property">
+		<!-- 初始化管理局人员管理主页  -->
+		<action name="authorityRoomDistribute" class="propertyAction" method="authorityRoomDistribute">
+			<result name = "success">/app/personnel/property/authorityRoomDistribute.jsp</result>
+		</action>
+		
+		<!--功能：初始进入管理局页面 	开发者：nj 	时间：2013-08-07  -->
+		<action name="init" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndex.jsp</result>
+		</action>
+		<action name="initA" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndexA.jsp</result>
+		</action>
+		<action name="initB" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndexB.jsp</result>
+		</action>
+		<action name="initC" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndexC.jsp</result>
+		</action>
+		<action name="initD" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndexD.jsp</result>
+		</action>
+		<action name="initE" class="propertyAction" method="init">
+			<result name="success">/app/personnel/njhwAdminIndexE.jsp</result>
+		</action>
+		
+		<!-- 管理局管理员门禁闸机授权管理 -->
+		<action name="queryNjhwAccess" class="njhwAccessMgrAction" method="queryNjhwAccess">
+			<result name="success">/app/personnel/property/applyAccess.jsp</result>
+		</action>
+		
+		<!-- 谷主任专用门禁授权管理页面 -->
+		<action name="queryNjhwAccess_kezhangb2" class="njhwAccessMgrAction" method="queryNjhwAccess">
+			<result name="success">/app/personnel/njhwAdminIndexE.jsp</result>			
+		</action>
+		
+		<action name="accessApplyInput" class="njhwAccessMgrAction" method="accessApplyInput">
+			<result name="success">/app/personnel/property/applyAccessInput.jsp</result>
+		</action>
+
+		<action name="refuseAccessApplyBatch" class="njhwAccessMgrAction" method="refuseAccessApplyBatch">
+			<result name="success">queryNjhwAccess.act</result>
+		</action>
+		<action name="agreeAccessApplyBatch" class="njhwAccessMgrAction" method="agreeAccessApplyBatch">
+			<result name="success">queryNjhwAccess.act</result>
+		</action>
+		<action name="refuseInput" class="njhwAccessMgrAction" method="refuseInput">
+			<result name="success">/app/personnel/property/refuseInput.jsp</result>
+		</action>
+	</package>
+	<package name="/app/personnel/property/json" extends="json-default" namespace="/app/personnel/property/json">
+		<action name="agreeAccessApply" class="njhwAccessMgrAction" method="agreeAccessApply">
+			<result type="json" name="success">
+                <param name="contentType">text/html</param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">text/html</param>
+            </result>
+		</action>
+		<action name="refuseAccessApply" class="njhwAccessMgrAction" method="refuseAccessApply">
+			<result type="json" name="success">
+                <param name="contentType">text/html</param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">text/html</param>
+            </result>
+		</action>
+ 	</package>
+ 	
+</struts>

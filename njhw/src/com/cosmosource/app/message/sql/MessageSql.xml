@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MessageSql">
+	<!--  -->
+	<insert id="insertMsg" parameterClass="java.util.Map" >
+		INSERT INTO T_COMMON_MSG_BOX (
+			MSGID,
+			RECEIVER,
+			SENDER,
+			MSGTIME,
+			TITLE,
+			CONTENT,
+			STATUS,
+			RECEIVERID,
+			SENDERID,
+			MSGTYPE,
+			BUSN_ID
+		) values (
+			SEQ_COMMON_MSG_BOX.nextval,
+			#receiver#,
+			#sender#,
+			#msgTime#,
+			#title#,
+			#content#,
+			#status#,
+			#receiverId#,
+			#senderId#,
+			#msgType#,
+			#busnId#
+		)
+	</insert>
+	
+	<!-- 查询未读消息总数 -->
+	<select id="queryNotReadMsgCount" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT COUNT(*) XX FROM T_COMMON_MSG_BOX a WHERE RECEIVERID = #receiverId# AND STATUS='0' 
+	]]>
+	</select>
+	
+	<!-- 查询消息总数 -->
+	<select id="queryCountMsg" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT COUNT(*) XX FROM T_COMMON_MSG_BOX a WHERE RECEIVERID = #receiverId#
+	]]>
+	</select>
+	
+	<select id="queryMessage" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<!-- 
+	<![CDATA[
+		SELECT B.*, TO_CHAR(B.MSGTIME,'YY-MM-DD HH24:MI:SS') T FROM 
+		( SELECT A.*, ROWNUM RN 
+			FROM (select * from T_COMMON_MSG_BOX where nvl(receiverid, 0) <> 0 and RECEIVERID = #receiverId# order by msgtime desc) 
+				A WHERE ROWNUM <= #pageMax# order by A.msgtime desc) B  WHERE RN >= #pageMin# order by B.msgtime desc
+	
+	]]> -->
+	<![CDATA[
+		SELECT ROWNUM, P.*,TO_CHAR(P.MSGTIME,'YY-MM-DD HH24:MI:SS') T FROM (
+			SELECT S.* FROM T_COMMON_MSG_BOX S WHERE nvl(receiverid, 0) <> 0 and RECEIVERID = #receiverId# ORDER BY STATUS ASC , MSGID DESC) P WHERE ROWNUM <= #pageMax# 
+			MINUS 
+			SELECT ROWNUM, P.* FROM (
+			SELECT S.*,TO_CHAR(S.MSGTIME,'YY-MM-DD HH24:MI:SS') T FROM T_COMMON_MSG_BOX S WHERE  nvl(receiverid, 0) <> 0 and RECEIVERID = #receiverId# ORDER BY STATUS ASC , MSGID DESC) P
+			WHERE ROWNUM < #pageMin#
+	]]> 
+	</select>
+	
+	<!-- 查询首页显示消息 -->
+	<select id="queryTitleMsg" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT P.*, TO_CHAR(P.MSGTIME,'YY-MM-DD HH24:MI:SS') T ,ROWNUM 
+		FROM T_COMMON_MSG_BOX P 
+		WHERE P.RECEIVERID = #receiverId# 
+		order by P.STATUS ASC , P.MSGID desc
+	]]>
+	</select>
+	
+	<!-- 查询消息 -->	
+	<sql id="queryMsgSql">
+		<![CDATA[
+			SELECT ROWNUM, P.*,TO_CHAR(P.MSGTIME,'YY-MM-DD HH24:MI:SS') T FROM (
+			SELECT S.* FROM T_COMMON_MSG_BOX S WHERE 1 = 1 ORDER BY MSGID DESC) P WHERE ROWNUM <= #pageMax# 
+			MINUS 
+			SELECT ROWNUM, P.* FROM (
+			SELECT S.*,TO_CHAR(S.MSGTIME,'YY-MM-DD HH24:MI:SS') T FROM T_COMMON_MSG_BOX S WHERE 1=1 ORDER BY MSGID DESC) P
+			WHERE ROWNUM < #pageMin#
+		]]>
+	</sql>
+	<select id="queryMsg" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	<!-- SELECT P.*, to_char(P.MSGTIME,'yy-mm-dd hh24:mi:ss') T FROM T_COMMON_MSG_BOX P WHERE 1=1 -->
+	 	SELECT * FROM ( <include refid="queryMsgSql"/> ) D WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend="AND" property="sender">
+					D.SENDER = #sender#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="receiver">
+					D.RECEIVER = #receiver#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="title">
+					D.TITLE like #title#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="content">
+					D.CONTENT like #content#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="senderId">
+					D.SENDERID = #senderId#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="receiverId">
+					D.RECEIVERID = #receiverId#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="status">
+					D.STATUS = #status#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="msgType">
+					D.MSGTYPE = #msgType#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="startDate">
+		  		<![CDATA[
+		  			D.MSGTIME >= to_date(#startDate#,'yyyy-mm-dd')
+		  		]]>
+		  	</isNotEmpty>
+		  	<isNotEmpty prepend="AND" property="endDate">
+		  		<![CDATA[
+		  			D.MSGTIME <= to_date(#endDate#,'yyyy-mm-dd') + 1
+		  		]]>
+		  	</isNotEmpty>
+        </dynamic>        
+	</select>
+	
+	<!-- 查询访问信息数据总数 -->
+	<select id="queryCountVisit" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT COUNT(*) COU FROM VM_VISIT WHERE USER_ID = #userId#  AND STATUS = '1'
+		]]>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="vsFlag">
+				VS_FLAG = #vsFlag#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询访问信息 -->
+	<select id="queryVisitorDetailInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<!--SELECT 
+			T.VS_ID, 
+			T.VI_NAME, 
+			T.VS_FLAG, 
+			T.USER_NAME, 
+			T.ORG_NAME,
+			T.VS_INFO,
+			T.VS_FLAG,
+			to_char(T.VS_ST,'YYYY-MM-DD HH24:MI') VSST, 
+			to_char(T.VS_ET,'YYYY-MM-DD HH24:MI') VSET 
+		FROM VM_VISIT T WHERE 1=1 -->
+		<![CDATA[
+			SELECT ROWNUM,
+				T.*,
+				to_char(T.VS_ST,'YYYY-MM-DD HH24:MI') VSST, 
+				to_char(T.VS_ET,'YYYY-MM-DD HH24:MI') VSET 
+				FROM (SELECT P.* FROM VM_VISIT P WHERE USER_ID = #userId#  AND STATUS = '1'
+		]]>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="vsFlag">
+				VS_FLAG = #vsFlag#
+            </isNotEmpty> 
+            <isNotEmpty prepend="AND" property="vsType">
+				VS_TYPE = #vsType#
+            </isNotEmpty> 
+		</dynamic>
+		<![CDATA[            
+				ORDER BY P.VS_ID DESC) T WHERE 1=1 AND ROWNUM <=#pageMax#
+	    	MINUS
+			SELECT ROWNUM,
+	      		T.*
+	      		FROM (SELECT P.*,
+				to_char(P.VS_ST,'YYYY-MM-DD HH24:MI') VSST, 
+				to_char(P.VS_ET,'YYYY-MM-DD HH24:MI') VSET FROM VM_VISIT P WHERE USER_ID = #userId#  AND STATUS = '1'
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend="AND" property="vsFlag">
+				VS_FLAG = #vsFlag#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="vsType">
+				VS_TYPE = #vsType#
+            </isNotEmpty> 
+		</dynamic>
+		<![CDATA[		
+				ORDER BY P.VS_ID DESC) T WHERE 1=1 AND ROWNUM < #pageMin#
+    	]]>
+		<dynamic>
+			<isNotEmpty prepend="and" property="flag">
+				T.VS_FLAG= #flag#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="vsType">
+				T.VS_TYPE = #vsType#
+            </isNotEmpty> 
+		</dynamic>
+		<!-- order by t.VS_ID desc, t.VS_FLAG asc -->
+	</select>
+	<!-- 查询首页我的访客消息 -->
+	<select id="queryTitleVisit" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT V.*, TO_CHAR(V.VS_ST,'YY-MM-DD HH24:MI:SS') VST,
+		TO_CHAR(V.VS_ET,'YY-MM-DD HH24:MI:SS') VET
+		 FROM VM_VISIT V WHERE 1=1 AND STATUS = '1'
+		<dynamic>
+			<isNotEmpty prepend="AND" property="userId">
+				V.USER_ID = #userId#
+			</isNotEmpty>
+		</dynamic>
+		 ORDER BY VST DESC
+	</select>
+	
+	<!-- 查询已读通告 -->
+	<select id="queryRead" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT P.* FROM T_COMMON_MSG_BOARD_READ P WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="AND" property="msgId">
+					P.MSGID = #msgId#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="userId">
+					P.USERID = #userId#
+	        </isNotEmpty>
+        </dynamic>		
+	</select>
+	
+	<select id="queryVisitor" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT 
+			V.VS_ID id,
+			V.VI_NAME name,
+			V.VS_FLAG flag, 
+			V1.VI_MOBILE mobile,
+			to_char(v.VS_ST,'YYYY-MM-DD HH24:MI') startTime, 
+			to_char(v.VS_ET,'YYYY-MM-DD HH24:MI') endTime		
+		FROM VM_VISIT V, VM_VISITORINFO V1 AND STATUS = '1'
+		WHERE V.VI_ID = V1.VI_ID		
+		<isNotEmpty prepend="AND" property="userId">
+			V.USER_ID = #userId#
+		</isNotEmpty>
+		<isNotEmpty property="titlePage">
+			order by v.VS_ST desc 
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryVisitorCount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT COUNT(*) NUM 
+		FROM VM_VISIT 
+		WHERE USER_ID = #userId# AND STATUS = '1'
+	</select>
+	
+	<select id="queryVisitorNotReadCount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT COUNT(*) NUM 
+		FROM VM_VISIT 
+		WHERE USER_ID = #userId# AND VS_FLAG = '01' AND STATUS = '1'
+	</select>
+	
+	<select id="queryOA" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT 
+			E.OBID_ID ID,
+			E.USERNAME NAME,
+			E.OPENID FLAG,
+			E.STATE STATE,
+			E.TOTAL TOTAL
+			E.URGENT_LEVEL LEVEL
+			E.DESC1 DESC
+			E.DEAD_TIM 
+		FROM EXT_IN_OA_BACKLOG E	
+		WHERE 1=1		
+		<isNotEmpty prepend="AND" property="name">
+			E.STAFFES like '%' || #name# || '%'
+		</isNotEmpty>
+	</select>
+	
+	<select id="getUserName" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT
+			DISPLAY_NAME name
+		FROM
+			USERS
+		WHERE
+			USERID = #id#
+	</select>
+	
+	<delete id="delById"  parameterClass="java.lang.String" >
+		DELETE FROM T_COMMON_MSG_BOX WHERE msgId = #id#
+	</delete>
+	
+	<update id="updateVisitRead" parameterClass="java.util.Map">
+	<![CDATA[
+		UPDATE VM_VISIT SET RES_BAK3 = '1' WHERE VS_ID = #vsId# AND STATUS = '1'
+	]]>
+	</update>
+	<select id="queryUCode" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT
+			U_CODE UCODE
+		FROM
+			USERS
+		WHERE
+			USERID = #id#
+	</select>
+	
+	<select id="queryVisitSortForTilte" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		<![CDATA[
+			SELECT ROWNUM, A.*, to_char(A.VS_ST,'YYYY-MM-DD HH24:MI') VSST
+			FROM VM_VISIT A WHERE A.USER_ID = #userId#   AND STATUS = '1'
+		]]>
+		<dynamic>
+			<isNotEmpty prepend="AND" property="vsFlag">
+					A.VS_FLAG = #vsFlag#
+	        </isNotEmpty>
+			<isNotEmpty prepend="AND" property="anyFlag">
+				<![CDATA[
+					A.VS_FLAG <> '01' AND A.VS_FLAG <> '04'
+				]]>
+	        </isNotEmpty>
+	    </dynamic>
+	    <![CDATA[
+	    	ORDER BY A.VS_ST DESC
+	    ]]>
+	</select>
+	
+	<select id="test" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from VM_VISIT
+	</select>
+	
+	<select id="getUsrPwdByUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT A.LOGIN_UID USR, A.LOGIN_PWD_MD5 PWD FROM USERS A WHERE A.USERID = #userId#
+	</select>
+	
+	<select id="isFgwAdmin" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT * FROM users WHERE (p_id=40 or org_id=40) and userid = #userId#
+	</select>
+	
+	<select id="getFgwOA" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT obid as MessageItemGuid, received as GenerateDate, desc1 as Title, dead_tim as LASTFILEDATE, '发改委' as FromDispName
+		FROM EXT_IN_OA_BACKLOG
+		WHERE openId=#userId#
+	</select>
+	
+	<select id="getFgwOACount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT count(0) as COUNT
+		FROM EXT_IN_OA_BACKLOG
+		WHERE openId=#userId#
+	</select>
+	
+	<select id="getFgwOAById" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		SELECT obid as MessageItemGuid, received as GenerateDate, desc1 as Title, dead_tim as LASTFILEDATE 
+		FROM EXT_IN_OA_BACKLOG where obid = #id#
+	</select>	
+</sqlMap>

@@ -1,0 +1,214 @@
+/* 当前用户样式 */
+.user_mes
+{
+	height:14px;
+	position:absolute;
+	top:10px;
+	right:15px;
+	z-index:100;
+	float:left;
+	display:bloc;
+}
+/* 收藏 */
+.us_bg5
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -250px no-repeat;
+	cursor:pointer;
+}
+.collect
+{
+	float:left;
+	margin-right:20px;
+}
+.collect a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	text-decoration:none;
+}
+.collect a:hover
+{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+/* 返回桌面 */
+.us_bg0
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -200px no-repeat;
+}
+.back_main
+{
+	float:left;
+	margin-right:20px;
+}
+/* 当前用户样式 */
+.back_main a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	text-decoration:none;
+}
+.back_main a:hover
+{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+.us_bg1
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 0 no-repeat;
+}
+.user_name
+{
+	float:left;
+	margin-right:20px;
+}
+/* 当前用户样式 */
+.user_name span
+{
+	font-size:13px;
+	color:#A7A6B9;
+	text-decoration:none;
+}
+/* 当前用户样式 */
+.us_bg2
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -50px no-repeat;
+	cursor:pointer;
+}
+/* 当前用户样式 */
+.set
+{
+	float:left;
+	margin-right:20px;
+}
+.set a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	cursor:pointer;
+	text-decoration:none;
+}
+/* 当前用户样式 */
+.set a:hover
+{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+.us_bg3
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -100px no-repeat;
+	cursor:pointer;
+	margin-left:20px;
+}
+.help1
+{
+	float:left;
+	margin-right:20px;
+}
+.help1 a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	cursor:pointer;
+	text-decoration:none;
+}
+.help a:hover
+{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+.us_bg4
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -150px no-repeat;
+	cursor:pointer;
+}
+.talk
+{
+	float:left;
+}
+.header_message
+{
+	float:left;
+	width:25px;
+	height:14px;
+	background:url(../images/message.gif) 0 0 no-repeat;
+	cursor:pointer;
+	text-align:center;
+	margin-left:2px;
+}
+.header_message span
+{
+	color:#fff;
+	font-size:12px;
+	font-weight:bold;
+}
+.talk a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	cursor:pointer;
+	text-decoration:none;
+}
+/* 当前用户样式 */
+.talk a:hover
+{
+color:#FFFFFF;
+text-decoration:none;
+}
+.us_bg6
+{
+	float:left;
+	width:15px;
+	height:14px;
+	background:url(../images/top_image.png) 0 -300px no-repeat;
+	cursor:pointer;
+}
+.edt
+{
+	float:left;
+	margin-right:20px;
+}
+.edt a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	cursor:pointer;
+	text-decoration:none;
+}
+.us_bg7
+{
+	float:left;
+	width:14px;
+	height:12px;
+	background:url(../images/fanhui.png) 0 -0 no-repeat;
+	cursor:pointer;
+}
+.returnMain
+{
+	float:left;
+}
+.returnMain a
+{
+	font-size:13px;
+	color:#A7A6B9;
+	cursor:pointer;
+	text-decoration:none;
+}

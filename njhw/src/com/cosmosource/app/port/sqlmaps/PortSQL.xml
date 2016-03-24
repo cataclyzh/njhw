@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PortSQL">
+	<!--功能:资源权限基础Sql 开发者：WXJ 时间：2013-4-2 -->
+	<sql id="objAuthBaseSql">	
+	<![CDATA[	
+		select t.node_id
+		from OBJTANK t 
+		where t.node_id not in 
+		      (select k.node_id
+		      from OBJTANK k
+		      connect by prior k.node_id = k.p_id
+		      start with k.node_id in 
+		      (select opm.node_id
+               from obj_perm_map opm
+              where opm.deny_flag = '0'                   
+                and opm.perm_code = 'obj_vis'
+                and ((opm.type = 'user' and opm.person_id = #userId#) or
+                    (opm.type = 'org' and
+                    opm.person_id =
+                    (select org_id from users where userid = #userId#)))))
+		connect by prior t.node_id = t.p_id 
+		start with t.node_id  in 
+		(
+		(select opm.node_id
+		from obj_perm_map opm
+		     where opm.deny_flag='1'
+		     and opm.person_id = #userId#
+		     and opm.type = 'user'
+		     and opm.perm_code = 'obj_vis')
+		union
+		(select opm.node_id
+		from obj_perm_map opm,
+		     (select o.org_id
+		     from org o 
+		     connect by prior o.p_id = o.org_id
+		     start with o.org_id = (select u.org_id from users u where u.userid = #userId#)) og
+		     where og.org_id = opm.person_id
+		     and opm.deny_flag='1'
+		     and opm.type = 'org'
+		     and opm.perm_code = 'obj_vis')
+		union
+		(select opm.node_id
+		from obj_perm_map opm,
+		     (select rm.role_id 
+		     from role_map rm 
+		     connect by prior rm.c_role_id = rm.role_id 
+		     start with  rm.c_role_id = (select urm.role_id from user_role_map urm where urm.person_id = #userId#)) rmap
+		     where rmap.role_id = opm.person_id
+		     and opm.deny_flag='1'
+		     and opm.type = 'role'
+		     and opm.perm_code = 'obj_vis')
+		)
+	]]>
+	</sql>
+
+	<!--功能:功能菜单权限基础Sql 开发者：WXJ 时间：2013-4-4 -->
+	<sql id="menuAuthBaseSql">	
+	<![CDATA[	
+	select distinct obj.node_id
+	from OBJTANK obj
+	connect by prior obj.p_id = obj.node_id
+	start with obj.node_id in 
+	(
+		select t.node_id
+		from OBJTANK t 
+		where t.node_id not in 
+		      (select k.node_id
+		      from OBJTANK k
+		      where k.EXT_RES_TYPE = 'M'
+		      connect by prior k.node_id = k.p_id
+		      start with k.node_id in 
+		      (select opm.node_id
+               from obj_perm_map opm
+              where opm.deny_flag = '0'                   
+                and opm.perm_code = 'obj_vis'
+                and ((opm.type = 'user' and opm.person_id = #userId#) or
+                    (opm.type = 'org' and
+                    opm.person_id =
+                    (select org_id from users where userid = #userId#)))))
+		and t.EXT_RES_TYPE = 'M'   
+		connect by prior t.node_id = t.p_id 
+		start with t.node_id  in 
+		(
+		(select opm.node_id
+		from obj_perm_map opm
+		     where opm.deny_flag='1'
+		     and opm.person_id = #userId#
+		     and opm.type = 'user'
+		     and opm.perm_code = 'obj_vis')
+		union
+		(select opm.node_id
+		from obj_perm_map opm,
+		     (select o.org_id
+		     from org o 
+		     connect by prior o.p_id = o.org_id
+		     start with o.org_id = (select u.org_id from users u where u.userid = #userId#)) og
+		     where og.org_id = opm.person_id
+		     and opm.deny_flag='1'
+		     and opm.type = 'org'
+		     and opm.perm_code = 'obj_vis')
+		union
+		(select opm.node_id
+		from obj_perm_map opm,
+		     (select rm.role_id 
+		     from role_map rm 
+		     connect by prior rm.c_role_id = rm.role_id 
+		     start with  rm.c_role_id = (select urm.role_id from user_role_map urm where urm.person_id = #userId#)) rmap
+		     where rmap.role_id = opm.person_id
+		     and opm.deny_flag='1'
+		     and opm.type = 'role'
+		     and opm.perm_code = 'obj_vis')
+		)
+		
+	)
+	]]>
+	</sql>
+
+	<!--功能:资源表中要查询的字段名 开发者：hp 时间：2013-3-25 -->
+	<sql id="siteProperty">
+		NODE_ID as nodeId,NAME as name,P_ID as PId,EXT_RES_TYPE as
+		extResType,EXT_IS_BOTTOM as extIsBottom
+	</sql>
+
+	<!--功能：设备权限分配 开发者：hp 时间：2013-03-25 -->
+	<select id="siteAuth" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Objtank">
+		select
+		<include refid="siteProperty" />
+		from OBJTANK t
+		where t.EXT_IS_BOTTOM = '0' <!-- isBottom = 0表示是最末级 -->
+		and t.EXT_RES_TYPE = #extResType#
+		and t.pid in
+		(select o.node_id
+		from
+		OBJTANK o
+		connect by prior o.node_id = o.p_id
+		start with o.node_id =
+		#pId#)
+		and t.node_id in (
+		<include refid="objAuthBaseSql" />
+		)
+	</select>
+
+	<!--功能：主功能菜单 开发者：WXJ 时间：2013-03-25 -->
+	<select id="mainMenuAuth1" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom
+		from OBJTANK t
+		where t.LEVEL_NUM =
+		'4' and t.EXT_RES_TYPE = 'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+		order by SORT
+	</select>
+
+	<!--功能：子功能菜单 开发者：WXJ 时间：2013-03-25 -->
+	<select id="subMenuAuth1" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom
+		from OBJTANK t
+		where t.EXT_RES_TYPE =
+		'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="pId">
+				t.P_ID = #pId#
+			</isNotEmpty>
+		</dynamic>
+		order by SORT
+	</select>
+
+	<!--功能：主功能菜单 开发者：WXJ 时间：2013-03-25 -->
+	<select id="mainMenuAuth" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Objtank">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom
+		from OBJTANK t
+		where t.LEVEL_NUM =
+		'4' and t.EXT_RES_TYPE = 'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+		order by SORT
+	</select>
+
+	<!--功能：子功能菜单 开发者：WXJ 时间：2013-03-25 -->
+	<select id="subMenuAuth" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Objtank">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom
+		from OBJTANK t
+		where t.EXT_RES_TYPE =
+		'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+		<dynamic>
+			<isNotEmpty prepend="and" property="pId">
+				t.P_ID = #pId#
+			</isNotEmpty>
+		</dynamic>
+		order by SORT
+	</select>
+
+	<!--功能：所有功能菜单 开发者：WXJ 时间：2013-03-28 -->
+	<select id="allMenuAuth" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Objtank">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom
+		from OBJTANK t
+		where t.EXT_RES_TYPE =
+		'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+	</select>
+
+	<select id="queryNavMenuByUserId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select NODE_ID as nodeId,NAME as name,TITLE as title,KEYWORD as
+		keyword,P_ID as PId,
+		ICO as ico,LINK as link,BLANK as
+		blank,EXT_IS_BOTTOM as extIsBottom,
+		t.SORT as SORT
+		from OBJTANK t
+		where
+		t.EXT_RES_TYPE = 'M'
+		and t.node_id in (
+		<include refid="menuAuthBaseSql" />
+		)
+	</select>
+
+
+	<!--功能：门锁功能 开发者：hp 时间：2013-03-28 -->
+	<select id="doorAuth" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.NjhwDoorcontrolSet">
+		SELECT t.ADRS_COMM as adrsComm ,t.ADRS_NUM as adrsNum,t.ADRS_STORE as
+		adrsStore,t.NODE_ID as nodeId,t.ADRS_IP as adrsIp
+		from
+		NJHW_DOORCONTROL_SET t
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="nodeId">
+				t.NODE_ID = #nodeId#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!--功能：门锁功能(处理ip、门锁地址、通讯机地址) 开发者：hp 时间：2013-03-28 -->
+	<select id="doorAllAuth" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT t.ADRS_COMM as adrsComm ,t.ADRS_NUM as adrsNum,t.ADRS_STORE as
+		adrsStore,t.NODE_ID as nodeId,t.ADRS_IP as adrsIp
+		from
+		NJHW_DOORCONTROL_SET t
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="adrsComm">
+				t.ADRS_COMM =
+				#adrsComm#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：门锁功能(根据orders中的卡号和门锁id查询出1字节存储地址) 开发者：hp 时间：2013-03-28 -->
+	<select id="doorNum" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.NjhwDoorcontrolExp">
+		select max(t.adrsNum) as adrsNum from NJHW_DOORCONTROL_EXP t
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="nodeId">
+				t.dlockId = #nodeId#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!--功能：分配设备权限（如访客中分配闸机、门禁权限） 开发者：hp 时间：2013-04-01 -->
+	<select id="deviceAssignment" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT t.ROOM_ID as roomId,t.NODE_ID as nodeId ,d.ADRS_COMM as
+		adrsComm,
+		d.ADRS_IP as adrsIp,d.ADRS_NUM as adrsNum,d.ADRS_STORE as
+		adrsStore,#card# as card
+		rom NJHW_DOORCONTROL_SET d,V_OBJTANK_ROOM t
+		where d.NODE_ID = t.NODE_ID
+		<dynamic>
+			<isNotEmpty prepend="and" property="roomId">
+				t.ROOM_ID = #roomId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="type">
+				t.TYPE = #type#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：多方式登录中市民卡登录 开发者：hp 时间：2013-04-01 -->
+	<select id="authPersonCardLogin" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Users">
+		SELECT u.USERID as userid,u.LOGIN_PWD as loginPwd,u.LOGIN_UID as
+		loginUid from NJHW_TSCARD t ,"USERS" u where t.USER_ID = u.USERID
+		<dynamic>
+			<isNotEmpty prepend="and" property="personCard">
+				t.CARD_ID =
+				#personCard#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：多方式登录中手机号登录 开发者：hp 时间：2013-04-01 -->
+	<select id="authPhoneLogin" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.Users">
+		SELECT t.USERID as userid,t.LOGIN_PWD as loginPwd,t.LOGIN_UID as
+		loginUid from "USERS" t ,NJHW_USERS_EXP u where t.USERID = u.USERID
+		<dynamic>
+			<isNotEmpty property="mobile">
+				and u.UEP_MOBILE = #mobile#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：门锁中一字节存储地址 开发者：hp 时间：2013-04-01 -->
+	<select id="getRoomInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select r.node_id as nodeId, r.room_id
+		as roomId, r.name as
+		name
+		from v_objtank_room r, njhw_doorcontrol_set
+		ds
+		where ds.node_id =
+		r.node_id and ds.adrs_store = #adrsStore# and
+		ds.adrs_comm = #adrsRoom#
+	</select>
+
+	<!--功能：日志表字段 开发者：hp 时间：2013-06-01 -->
+	<sql id="logsDetail">
+		m.BM_ID as bmId,m.BM_TYPE as bmType,m.res_id as
+		resId,m.bm_ori as
+		bmOri,m.bm_detail as bmDetail,m.bm_exp1 as
+		bmExp1,m.BM_EXP2 as bmExp2
+		,m.BM_EXP3 as bmExp3 , m.bm_exp4 as
+		bmExp4,m.insert_id as insertId,
+		TO_CHAR(m.insert_date, 'yyyy-mm-dd
+		hh24:mi:ss') as insertDate
+		,m.insert_name as insertName,
+		decode(k."NAME",null,(select wm_concat(distinct(t.equip_name)) from
+		vm_equip_right t where t.right_id in (select * from
+		table(cast(tabstr(m.BM_EXP3) as tabstr_t)))),k."NAME") as resName
+	</sql>
+	<!--功能：日志表查询 开发者：hp 时间：2013-06-01 -->
+	<select id="logQuery" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select
+		t.bmid,
+		t.bmType,
+		t.bmDetail,
+		t.bmExp2,
+		t.bmExp4,
+		t.insertDate,
+		t.insertName,
+		t.resName
+		from (
+		SELECT
+		m.bm_id bmId,
+		m.BM_TYPE as bmType,
+		m.bm_detail as bmDetail,
+		m.BM_EXP2 as bmExp2,
+		m.bm_exp4 as bmExp4,
+		TO_CHAR(m.insert_date, 'yyyy-mm-dd hh24:mi:ss') as insertDate,
+		m.insert_name as insertName,
+		to_char(decode(k."NAME",null,(select
+		wm_concat(distinct(t.equip_name)) from vm_equip_right t where
+		t.right_id in (select * from table(cast(tabstr(m.BM_EXP3) as
+		tabstr_t)))),k."NAME")) as resName
+		from BM_MONITOR m LEFT JOIN OBJTANK
+		k ON m.RES_ID = k.NODE_ID
+		) t
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="resName">
+				t.resName LIKE '%' ||
+				#resName# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="insertName">
+				t.insertName LIKE '%'
+				|| #insertName# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="bmType">
+				t.bmType = #bmType#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startTime">
+           	<![CDATA[
+				t.insertDate >= #startTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endTime">
+           	<![CDATA[
+				t.insertDate <= #endTime#
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY t.bmId DESC
+	</select>
+
+	<select id="logQueryList" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select * from (
+		SELECT
+		m.BM_ID as bmId,m.BM_TYPE as bmType,m.res_id as
+		resId,m.bm_ori as
+		bmOri,m.bm_detail as bmDetail,m.bm_exp1 as
+		bmExp1,m.BM_EXP2 as bmExp2
+		,m.BM_EXP3 as bmExp3 , m.bm_exp4 as
+		bmExp4,m.insert_id as insertId,
+		TO_CHAR(m.insert_date, 'yyyy-mm-dd
+		hh24:mi:ss') as insertDate
+		,m.insert_name as insertName,
+		to_char(decode(k."NAME",null,(select wm_concat(distinct(t.equip_name))
+		from vm_equip_right t where t.right_id in (select * from
+		table(cast(tabstr(m.BM_EXP3) as tabstr_t)))),k."NAME")) as resName
+		from BM_MONITOR m LEFT JOIN OBJTANK k ON m.RES_ID = k.NODE_ID
+		) t
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="resName">
+				t.resName LIKE '%' ||
+				#resName# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="insertName">
+				t.insertName LIKE '%'
+				|| #insertName# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="bmType">
+				t.bmType = #bmType#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startTime">
+           	<![CDATA[
+				t.insertDate >= TO_DATE(#startTime#, 'yyyy-mm-dd hh24:mi:ss')
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endTime">
+           	<![CDATA[
+				t.insertDate <= TO_DATE(#endTime#, 'yyyy-mm-dd hh24:mi:ss')
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY t.bmId DESC
+	</select>
+
+	<!--功能：日志表删除查询 开发者：hp 时间：2013-06-01 -->
+	<select id="logDelete" parameterClass="java.util.Map"
+		resultClass="com.cosmosource.app.entity.BmMonitor">
+		SELECT m.BM_ID as bmId,m.bm_detail as bmDetail,m.BM_EXP2 as
+		bmExp2,m.insert_date as insertDate,m.insert_name as insertName
+		from
+		BM_MONITOR m LEFT JOIN OBJTANK k ON m.RES_ID = k.NODE_ID
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="chk">
+				m.BM_ID IN
+				<iterate property="chk" open="(" close=")" conjunction=",">
+					#chk[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY INSERT_DATE DESC
+	</select>
+
+	<!--功能通卡制作 查询通信信息 开发者:zhangquanwei 时间：2013-04-21 -->
+	<select id="cardInitAuth" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select s.NODE_ID as nodeId,s.ADRS_STORE as adrsStore,s.ADRS_COMM as
+		adrsComm,s.ADRS_IP as adrsIp
+		from NJHW_DOORCONTROL_SET s
+		<isNotEmpty prepend="where" property="nodeid">
+			s.NODE_ID=#nodeid#
+		</isNotEmpty>
+
+	</select>
+
+
+
+	<!--功能：通过NODE_ID查找ROOM_ID 开发者:hj 时间：2013-06-23 -->
+	<select id="getRoomIdByNodeId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select v.room_id as roomId
+		from V_OBJTANK_ROOM v
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="nodeid">
+				v.NODE_ID =#nodeid#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：门锁授权 开发者:zhangquanwei 时间：2013-04-21 -->
+	<select id="doorInitAuth" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select s.NODE_ID as nodeId,s.ADRS_STORE as adrsStore,s.ADRS_COMM as
+		adrsComm,s.ADRS_IP as adrsIp
+		from NJHW_DOORCONTROL_SET s,
+		V_OBJTANK_ROOM v
+		where v.NODE_ID = s.NODE_ID
+		<isNotEmpty prepend="and" property="roomid">
+			v.ROOM_ID=#roomid#
+		</isNotEmpty>
+
+	</select>
+
+	<select id="getAuthRoom" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select v.room_id from V_OBJTANK_ROOM v,Obj_Perm_Map o
+		where o.node_id =
+		v.node_id and o.person_id = #personId#
+		and o.deny_flag
+		= #denyFlag#
+	</select>
+
+	<!--功能：门锁授权 开发者:zhangquanwei 时间：2013-04-21 -->
+	<select id="doorDeleteAuth" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select exp.ADRS_NUM as ADRSNUM from NJHW_DOORCONTROL_EXP exp
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="nodeid">
+				exp.DLOCK_ID =#nodeid#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="cardid">
+				exp.CARD_ID =#cardid#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--功能：门锁功能(根据orders中的卡号和门锁id查询出1字节存储地址) 开发者：hp 时间：2013-03-28 -->
+	<select id="doorAdrNum" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT d.ADRS_NUM from NJHW_DOORCONTROL_EXP d
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="NODEID">
+				d.DLOCK_ID = #NODEID#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY "TO_NUMBER"(d.ADRS_NUM) ASC
+	</select>
+
+	<!--功能：此次选中之前未选中的user 开发者:zhangqw 时间：2013年6月20日15:05:13 -->
+	<select id="selectCheckedId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select count(*) as usernum from Obj_Perm_Map where type='user' and
+		perm_Code='obj_vis' and deny_Flag='1'
+		<isNotEmpty prepend="and" property="userid">
+			PERSON_ID=#userid#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="nodeid">
+			node_id=#nodeid#
+		</isNotEmpty>
+	</select>
+
+	<!--功能：此次未选中之前选中的user 开发者:zhangqw 时间：2013年6月20日15:05:32 -->
+	<select id="notSelCheckedId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select PERSON_ID from Obj_Perm_Map where type='user' and
+		perm_Code='obj_vis' and deny_Flag='1'
+		<isNotEmpty prepend="and" property="nodeid">
+			node_Id=#nodeid#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="userids">
+			person_Id not in
+			<iterate property="userids" open="(" close=")" conjunction=",">
+				#userids[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+
+	<!--功能：此次未选中之前选中的room locknode 开发者:zhangqw 时间：2013年6月20日15:05:32 -->
+	<select id="nodeidNotSel" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select node_id as NODEID from Obj_Perm_Map where type='user' and
+		perm_Code='obj_vis' and deny_Flag='1'
+		<isNotEmpty prepend="and" property="userid">
+			person_Id=#userid#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="nodeid">
+			node_id not in
+			<iterate property="nodeid" open="(" close=")" conjunction=",">
+				#nodeid[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+
+	<!--根据userid查询carid 开发者:zhangqw 时间：2013年6月21日14:15:54 -->
+	<select id="selcrIDByusID" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select decode((select t.card_type from NJHW_USERS_EXP t
+		where t.userid =
+		#userid#),
+		'1',(select c.card_id from NJHW_TSCARD c
+		where c.user_id=#userid#
+		and c.CARD_LOSTED = '0'
+		and c.CARDSTATUS =
+		'0'),
+		(select nvl(t.tmp_card, 'noTempCard') from
+		NJHW_USERS_EXP t where
+		t.userid =
+		#userid#)) as
+		card
+		from dual
+	</select>
+
+	<!--根据userid查询非正常卡ID 开发者:hj 时间：2013年6月24日 -->
+	<select id="getUnnormaCard" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select c.card_id, c.CARD_FLAG, c.CARD_LOSTED,
+		c.PUICSTATUS, c.CARDSTATUS
+		from NJHW_TSCARD c where c.user_id=#userid#
+	</select>
+
+	<!--功能：开门 从 quartz拷过来的 开发者：zhangqunawei 时间：2013年7月1日11:24:16 -->
+	<select id="controlDoor" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select v.NODE_ID as NODEID from V_OBJTANK_ROOM v,NJHW_USERS_EXP
+		n,tc_ip_tel t where v.ROOM_ID=n.ROOM_ID and v.TYPE='3' and n.tel_num =
+		t.tel_id
+		<isNotEmpty prepend="and" property="mac">
+			t.TEL_MAC=#mac#
+		</isNotEmpty>
+	</select>
+	
+	<select id="getDoorInfoByRoomName" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select node_id as doorId from V_OBJTANK_ROOM where type='3'
+		<isNotEmpty prepend="and" property="roomName">
+			room_name = #roomName#
+		</isNotEmpty>
+	</select>
+
+	<select id="controlDoorISE" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT NODE_ID as NODEID FROM V_OBJTANK_ROOM WHERE TYPE = '3'
+		<isNotEmpty prepend="and" property="roomName">
+			ROOM_NAME=#roomName#
+		</isNotEmpty>
+	</select>
+
+	<select id="getPhoneMacInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT MAC_ADDRESS as MACADDRESS, ROOM_ID as ROOMID,
+		ROOM_NO as ROOMNO
+		FROM T_005_IP_PHONE_MAC_DOOR
+		<isNotEmpty prepend="where" property="macAddress">
+			MAC_ADDRESS=#macAddress#
+		</isNotEmpty>
+	</select>
+
+	<select id="updatePhoneMacAddress" parameterClass="java.util.Map">
+		INSERT INTO T_005_IP_PHONE_MAC_DOOR (mac_address, room_id, room_no)
+		VALUES (
+		<isNotEmpty property="macAddress">
+			#macAddress#
+		</isNotEmpty>
+		,
+		<isNotEmpty property="rooId">
+			#rooId#
+		</isNotEmpty>
+		,
+		<isNotEmpty property="roomNo">
+			#roomNo#
+		</isNotEmpty>
+		)
+	</select>
+
+	<procedure id="updateMacInfoForISE" parameterClass="java.util.Map">
+		{call
+		njhw.UPDATE_MAC_INFO(#macAddress#, #rooId#,#roomNo#)}
+	</procedure>
+
+	<!--功能：通过MAC地址查询人员信息 开发者：hejun 时间：2013年8月2日 -->
+	<select id="getUserInfoByMac" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select u.display_name, tel.tel_num, o.short_name
+		from users
+		u, njhw_users_exp uep, tc_ip_tel tel, org o
+		where u.userid = uep.userid
+		and uep.tel_num = tel.tel_id
+		and fn_get_orgid(u.org_id) = o.org_id
+		and
+		tel.tel_mac = #mac#
+	</select>
+
+
+	<!-- 功能：根据用户输入的用户名来判断该用户名是否为管理员 -->
+	<select id="queryAdminUserMenu" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT * FROM USERS A, ADMIN_ORG_MAP B WHERE A.USERID =
+		B.USERID AND LOGIN_UID = #loginUid#
+	</select>
+
+	<!--功能：获取过期的临时卡信息 开发者：hejun 时间：2013年7月29日 -->
+	<select id="getTimoutTmpCard" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select u.userid
+		from njhw_users_exp t, users u
+		where u.userid = t.userid
+		and t.card_type = '2'
+           <![CDATA[
+           and ROUND(TO_NUMBER(sysdate - to_date(t.uep_bak2, 'YYYY-MM-DD'))) >= 30]]>
+	</select>
+
+	<!--功能：获取过期的临时人员信息 开发者：hejun 时间：2013年7月29日 -->
+	<select id="getTimoutTmpUser" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select u.userid
+		from njhw_users_exp t, users u
+		where u.userid = t.userid
+           <![CDATA[and t.uep_type = '04'
+           and ROUND(TO_NUMBER(sysdate - to_date(t.uep_bak4, 'YYYY-MM-DD'))) > 0]]>
+	</select>
+
+	<!--功能：获取所有通信机以及门锁信息 开发者：hejun 时间：2013年7月29日 -->
+	<select id="getAllDoorAndCommInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.node_id, t.adrs_store, t.adrs_comm from
+		njhw_doorcontrol_set t
+		order by to_number(t.adrs_comm),
+		to_number(t.adrs_store)
+	</select>
+
+	<select id="queryAllNavMenu" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select a.LINK from objtank a where a.EXT_RES_TYPE = 'M'
+	</select>
+
+	<!--功能：获取人员基本信息 开发者：hejun 时间：2013年8月1日 -->
+	<select id="getUserInfo" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select u.display_name, o.short_name, decode(uep.card_type,
+		'1', ts.card_id, '2', uep.tmp_card) cardid, tel.tel_num
+		from users u,
+		njhw_users_exp uep, org o, tc_ip_tel tel, njhw_tscard ts
+		where u.userid
+		= uep.userid
+		and u.userid = ts.user_id(+)
+		and uep.tel_num =
+		tel.tel_id(+)
+		and fn_get_orgid(u.org_id) = o.org_id
+		and u.userid =
+		#userid#
+	</select>
+
+	<!--功能：获取房间信息 开发者：hejun 时间：2013年8月1日 -->
+	<select id="getRoomInfoByRoomId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select ot.name
+		from objtank ot
+		where ot.node_id = #roomId#
+	</select>
+
+	<!--功能：获取密码 开发者：chunjing 时间：2013年8月12日 -->
+	<select id="getPasswordByUserID" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.login_pwd
+		from users t
+		where t.login_uid = #userId#
+	</select>
+
+	<!--功能：网页访问统计 开发者：chunjing 时间：2013年11月13日 -->
+	<select id="queryWebCount" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SELECT * FROM T_006_WEB_COUNT t where t.RECORD_DATE =
+		to_date(#RECORD_DATE#,'yyyy/MM/dd')
+	</select>
+
+	<!--功能：更新当天网页访问统计 开发者：chunjing 时间：2013年11月13日 -->
+	<update id="updateWebCount" parameterClass="java.util.HashMap">
+		update
+		T_006_WEB_COUNT t set t.TOTAL_COUNT = #TOTAL_COUNT#
+		where t.RECORD_DATE
+		= to_date(#RECORD_DATE#,'yyyy/MM/dd')
+	</update>
+
+	<!--功能：新插入每天网页访问统计 开发者：chunjing 时间：2013年11月13日 -->
+	<insert id="insertWebCount" parameterClass="java.util.HashMap">
+		<selectKey resultClass="int" keyProperty="ID">
+			SELECT
+			SEQ_WEB_COUNT.NEXTVAL FROM dual
+		</selectKey>
+		INSERT INTO T_006_WEB_COUNT(ID,RECORD_DATE,TOTAL_COUNT)
+		VALUES
+		(#ID#,to_date(#RECORD_DATE#,'yyyy/MM/dd'),#TOTAL_COUNT#)
+	</insert>
+
+	<select id="getRoomIDForISE" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select ROOM_NO from T_004_SWITCH_INFO WHERE switch_name =
+		#network_device_name# AND port = #nas_port_id# and rownum = 1
+	</select>
+
+	<!--功能：获取密码 开发者：hejun 时间：2013年8月28日 -->
+	<select id="getOrgId" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select o.org_id
+		from org o
+		where o.org_id =
+		fn_get_orgid(#orgId#)
+	</select>
+
+
+	<!-- 根据 截取之后的 URL 地址获取 模块名称 -->
+	<select id="getModuleInfo" parameterClass="java.util.HashMap"
+			resultClass="java.util.HashMap">
+		SELECT
+		O.NAME AS MODULE_NAME,
+		OBJ.NAME AS P_NAME
+		FROM OBJTANK O,OBJTANK OBJ
+		WHERE O.P_ID = OBJ.NODE_ID
+		AND O.LINK = #LINK#
+	</select>
+
+	<!-- 根据 截取之后的 URL 地址获取 模块名称 -->
+	<select id="getCurrentUserInfo" parameterClass="java.util.HashMap"
+			resultClass="java.util.HashMap">
+		SELECT U.DISPLAY_NAME,
+		CONCAT (
+		(SELECT A.SHORT_NAME FROM ORG A WHERE A.ORG_ID =FN_GET_ORGID(U.ORG_ID)) ||
+		'、',O.SHORT_NAME) USER_DEPT
+		FROM USERS U,ORG O
+		WHERE U.ORG_ID = O.ORG_ID
+		AND U.USERID = #USER_ID#
+	</select>
+	<!-- 更新网页访问记录，有则access_time + 1 没有则 新插入记录 -->
+	<statement id="updateAccessCount" parameterClass="java.util.Map">
+		MERGE INTO T_009_ACCESS_LOG T1
+		USING (
+		SELECT
+		#P_NAME# AS P_NAME,
+		#MODULE_NAME# AS MODULE_NAME,
+		#WEB_LINK# AS WEB_LINK,
+		#CLASS_NAME# AS CLASS_NAME,
+		#INVOKE_METHOD# AS INVOKE_METHOD,
+		#ACCESS_USER# AS ACCESS_USER,
+		#USER_DEPT# AS USER_DEPT,
+		#ACCESS_TIME# AS ACCESS_TIME,
+		#ACCESS_IP# AS ACCESS_IP
+		FROM DUAL) T2
+		ON (
+		T1.WEB_LINK = T2.WEB_LINK
+		AND T1.INVOKE_METHOD = T2.INVOKE_METHOD
+		AND	T1.ACCESS_USER = T2.ACCESS_USER 
+		AND T1.ACCESS_TIME = T2.ACCESS_TIME
+		AND T1.ACCESS_IP = T2.ACCESS_IP
+		)
+		WHEN MATCHED THEN
+		UPDATE
+		SET T1.ACCESS_NUM =
+		(T1.ACCESS_NUM + 1)
+		WHEN NOT MATCHED THEN
+		INSERT
+		(T1.ACCESS_ID,
+		T1.P_NAME,
+		T1.MODULE_NAME,
+		T1.WEB_LINK,
+		T1.CLASS_NAME,
+		T1.INVOKE_METHOD,
+		T1.ACCESS_USER,
+		T1.USER_DEPT,
+		T1.ACCESS_TIME,
+		T1.ACCESS_IP,
+		T1.ACCESS_NUM
+		)
+		VALUES
+		(SEQ_ACCESS_COUNT.NEXTVAL,
+		T2.P_NAME,
+		T2.MODULE_NAME,
+		T2.WEB_LINK,
+		T2.CLASS_NAME,
+		T2.INVOKE_METHOD,
+		T2.ACCESS_USER,
+		T2.USER_DEPT,
+		T2.ACCESS_TIME,
+		T2.ACCESS_IP,
+		1)
+	</statement>
+</sqlMap>

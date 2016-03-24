@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+	default-lazy-init="true" xmlns:task="http://www.springframework.org/schema/task">
+
+	<!-- 大厦能耗管理主页 sqs -->
+	<bean id="energyManageManager"
+		class="com.cosmosource.app.energyint.service.EnergyManageManager"
+		parent="manager">
+	</bean>
+	<bean id="eiReportManager" class="com.cosmosource.app.energyint.service.EiReportManager"
+		parent="manager">
+	</bean>
+	<bean id="roomInfoManager" class="com.cosmosource.app.energyint.service.RoomInfoManager" parent="manager">
+	</bean>
+	<bean id="myEnergyContributionManager"
+		class="com.cosmosource.app.energyint.service.MyEnergyContributionManager"
+		scope="prototype">
+		<property name="eiReportManager" ref="eiReportManager" />
+	</bean>
+	<bean id="roomEnergyManager"
+		class="com.cosmosource.app.energyint.service.RoomEnergyManager"
+		scope="prototype">
+		<property name="roomInfoManager" ref="roomInfoManager" />
+	</bean>
+	<bean id="buildingEnergyDetailManager"
+		class="com.cosmosource.app.energyint.service.BuildingEnergyDetailManager"
+		scope="prototype" parent="manager">
+		<property name="eiReportManager" ref="eiReportManager" />
+	</bean>
+	<bean id="buildingEnergyHistoryManager"
+		class="com.cosmosource.app.energyint.service.BuildingEnergyHistoryManager"
+		scope="prototype">
+		<property name="eiReportManager" ref="eiReportManager" />
+	</bean>
+
+	<bean id="orgEnergyDetailManager"
+		class="com.cosmosource.app.energyint.service.OrgEnergyDetailManager"
+		scope="prototype">
+		<property name="eiReportManager" ref="eiReportManager" />
+	</bean>
+	<bean id="orgEnergyHistoryManager"
+		class="com.cosmosource.app.energyint.service.OrgEnergyHistoryManager"
+		scope="prototype">
+		<property name="eiReportManager" ref="eiReportManager" />
+	</bean>
+
+	<bean id="energyManageAction" class="com.cosmosource.app.energyint.action.EnergyManageAction"
+		scope="prototype">
+		<property name="energyManageManager" ref="energyManageManager" />
+		<property name="myEnergyContributionManager" ref="myEnergyContributionManager"></property>
+		<property name="roomEnergyManager" ref="roomEnergyManager"></property>
+		<property name="buildingEnergyDetailManager" ref="buildingEnergyDetailManager"></property>
+		<property name="buildingEnergyHistoryManager" ref="buildingEnergyHistoryManager"></property>
+		<property name="eiReportManager" ref="eiReportManager"></property>
+		<property name="orgEnergyDetailManager" ref="orgEnergyDetailManager"></property>
+		<property name="orgEnergyHistoryManager" ref="orgEnergyHistoryManager"></property>
+	</bean>
+
+</beans>

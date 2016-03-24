@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:s="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd"
+	default-lazy-init="true">
+
+	<description>SpringSecurity安全配置</description>
+
+	<!-- http安全配置 -->
+	<s:http auto-config="true" use-expressions="true">
+		<s:intercept-url pattern="/sso/login/index.act" access="hasAnyRole('IS_AUTHENTICATED_ANONYMOUSLY','ROLE_PASS')" />		
+		
+		<s:intercept-url pattern="/common/code/validationcaptchaAction.act" filters="none" />
+		<s:intercept-url pattern="/common/verdictIsUseCa/*" filters="none" />
+		<s:intercept-url pattern="/common/monitor/getDBTime.act" access="hasAnyRole('IS_AUTHENTICATED_ANONYMOUSLY','ROLE_PASS')" />
+		<s:intercept-url pattern="/getPassword.act" access="hasAnyRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/sendEmail.act" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/invalidSession.act" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/checkUsername.act" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/checkPwd.act" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/gettime.html" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		
+		<s:intercept-url pattern="/common/pages/security/multlogin/**" filters="none" />
+		<s:intercept-url pattern="/common/pages/security/multlogin/js/**" filters="none" />
+		<s:intercept-url pattern="/common/pages/security/multlogin/css/**" filters="none" />
+		<s:intercept-url pattern="/common/pages/security/multlogin/images/**" filters="none" />
+
+		<s:intercept-url pattern="/app/portal/css/**" filters="none" />
+		<s:intercept-url pattern="/app/portal/images/**" filters="none" />
+		<s:intercept-url pattern="/app/portal/js/**" filters="none" />
+		<s:intercept-url pattern="/buildObixTestServlet" filters="none" />
+		<s:intercept-url pattern="/randImgServlet" filters="none" />
+		<s:intercept-url pattern="/casLoginWayServlet" filters="none" />
+		<s:intercept-url pattern="/auth" filters="none" />
+		<s:intercept-url pattern="/random" filters="none" />
+		<s:intercept-url pattern="/images/**" filters="none" />
+		<s:intercept-url pattern="/scripts/**" filters="none" />
+		<s:intercept-url pattern="/styles/**" filters="none" />
+		
+		<s:intercept-url pattern="/app/auth/index/queryAdminUserByIdJSON.act" filters="none" />
+		<s:intercept-url pattern="/app/auth/index/queryPasswordByUserID.act" filters="none" />
+		
+		<s:intercept-url pattern="/" filters="none" />
+			
+		<s:intercept-url pattern="/*" access="isAuthenticated()"/>
+		<s:intercept-url pattern="/common/**" access="isAuthenticated()"/>
+		<s:intercept-url pattern="/app/**" access="isAuthenticated()"/>
+		<s:intercept-url pattern="/iPPhoneSiteServices*" filters="none"/>
+		
+		<s:form-login login-page="/security/login.act" default-target-url="/mainManu.act"  always-use-default-target="true"
+		authentication-success-handler-ref="authenticationDispatcher"
+		authentication-failure-url="/security/login.act?error=1" />
+		<s:anonymous granted-authority="IS_AUTHENTICATED_ANONYMOUSLY"/>  
+		
+<!-- 		
+		<s:logout logout-success-url="/security/login.act" invalidate-session="true"/>
+ -->		
+	<s:logout logout-success-url="http://newcity.njnet.gov.cn:9080/logout?service=http://newcity.njnet.gov.cn:9080" invalidate-session="true"/>
+		
+		<s:session-management invalid-session-url="/invalidSession.act"><!-- invalidSession.act -->
+			<s:concurrency-control max-sessions="10" error-if-maximum-exceeded="false" />
+		</s:session-management>
+		<s:custom-filter after="SECURITY_CONTEXT_FILTER" ref="autoLoginFilter" />
+		<s:custom-filter  before="FORM_LOGIN_FILTER" ref="authProFilter"/>
+	</s:http>
+	
+	<!-- 认证配置, 使用userDetailsService提供的用户信息 -->
+	
+	<s:authentication-manager alias="authenticationManager">
+		<s:authentication-provider ref="authenticationProvider">
+		</s:authentication-provider>
+	</s:authentication-manager>
+	
+	
+	<bean id="passwordEncoder" class="com.cosmosource.common.security.PasswordEncoderEdit"/>    
+	
+	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userDetailsService" />
+        <property name="hideUserNotFoundExceptions" value="false" />
+    </bean>
+    
+	<!-- 项目实现的用户查询服务 -->
+	<bean id="userDetailsService" class="com.cosmosource.common.security.UserDetailsServiceImpl" >
+		<property name="authorityManager" ref="authorityManager"/>
+	</bean>
+	<!-- 开发时自动登录的filter -->
+	
+	<bean id="autoLoginFilter" class="com.cosmosource.common.security.AutoLoginFilter">
+		<property name="enabled" value="${security.autologin.enabled}" />
+		<property name="defaultUserName" value="admin" />
+		<property name="userDetailsService" ref="userDetailsService"/>
+	</bean>
+
+	<!--JCaptcha验证码服务 -->
+	<bean id="captchaService" class="com.octo.captcha.service.image.DefaultManageableImageCaptchaService">
+		<property name="captchaEngine">
+			<bean class="com.cosmosource.common.security.GMailEngine" />
+		</property>
+		<!-- 
+		默认生成的图片180秒过期 , 可另行设置
+		<property name="minGuarantedStorageDelayInSeconds" value="180" />
+		-->
+	</bean>
+	<!--JCaptcha验证码服务ajax -->
+	  
+		<bean id ="validationcaptchaActionService" class="com.cosmosource.common.action.validationcaptchaAction" scope="prototype">
+		<property name="captchaService" ref ="captchaService"/>
+		</bean>
+	
+	<bean id="authProFilter" class="com.cosmosource.common.security.UsernamePasswordAuthFilter">
+		<property name="authenticationManager" ref="authenticationManager"/> 
+		<property name="authenticationFailureHandler"> 
+		    <bean class="com.cosmosource.common.security.AuthFailureHandler"> 
+		        <property name="defaultFailureUrl" value="/security/login.act?error=1"/>
+		        <property name="usernameNotFoundFailureUrl" value="/security/login.act?error=2"/>
+		        <property name="badCredentialsFailureUrl" value="/security/login.act?error=3"/>
+		        <property name="lockedFailureUrl" value="/security/login.act?error=4"/>
+		        <property name="credentialsExpiredFailureUrl" value="/security/login.act?error=5"/>
+		        <property name="disabledFailureUrl" value="/security/login.act?error=6"/>
+		        <property name="authorityManager" ref="authorityManager"/>
+		        <property name="passwordWrongLock" value="${security.password.wrong.lock}"/>
+		        <property name="maxPasswordWrongCount" value="${security.max.password.wrong.count}"/>
+		    </bean> 
+		</property> 
+		<property name="authenticationSuccessHandler"> 
+		    <bean class="com.cosmosource.common.security.AuthSuccessHandler"> 
+		        <property name="defaultTargetUrl" value="/common/index.jsp"/> 
+		        <property name="authorityManager" ref="authorityManager"/>
+		    </bean> 
+		</property>
+	</bean>
+	
+    
+	<bean id="authenticationDispatcher" class="com.cosmosource.common.security.ComAuthenticationSuccessHandler">   
+	  <property name="authDispatcherMap">   
+	    <ref local="dispatcherMap"/>   
+	  </property>   
+	</bean>
+	<bean id="dispatcherMap" class="java.util.HashMap">   
+	  <constructor-arg>   
+	    <map>   
+	     <!-- <entry key="ROLE_ABC" value="/user/abc.act"/>    --> 
+	    </map>   
+	  </constructor-arg>   
+	</bean>   
+</beans>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	<description>SQL处理方式配置</description>
+	<bean id="sqlSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>/WEB-INF/conf/sql-map-config.xml</value>
+		</property>
+		<property name="dataSource" ref="sqlDataSource" />
+	</bean>
+	<!-- 扩展后的SQL执行器  -->
+	<bean id="sqlSqlExecutor" class="com.cosmosource.base.dao.LimitSqlExecutoriBatis">
+	</bean>
+	<bean id="sqlBaseDaoiBatis" abstract="true"
+		class="com.cosmosource.base.dao.BaseDaoiBatis" init-method="initialize">
+		<property name="dataSource">
+			<ref bean="sqlDataSource" />
+		</property>
+		<property name="sqlMapClient">
+			<ref bean="sqlSqlMapClient" />
+		</property>
+		<property name="sqlExecutor">
+			<ref bean="sqlSqlExecutor" />
+		</property>
+	</bean>
+	<bean id="sqlIBatisDao" class="com.cosmosource.base.dao.ComDaoiBatis"
+		parent="sqlBaseDaoiBatis">
+	</bean>
+
+</beans>

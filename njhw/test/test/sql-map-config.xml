@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <settings enhancementEnabled="true" maxTransactions="20"
+        maxRequests="32" maxSessions="10" useStatementNamespaces="true"/>
+	<sqlMap resource="com/cosmosource/common/sqlmaps/CommonSQL.xml"/>
+	<sqlMap resource="com/cosmosource/app/caller/sqlmaps/CallerSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/port/sqlmaps/PortSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/property/sqlmaps/PropertySQL.xml" />
+	<sqlMap resource="com/cosmosource/app/personnel/sqlmaps/PersonnelSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/personnel/sqlmaps/PersonnelUnitSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/personnel/sqlmaps/PersonnelPropertySQL.xml" />
+	<sqlMap resource="com/cosmosource/app/buildingmon/sqlmaps/BuildingmonSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/integrateservice/sqlmaps/IntegrateSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/integrateservice/sqlmaps/PABSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/energyint/sqlmaps/EnergyintSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/dining/sqlmaps/FoodManagementSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/cms/sqlmaps/CsmSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/fax/sqlmaps/FaxSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/message/sql/MessageSql.xml" />
+	<sqlMap resource="com/cosmosource/app/suggest/sqlmaps/SuggestSql.xml" />
+	<sqlMap resource="com/cosmosource/app/threedimensional/sqlmaps/ThreeDimensionalSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/wirelessLocation/sqlmaps/WirelessSql.xml" />
+	<sqlMap resource="com/cosmosource/app/omc/sqlmaps/OMCSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/quartz/sqlmaps/AppQuartz.xml" />
+	<sqlMap resource="com/cosmosource/app/ldap/sqlmaps/LDAPSQL.xml" />
+	<sqlMap resource="test/TestSql.xml" />
+	<sqlMap resource="com/cosmosource/app/attendance/sqlmaps/AttendanceSQL.xml" />
+	<sqlMap resource="com/cosmosource/app/personnel_e/sqlmaps/E4PersonnelSQL.xml" />
+</sqlMapConfig>

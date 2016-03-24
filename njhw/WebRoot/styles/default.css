@@ -1,0 +1,341 @@
+*
+{
+font:9pt "宋体"; 
+color:#222;
+}
+body{
+	 scrollbar-face-color: #EAF4FD;
+     scrollbar-highlight-color:  #FFFFFF;
+     scrollbar-shadow-color:  #DEE3E7;
+     scrollbar-3dlight-color:  #D1D7DC;
+     scrollbar-arrow-color:    #006699;
+     scrollbar-track-color:  #EFEFEF;
+     scrollbar-darkshadow-color:  #98AAB1;
+     overflow: auto;
+     background-color:  #F1F8FD;
+ }
+ 
+caption {
+	font-size: 14px;
+	font-weight: bold;
+	background-color: #ffffff
+}
+a:link{
+text-decoration:underline;
+color:#00414E;
+}
+a:hover
+{
+color:FE6C00;
+}
+a:visited
+{
+color:#588993;
+text-decoration:underline;
+}
+
+
+.button {
+	height:20px;
+	BORDER-RIGHT: #7b9ebd 1px solid; 
+	PADDING-RIGHT: 0px; 
+	BORDER-TOP: #7b9ebd 1px solid; 
+	PADDING-LEFT: 0px; 
+	FONT-SIZE: 12px; 
+	FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#cecfde); 
+	BORDER-LEFT: #7b9ebd 1px solid; 
+	CURSOR: hand; COLOR: black; 
+	PADDING-TOP: 2px; 
+	BORDER-BOTTOM: #7b9ebd 1px solid;
+}
+.textbox
+{
+border:1px solid #016F87;
+background:#fff;
+}
+hr  /* compart line's style */
+{
+color:#01B7DE;
+background:#fff;
+height:2px;
+border-bottom:1px solid #fff;
+width:98%;
+}
+/* work area's style*/
+.workarea
+{
+background:#F3F9FA;
+border:1px solid #75B5C3;
+}
+.workarea .workarea_title
+{
+background:#E3F0F2;
+height:27px;
+border-bottom:1px solid #75B5C3;
+padding-left:18px;
+}
+h3 /*the title's font style of current page*/
+{
+display:inline;
+font-weight:bold;
+color:#FE6C00;
+}
+.panel_head  /* the block title */
+{
+background:#BFC9CD;
+height:22px;
+font-weight:bold;
+border:none;
+color:#000;
+padding-left:20px;
+}
+
+/*the different table's style*/
+.panel_body       /* Query table and Result table share this table style */
+{
+	border: 1px solid #C1D6E4;
+	background:#e8f3fc;
+}
+.table
+{
+background:#F7FDFD;
+border-collapse: collapse;
+border:1px solid #AEC2CD;
+width:100%;
+}
+.table tr td,.table tr th    /*  the common style of Result table's td and th */
+{
+border:1px solid #AEC2CD;
+height:20px;
+padding:0px 3px;
+}
+.table tr th
+{
+height:25px;
+vertical-align:middle;
+padding-top:3px;
+background:#F4F5F9;
+filter:progid:DXImageTransform.Microsoft.gradient(enabled='enabled',startColorstr=#D3DAE0, endColorstr=#F4F5F9);
+text-align:center;
+}
+.table_row  /* the different background color between rows in result table */
+{
+background:#EBF3F5;
+}
+.table_selectRow /* the selected row's background color in result table */
+{
+background:#CDDEE6;
+}
+
+.command_sort_area /* the bottom of result table */
+{
+padding:2px 0 5px 8px;
+background:#F5F5F5;
+}
+.command_sort_area h4 /*the pagination's style*/
+{
+float:right;
+padding-right:8px;
+margin-top:-18px;
+}
+.form_table
+{
+border-collapse: collapse;
+border:1px solid #9fbdd3;
+background:#f3f8fc;
+padding-left:5px;
+}
+.form_table td
+{
+height:25px;
+border:1px solid #9fbdd3;
+}
+.form_bottom /* the bottom of form table */
+{
+padding:10px 0 5px 8px;
+background:#ffffff;
+text-align:center;
+}
+.form_label
+{
+background:#d9ecfc;
+}
+.hd-inner  , .inner {
+	display: block;
+	padding: 6px 2px 2px 3px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+.panel-title {
+	background-image: url('../images/panel/head_bg.png');
+	font-size: 10pt;
+	color:#266490;
+	font-weight:bold;	
+}
+.panel-title-right {
+	background-image: url('../images/panel/head_bg_right.gif');
+    width:4px;
+    overflow:hidden;
+    float:left;
+	height: 20px;
+	margin-top:0px;
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+}
+
+.panel-title-left {
+	background-image: url('../images/panel/head_bg_left.gif');
+    width:4px;
+    overflow:hidden;
+    float:left;
+	height: 20px;
+	margin-top:0px;
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+}
+
+
+.panel-table {
+	/*border: 1px solid #C1D6E4;
+	background: #EAF0F1;*/
+	font-size: 9pt;
+}
+
+.panel-body {
+	border: 1px solid #C1D6E4;
+	background: #EAF0F1;
+
+}
+
+.PANEL_OPEN_BUTTON {
+	width: 20px;
+	height: 20px;
+	cursor: hand;
+	background-image: url('../images/panel/arrow_down.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.PANEL_CLOSE_BUTTON {
+	width: 20px;
+	height: 20px;
+	cursor: hand;
+	background-image: url('../images/panel/arrow_right.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.PANEL_HEAD {
+	background: #4C96A6;
+	height: 22px;
+	font-weight: bold;
+	border: none;
+	color: #000;
+	padding-left: 20px;
+}
+.input180box{
+	background-color: #FFFFFF;
+	width: 180px;
+}
+.input75box {
+	background-color: #FFFFFF;
+	border: 1px solid #5D67AF;
+	width: 75px;
+}
+.filebox250 {
+	background-color: #FFFFFF;
+	border: 1px solid #5D67AF;
+	width: 250px;
+}
+.fileboxclear65 {
+	background-color: buttonface;
+	border: 1px solid #5D67AF;
+	width: 65px;
+	height: 19px;
+}
+.form_hover_label{
+	background:#FFFFFF;
+	border: 2px solid #68a8df;
+}
+.select_hover_label{
+	background:#eaf0f1;
+}
+.radio_hover_label{
+	border:1px solid  #5d67af;		
+}
+.oddhighlight { 
+	background:#a4dfed;
+}
+.evenhighlight {
+	 background:#a4dfed;
+}
+.oddselected  { 
+	background:#f7fa06;
+}
+.evenselected  { 
+	background:#f7fa06;
+}
+.icon-xbjbutton{
+	background:url('images/xbj.gif') no-repeat;
+	background-color: Transparent;
+	width:46;
+	height: 22;
+	border:none;
+	font-size:12px;
+	color:#585858;
+	padding:5px 5px;margin:0;outline:0;
+	overflow:visible;vertical-align:top;cursor:pointer;
+}
+.icon-dbjbutton{
+	background:url('images/bj.gif') no-repeat;
+	background-color: Transparent;
+	width:62;
+	height: 22;
+	border:none;
+	font-size:12px;
+	color:#585858;
+	padding:5px 5px;margin:0;outline:0;
+	overflow:visible;vertical-align:top;cursor:pointer;
+}
+.icon-loding{
+	display:inline-block;
+	width:200px;
+	top:0px;
+	left:10px;
+	padding:3px 3px 3px 14px;
+	border:1px solid #40b3ff;
+	background:#e5f5ff url('images/loading.gif') no-repeat scroll 0px 3px;
+	z-index:9900001;
+	font-size:11px;
+	color:#000000;
+}
+.sort_table
+{
+border-collapse: collapse;
+border:1px solid #9fbdd3;
+background:#f3f8fc;
+padding-left:5px;
+}
+.sort_table td
+{
+height:25px;
+border:1px solid #9fbdd3;
+}
+#listCnt{
+	WIDTH: 100%;
+	HEIGHT: auto;
+	OVERFLOW: auto;
+	OVERFLOW-y:auto;
+	border:0px solid #000;
+	scrollbar-face-color: #9EBFE8;
+	scrollbar-shadow-color: #FFFFFF;
+	scrollbar-highlight-color: #FFFFFF;
+	scrollbar-3dlight-color: #9EBFE8;
+	scrollbar-darkshadow-color: #9EBFE8;
+	scrollbar-track-color: #FFFFFF;
+	scrollbar-arrow-color: #FFFFFF;
+}
+

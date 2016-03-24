@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<package name="/app/suggest" extends="default" namespace="/app/suggest">
+		<!-- 初始化页面 -->
+		<action name="init" class="suggestAction" method="init">
+			 <result name="init">/app/suggest/qbyj_index.jsp</result>
+	    </action>
+	    <!-- 物业初始化页面 -->
+		<action name="initProperty" class="suggestAction" method="initProperty">
+			 <result name="property">/app/suggest/qbyj_property_index.jsp</result> 
+	    </action>
+	    
+	    <!-- 意见列表 --> 
+		<action name="suggestList" class="suggestAction" method="suggestList">
+			 <result name="list">/app/suggest/suggesstList.jsp</result> 
+	    </action> 
+	    <!-- 回复列表 -->
+		<action name="replyList" class="suggestAction" method="replyList">
+			 <result name="list">/app/suggest/replyList.jsp</result> 
+	    </action> 
+	     <!-- 新建意见页面 -->
+		<action name="newSuggest" class="suggestAction" method="newSuggest">
+			 <result name="newSuggest">/app/suggest/qbyj_add.jsp</result> 
+	    </action>  
+	    <!-- 提交意见 -->
+		<action name="saveSuggest" class="suggestAction" method="saveSuggest">
+			 <result name="success">init.act</result> 
+	    </action>
+	    <!-- 删除意见 -->
+	    <action name="delSuggest" class="suggestAction" method="delSuggest">
+			 <result name="success">init.act</result> 
+	    </action> 
+	    <!-- 删除意见 -->
+	    <action name="delSuggestReply" class="suggestAction" method="delSuggestReply">
+			 <result name="success">/app/suggest/suggestsuggestreplylist.jsp</result> 
+	    </action> 
+	    <!-- 保存意见回复 -->
+	    <action name="saveOrUpdateSuggestReply" class="suggestAction" method="saveOrUpdateSuggestReply">
+			 <result name="success">/app/suggest/suggestsuggestreplylist.jsp</result>
+	    </action>
+		 <!-- 编辑答复 -->
+	    <action name="findSuggestReplyById" class="suggestAction" method="findSuggestReplyById">
+			 <result name="edit">/app/suggest/qbyj_edit.jsp</result> 
+	    </action>
+	    <action name="wireless" class="suggestAction" method="wireless">
+	    </action>
+ 	</package>
+</struts>

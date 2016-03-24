@@ -1,0 +1,397 @@
+@CHARSET "UTF-8";
+
+.navi_button_a1{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a1.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a1:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h1.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	mmargin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a1.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h1.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a2{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a2.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a2:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h2.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a2.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h2.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a3{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a3.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a3:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h3.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a3.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h3.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a4{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a4.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a4:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h4.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a4.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h4.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a5{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a5.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a5:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h5.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a5.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h5.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a6{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a6.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a6:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h6.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a6.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h6.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a7{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a7.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a7:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h7.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a7.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h7.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a8{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a8.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a8:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h8.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a8.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h8.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a9{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a9.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a9:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h9.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a9.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h9.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a10{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a10.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a10:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h10.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a10.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h10.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a11{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a11.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a11:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h11.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a11.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h11.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a12{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_a12.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a12:hover{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h12.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.navi_button_a12.selected{
+    width: 222px;
+    height: 56px;
+    background:url(../../integrateservice/images/gljNavPics/nav_news_h12.jpg) left top repeat-x;
+	line-height:56px;
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 8px;
+	display: block;
+}

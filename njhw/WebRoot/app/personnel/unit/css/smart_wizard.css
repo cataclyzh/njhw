@@ -1,0 +1,140 @@
+/*   
+  SmartWizard 2.0 plugin 
+  jQuery Wizard control Plugin
+  by Dipu
+  
+  http://www.techlaboratory.net
+  http://tech-laboratory.blogspot.com
+*/
+.swMain {
+	border:solid 1px #7F90B3; 
+	border-top:none;
+	padding:10px;
+}
+.swMain .stepContainer {
+
+}
+
+.swMain .stepContainer div.content {
+  margin: 0;
+  height: 375px;
+  overflow:auto;
+  clear:both;
+}
+
+.swMain div.actionBar {
+	height:32px;
+	background:#ecebe4;
+	padding:6px;
+	width:808px;
+	margin:0 auto;
+}
+
+.swMain .stepContainer .StepTitle {  
+}
+.swMain .wizard_mbx ul.anchor {
+  position: relative;
+  display:block;
+  list-style: none;
+  padding: 0px;  
+  margin: 0 0;
+}
+.swMain .wizard_mbx ul.anchor li{ 
+  position: relative; 
+  display:block;
+  margin: 0;
+  padding: 0; 
+  float: left;
+  width: 25%;
+}
+
+.swMain ul.anchor li a .stepNumber{
+
+}
+.swMain ul.anchor li a .stepDesc{
+
+}
+.swMain ul.anchor li a .stepDesc small{
+
+}
+.swMain ul.anchor li a.selected{
+
+}
+.swMain ul.anchor li a.selected:hover {
+
+}
+
+.swMain ul.anchor li a.done { 
+
+}
+.swMain ul.anchor li a.done:hover {
+
+}
+.swMain ul.anchor li a.disabled {
+
+}
+.swMain ul.anchor li a.disabled:hover {
+  
+}
+
+.swMain ul.anchor li a.error {
+  
+}
+.swMain ul.anchor li a.error:hover {     
+}
+
+.swMain .buttonFirst {
+  
+}
+.swMain .buttonNext {
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	float:right;
+	background:#ffc600;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.swMain .buttonDisabled {  
+}
+.swMain .buttonPrevious {  
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	float:left;
+	background:#7f90b3;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+.swMain .buttonFinish {
+	width:110px;
+	height:32px;
+	line-height:32px;
+	text-decoration:none;
+	text-align:center;
+	display:block;
+	color:#fff;
+	float:right;
+	background:#ffc600;
+	font-family:"微软雅黑";
+	font-weight:bold;
+}
+
+/* Form Styles */
+
+.txtBox {
+
+}
+.txtBox:focus {
+}
+
+.swMain .loader {
+}

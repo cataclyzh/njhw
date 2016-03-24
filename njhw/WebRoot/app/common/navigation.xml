@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigations>
+	<navigation>
+		<navigationName>用户管理</navigationName>
+		<navigationLink>common/userMgr/userFrame.act</navigationLink>
+		<navigationImgSrc>images/navigation/fpcx.png</navigationImgSrc>
+		<subsysid>1</subsysid>
+		<subsysname>JCsomo</subsysname>
+		<accordionname>用户权限管理</accordionname>
+	</navigation>
+		
+	<navigation>
+		<navigationName>发消息</navigationName>
+		<navigationLink>common/bulletinMessage/msgBoxAction_init.act</navigationLink>
+		<navigationImgSrc>images/navigation/spfpcx.png</navigationImgSrc>
+		<subsysid>1</subsysid>
+		<subsysname>JCsomo</subsysname>
+		<accordionname>消息管理</accordionname>
+	</navigation>
+		
+</navigations>

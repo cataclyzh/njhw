@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PersonnelUnitSQL">
+      
+	<!-- 查询部门分配的房间列表,包括房间别名 -->
+	<select id="getUnitResRooms" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from em_org_res t,objtank tank where t.res_id = tank.node_id and t.eor_type = #eorTypeRoom# and t.org_id = #orgId#
+	</select>
+	
+	<select id="getUnitRes" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from em_org_res t,objtank tank where t.res_id = tank.node_id and (t.eor_type = #eorTypeRoom# or t.eor_type = 7) and t.org_id = #orgId#
+	</select>
+	<!-- 查询部门分配的房间门锁列表 -->
+	<select id="getUnitResRoomsLocks" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tank.node_id node_id,tank.name name,tank.room_name room_name,
+		decode(m.mapid,null,0,1) is_checked
+		from em_org_res t,V_OBJTANK_ROOM tank,
+		(select * 
+		from obj_perm_map m
+        where m.person_id = #userId#
+         and m.perm_code = 'obj_vis'
+         and m.type = 'user'
+         and m.deny_flag = '1') m
+		where t.res_id = tank.room_id and t.eor_type = '1' and t.org_id = FN_GET_ORGID(#orgId#)
+		and tank.type = '3' and tank.node_id = m.node_id(+) 
+		order by tank.name
+	</select>
+	
+	
+	<!-- 查询部门未分配的房间门锁列表 -->
+	<select id="getUnitUNResRoomsLocks" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tank.room_id room_id,tank.node_id node_id,tank.room_name name,'0' is_checked
+		from em_org_res t,V_OBJTANK_ROOM tank
+		where t.res_id = tank.room_id and t.eor_type = '1' and t.org_id = #orgId#
+		and tank.type = '3'
+		order by tank.name
+	</select>
+	
+	<!-- 查询部门未分配的房间门锁列表  修改user时-->
+	<select id="getUnitUNResRoomsLocksM" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+	select tank.room_id room_id,tank.room_name name,decode(n.room_id,null,0,1) is_checked
+    from em_org_res t,V_OBJTANK_ROOM tank,(select nj.room_id  from njhw_users_exp nj  where nj.userid = #userId#) n
+    where t.res_id = tank.room_id
+    and t.eor_type = '1' 
+    and t.org_id = #orgId#
+    and tank.type = '3'
+    and n.room_id(+) = tank.room_id
+    order by tank.name
+	</select>
+	
+	
+	<!-- 根据cardId找到userId -->
+	<select id="getUserIdByCardId" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select decode((select c.user_id from NJHW_TSCARD c, users u
+        where u.userid = c.user_id
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and c.card_id=#cardId#),
+    	null,(select t.userid from NJHW_USERS_EXP t, users u 
+        where u.userid = t.userid
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and t.tmp_card = #cardId#),
+        (select c.user_id from NJHW_TSCARD c, users u
+        where u.userid = c.user_id
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and c.card_id=#cardId#)) as userId
+		from dual
+	</select>
+	
+	<!-- 根据cardId找到userId -->
+	<select id="getUserIdByCardIdTS" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		(select c.user_id userid from NJHW_TSCARD c, njhw_users_exp u
+        where u.userid = c.user_id
+        and u.card_type = '1'
+        and c.card_id = #cardId#) union (
+        select u.userid from njhw_users_exp u
+        where u.card_type = '2'
+        and u.tmp_card = #cardId#)
+	</select>
+	
+	<!-- 得到分配到房间的ip电话[mac]列表 -->
+	<select id="findRoomTelMacList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select ue.tel_mac from njhw_users_exp ue where  ue.room_id = #roomId# and ue.tel_mac is not null
+	</select>
+	<!-- 得到接入的ip电话[mac]列表 -->
+	<select id="findInnerTelMacList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tel.tel_mac from TC_IP_TEL tel ,TC_ROOM_NETDEVICE rd where rd.nd_addr = tel.nd_addr  and node_id = #roomId#
+	</select>
+	
+	<!-- 得到房间人员分配 -->
+	<select id="findRoomUserList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select ue.room_id,u.userid,u.display_name ,tel.tel_num from users u, njhw_users_exp ue , tc_ip_tel tel  where ue.room_id = #roomId# and ue.userid = u.userid and ue.tel_num = tel.tel_id(+)
+	</select>
+	<!-- 查询房间资源列表 -->
+	<select id="getRoomRes" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select * from V_OBJTANK_ROOM where  type = #type# and room_id = #roomId#
+	</select>
+	
+	<!-- 查询资源权限用户列表 -->
+	<select id="getResPermission" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select tempa.*,nvl(permit.exp1,  99) id, permit.exp2 noCarduserId, permit.exp3 cardStatus from NJHW_DOORCONTROL_EXP permit,
+		(select case exp.card_type when '1' then card.card_id when '2' then exp.tmp_card end card_no,u.userid,u.display_name from users u, 
+		njhw_users_exp exp,njhw_tscard card where u.userid = exp.userid(+) and u.userid = card.user_id(+) and fn_get_orgid(u.org_id) = #orgId#) tempa 
+		where (tempa.card_no = permit.card_id or tempa.userid = permit.exp2) and permit.dlock_id(+) = #nodeId#
+	</select>
+	
+	<!-- 根据卡号查询用户门锁资源    2013年7月13日10:33:35  Auth：zhangqw -->
+		<select id="getResPerDoor" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+			select r.name as ROOM_NAME,
+			      nvl(permit.exp1, 99) id
+			 from NJHW_DOORCONTROL_EXP permit,
+			      OBJTANK t, OBJTANK r
+			where permit.dlock_id = t.node_id
+			  and permit.card_id = #cardNo#
+        	  and r.node_id = t.p_id
+			<isNotEmpty prepend="and" property="exp1">
+					permit.exp1 = #exp1#
+			</isNotEmpty>
+			<isEmpty prepend="and" property="exp1">
+			  		permit.exp1 is null
+			</isEmpty>
+			  
+		</select>
+	
+	
+	
+	
+	
+	<!-- 统计部门人员总数 -->
+	<select id="selectOrgUserCount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select nvl(count(0),0) c from users where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="orgId">
+				org_id = #orgId#
+            </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计部门人员总数 -->
+	<select id="selectVisitCount" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		select nvl(count(0),0) c from vm_visit
+	</select>
+
+	<!-- 电话号码分配分页查询 -->
+	<select id="selectTelAndNumPageList" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+	select *
+  from (select tempa.*,
+               org.name,
+               users.display_name,
+               users.org_Id,
+               users.userid userId1
+          from (select res.res_id,
+                       res.res_name,
+                       exp.userid,
+                       exp.ROOM_INFO,
+                       tel.tel_mac,
+                       tel.tel_num,
+                       tel.TEL_IDD,
+                       tel.TEL_DDD,
+                       tel.TEL_CORNET,
+                       tel.TEL_LOCAL,
+                       tel.ACTIVE_FLAG,
+                       tel.OLD_USERID,
+                       tel.REQ_DATE,
+                       tel.ACTIVE_DATE,
+                       tel.TEL_FORWARD,
+                       tel.TEL_CW,
+                       tel.TEL_EXT,
+                       tel.TEL_TYPE
+                  from em_org_res res, njhw_users_exp exp, tc_ip_tel tel
+                 where (to_char(exp.tel_num) = to_char(res.res_id) or to_char(exp.web_fax) = to_char(res.res_id) or
+                       to_char(exp.uep_fax) = to_char(res.res_id))
+                   and to_char(tel.tel_id) = to_char(res.res_id)
+                   and res.eor_type = 3
+                   and res.org_id = #unitOrgId#) tempa,
+               users,
+               org
+         where tempa.userid = users.userid(+)
+           and users.org_id = org.org_id(+)
+        union
+        select tempa.*,
+               org.name,
+               users.display_name,
+               users.org_Id,
+               users.userid userid1
+          from (select res.res_id,
+                       res.res_name,
+                       exp.userid,
+                       exp.ROOM_INFO,
+                       tel.tel_mac,
+                       tel.tel_num,
+                       tel.TEL_IDD,
+                       tel.TEL_DDD,
+                       tel.TEL_CORNET,
+                       tel.TEL_LOCAL,
+                       tel.ACTIVE_FLAG,
+                       tel.OLD_USERID,
+                       tel.REQ_DATE,
+                       tel.ACTIVE_DATE,
+                       tel.TEL_FORWARD,
+                       tel.TEL_CW,
+                       tel.TEL_EXT,
+                       tel.TEL_TYPE
+                  from em_org_res res, njhw_users_exp exp, tc_ip_tel tel
+                 where (to_char(exp.tel_num(+)) = to_char(res.res_id))
+                   and to_char(tel.tel_id) = to_char(res.res_id)
+                   and res.eor_type = 3
+                   and res.org_id = #unitOrgId#) tempa,
+               users,
+               org
+         where tempa.userid = users.userid(+)
+           and users.org_id = org.org_id(+)
+           and tempa.res_id not in
+               (select tempa1.res_id
+                  from (select res.res_id,
+                               res.res_name,
+                               exp.userid,
+                               exp.ROOM_INFO,
+                               tel.tel_mac,
+                               tel.tel_num,
+                               tel.TEL_IDD,
+                               tel.TEL_DDD,
+                               tel.TEL_CORNET,
+                               tel.TEL_LOCAL,
+                               tel.ACTIVE_FLAG,
+                               tel.OLD_USERID,
+                               tel.REQ_DATE,
+                               tel.ACTIVE_DATE,
+                               tel.TEL_FORWARD,
+                               tel.TEL_CW,
+                               tel.TEL_EXT,
+                               tel.TEL_TYPE
+                          from em_org_res     res,
+                               njhw_users_exp exp,
+                               tc_ip_tel      tel
+                         where (to_char(exp.tel_num) = to_char(res.res_id) or
+                               to_char(exp.web_fax) = to_char(res.res_id) or
+                               to_char(exp.uep_fax) = to_char(res.res_id))
+                           and to_char(tel.tel_id) = to_char(res.res_id)
+                           and res.eor_type = 3
+                           and res.org_id = #unitOrgId#) tempa1,
+                       users,
+                       org
+                 where tempa1.userid = users.userid(+)
+                   and users.org_id = org.org_id(+))) temp2 where 1=1 
+	
+		<dynamic>
+			<isNotEmpty prepend="and" property="telNum">
+				 temp2.tel_num like '%' || #telNum# || '%' 
+			</isNotEmpty>
+		</dynamic>
+		
+		<dynamic>
+			<isNotEmpty prepend="and" property="orgId">
+				temp2.org_id = #orgId#
+			</isNotEmpty>
+		</dynamic> 
+		
+		<dynamic>
+			<isNotEmpty prepend="and" property="resType">
+					 temp2.TEL_TYPE = #resType#
+			</isNotEmpty>
+		</dynamic> 
+		<dynamic>
+			<isNotEmpty  property="disStatus">
+				<isEqual property="disStatus" compareValue="1">
+					and temp2.userid1 > 1 
+				</isEqual>
+				<isEqual property="disStatus" compareValue="2">
+					and temp2.userid1 is null
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		
+		<dynamic>
+			<isNotEmpty prepend="and" property="displayName">
+					 temp2.display_name like '%' || #displayName# || '%' 
+			</isNotEmpty>
+		</dynamic> 
+		order by temp2.tel_num desc
+	</select>
+	
+	<!-- 房间分配及授权管理清单导出     作者：qiyaqiang  时间： 2013-05-16-->
+	
+	<select id="exportList" parameterClass="java.util.Map" resultClass="java.util.HashMap" >
+		
+		SELECT   u.DISPLAY_NAME ,  U1.RESIDENT_NO , u1.ROOM_INFO , u1.INSERT_DATE  FROM USERS u ,  NJHW_USERS_EXP u1  WHERE   u.USERID = u1.USERID
+		 and  u.ORG_ID  in (select o.org_id	from ORG o	connect by prior   o.org_id = o.p_id	 start with o.org_id = #orgId# ) 
+	</select>
+	
+	
+	
+	  <!--  查询用户的车牌     作者：qiyanqiang   日期： 2013-05-19 -->
+ <select id="searchUserLicensePlate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select   nup_pn , nup_flag as nupFlag from NJHW_USERS_PLATENUM    WHERE 1=1  
+        <dynamic>
+		<isNotEmpty prepend="and" property="userId">
+			userid  =#userId#
+           </isNotEmpty>
+           </dynamic>
+</select>
+
+
+  <!--  查询用户闸机、门禁、门锁：     作者：qiyanqiang   日期： 2013-05-19     -->
+ <select id="searchAllFacility" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select '1' res_type ,'闸机' ext_res_type,o.node_id,o.name
+	from objtank o
+	where o.ext_res_type = '1'
+	union
+	select '2' res_type ,'门禁' ext_res_type,t.res_id,t.res_name
+	from EM_ORG_RES t 
+	where t.eor_type='2'
+	and t.org_id = (
+	    select org_id
+	    from (select o.org_id,o.level_num    from ORG o    connect by prior o.p_id = o.org_id
+	    start with o.org_id = (select u.org_id from users u where u.userid=#userId#))
+	    where level_num = 2)
+	union
+	select '3' res_type ,'门锁' ext_res_type,
+	o.NODE_ID node_id,
+	o.name node_name
+	from OBJ_PERM_MAP m, OBJTANK o 
+	where m.node_id = o.node_id
+	and m.type = 'user' 
+	and m.perm_code = 'obj_vis'  
+	and  o.ext_res_type = '3'
+	and m.deny_flag = '1'
+	and m.person_id  = #userId#
+
+
+</select>
+
+
+<!-- 根据卡的扩展表的carID查询 userId   作者： qiyanqiang 时间：2013 - 05 -19 
+<select id="searchUserId" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+SELECT   c.USER_ID   from  NJHW_TSCARD  c    WHERE  c.CARD_ID = #cardId#
+</select>
+-->	
+
+
+<!-- 读取卡权限 查询 用户的姓名 和卡号  -->
+<select id="searchCardPrivilegesNumber" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+SELECT     card.CARD_ID ,   card.USER_NAME    FROM  NJHW_USERS_EXP  exp  , NJHW_TSCARD card 
+ WHERE     exp.USERID = card.USER_ID  AND   exp.USERID = #userId#
+
+</select>
+
+
+<!-- 根据操作时间查询是否开门成功  -->
+<select id="getDoorStatus" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select bm.BM_EXP4 from BM_MONITOR bm where bm.BM_EXP3 = #msgId#
+</select>
+
+<!-- 获取通卡番号  -->
+<select id="getPubCardNo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select t.uep_bak1 as pubCardNo
+  	from njhw_users_exp t, users u
+  	where u.userid = t.userid
+  	<isNotEmpty prepend="and" property="cardType">
+  		t.card_type = #cardType#
+    </isNotEmpty>
+  	<isNotEmpty prepend="and" property="orgId">
+  		u.org_id = #orgId#
+  	</isNotEmpty>
+  	order by to_number(t.uep_bak1) asc
+</select>
+
+<!-- 查找本单位未被分配的电话号码  作者zhagnqw Date:2013年7月3日15:48:47-->
+<select id="getUnitTelDis" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select tc.tel_num, tc.tel_id, tc.TEL_TYPE
+  from Em_Org_Res res, TC_IP_TEL tc
+ where res.res_id = tc.tel_id
+   and res.org_id = #orgId#
+   and tc.TEL_TYPE = #telType#
+   and tc.tel_id not in (select to_number(nj.tel_num)
+                           from NJHW_USERS_EXP nj
+                           where nj.tel_num is not null)
+                           order by tc.tel_num 
+
+</select>
+
+
+<!-- 查找本单位未被分配的传真号码  作者zhagnqw Date:2013年7月3日15:48:47-->
+<select id="getUnitWebFaxDis" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select tc.tel_num, tc.tel_id, tc.TEL_TYPE
+  from Em_Org_Res res, TC_IP_TEL tc
+ where res.res_id = tc.tel_id
+   and res.org_id = #orgId#
+   and tc.TEL_TYPE = #telType#
+   and tc.tel_id not in (select to_number(nj.web_fax)
+                           from NJHW_USERS_EXP nj
+                          where
+                             nj.web_fax is not null)
+                             order by tc.tel_num 
+                            
+</select>
+
+<!-- 查找本单位未被分配的网络传真号码  作者zhagnqw Date:2013年7月3日15:48:47-->
+<select id="getUnitFaxDis" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select tc.tel_num, tc.tel_id, tc.TEL_TYPE
+  from Em_Org_Res res, TC_IP_TEL tc
+ where res.res_id = tc.tel_id
+   and res.org_id = #orgId#
+   and tc.TEL_TYPE = #telType#
+   and tc.tel_id not in (select to_number(nj.uep_fax)
+                           from NJHW_USERS_EXP nj
+                          where  nj.uep_fax is not null)
+                          order by tc.tel_num 
+
+</select>
+
+<!-- 获取单位通卡的全部信息  -->
+<select id="getPubCardInfos" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+  select u.userid, u.display_name as pubCardName, uep.tmp_card as cardId, o.node_id as nodeId, r.name as nodeName
+  from users u, njhw_users_exp uep, obj_perm_map m, OBJTANK o, OBJTANK r
+  where u.userid = uep.userid
+  <isNotEmpty prepend="and" property="cardType">
+  	uep.card_type = #cardType#
+  </isNotEmpty>
+  <isNotEmpty prepend="and" property="orgId">
+  	u.org_id = #orgId#
+  </isNotEmpty>
+  and u.userid = m.person_id(+)
+  and m.node_id = o.node_id(+)
+  and m.type(+) = 'user' 
+  and m.perm_code(+) = 'obj_vis'  
+  and o.ext_res_type(+) = '3'
+  and o.p_id = r.node_id(+)
+  order by uep.uep_bak1 asc, to_number(o.node_id) asc
+</select>
+
+<!-- 获取单位通卡的全部信息  -->
+<select id="getPubCardAllInfos" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select distinct(u.userid) as userid, u.display_name as pubCardName, uep.tmp_card as cardId
+  from users u, njhw_users_exp uep
+  where u.userid = uep.userid
+  and uep.card_type = '4'
+  order by cardId asc
+</select>
+
+<!-- 获取门锁授权结果      作者：HJ 时间：2013-7-5  -->
+<select id="getAuthDoorStatus" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select t.id, t.exp1
+	from njhw_doorcontrol_exp t
+	where t.card_id = #cardId# and t.dlock_id = #nodeId#
+</select>
+
+<!-- 判断是否是单位管理员用户     作者：HJ 时间：2013-7-8  -->
+<select id="isUnitAdmin" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select t.*
+from admin_org_map t, 
+(select decode((select c.user_id from NJHW_TSCARD c, users u
+        where u.userid = c.user_id
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and c.card_id=#cardId#),
+    null,(select t.userid from NJHW_USERS_EXP t, users u 
+        where u.userid = t.userid
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and t.tmp_card = #cardId#),
+        (select c.user_id from NJHW_TSCARD c, users u
+        where u.userid = c.user_id
+        and FN_GET_ORGID(u.org_id)=#orgId#
+        and c.card_id=#cardId#)) as userId
+		from dual 
+) u
+where u.userId = t.userid
+and t.org_id = #orgId#
+</select>
+
+
+<!-- 判断是否是特殊管理员     作者：ChunJing 时间：2014-05-07  -->
+<select id="checkSpecialAdminCard" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select t.* from T_021_SPECIAL_ADMIN_CARD t where t.card_no = #cardId#
+</select>
+
+
+<!-- 通过userid判断是否是单位管理员用户     作者：HJ 时间：2013-7-8  -->
+<select id="isUnitAdminByUserid" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select t.*
+from admin_org_map t
+where t.userid = #userId#
+and t.org_id = #orgId#
+</select>
+
+
+<!-- 通过userid判断是否是单位管理员用户     作者：HJ 时间：2013-7-8  -->
+<select id="findDoorLockInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+select wm_concat(o2.node_id) as ids, nds.adrs_comm as commId
+  from njhw_doorcontrol_set nds, objtank o1, objtank o2
+ where nds.node_id = o1.node_id
+   and o1.p_id = o2.node_id
+   and o2.ext_res_type = 'R'
+   <isNotEmpty prepend="and" property="nodeIds">
+  	 o2.node_id in ($nodeIds$)
+   </isNotEmpty>
+ group by nds.adrs_comm
+ order by to_number(nds.adrs_comm) asc
+</select>
+
+
+<!-- 获取通卡的信息     作者：HJ 时间：2013-9-6  -->
+<select id="getPubCardConfirmInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">  
+select distinct(o2.node_id) as ID, o2.name as NAME
+from njhw_doorcontrol_exp t, objtank o1, objtank o2
+where o1.node_id = t.dlock_id(+)
+  and o1.p_id = o2.node_id
+  and t.card_id(+) = #cardId#
+  and o1.ext_res_type = '3'
+  and o2.ext_res_type = 'R'
+  <isEqual property="type" compareValue="1">
+	and t.exp1 is null and t.id is not null
+  </isEqual>
+  <isEqual property="type" compareValue="2">
+	and (t.exp1 = '1' or t.exp1 = '2' or t.id is null)
+  </isEqual>
+  <isNotEmpty prepend="and" property="nodeIds">
+  	o2.node_id in ($nodeIds$)
+  </isNotEmpty>
+</select>
+
+	<!-- 删除通卡失败信息  hj 2013-9-9 -->
+	<delete id="deleteDoorAuthFailInfo"  parameterClass="java.util.Map" >
+		delete from njhw_doorcontrol_exp where card_id = #cardId# and exp1 is not null
+	</delete>
+
+</sqlMap>
