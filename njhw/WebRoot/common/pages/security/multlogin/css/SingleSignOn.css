@@ -164,3 +164,50 @@ span{font-size:12px;}
 	right:50px;
 	display:none;
 }
+.login_top_as{
+	padding:6px;
+	width:80px;
+	height:16px;
+	line-height:16px;
+	display:inline-block;
+	float:right;
+	color:#415A88;
+	font-size:12px;
+	cursor: pointer;
+	text-align:center;
+	text-decoration: none;
+	font-family: "微软雅黑";
+	font-weight: bold;
+}
+.login_top_as:hover{
+	background:#609CD0;
+	padding:6px;
+	width:80px;
+	height:16px;
+	line-height:16px;
+	display:inline-block;
+	float:right;
+	color:#fff;
+	font-size:12px;
+	text-decoration: none;
+	font-family: "微软雅黑";
+	font-weight: bold;
+}
+.login_top_active{
+	/*background:#7295D5;*/
+	background:#247AC3;
+	padding:6px;
+	width:80px;
+	height:16px;
+	line-height:16px;
+	display:inline-block;
+	float:right;
+	color:#ffffff;
+	font-size:12px;
+	text-decoration: none;
+	font-family: "微软雅黑";
+	font-weight: bold;
+}
+.currentLink{
+	background:#247AC3;
+}
