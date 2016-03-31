@@ -53,10 +53,10 @@
 		authentication-failure-url="/security/login.act?error=1" />
 		<s:anonymous granted-authority="IS_AUTHENTICATED_ANONYMOUSLY"/>  
 		
-<!-- 		
 		<s:logout logout-success-url="/security/login.act" invalidate-session="true"/>
- -->		
+<!-- 		
 	<s:logout logout-success-url="http://newcity.njnet.gov.cn:9080/logout?service=http://newcity.njnet.gov.cn:9080" invalidate-session="true"/>
+ -->		
 		
 		<s:session-management invalid-session-url="/invalidSession.act"><!-- invalidSession.act -->
 			<s:concurrency-control max-sessions="10" error-if-maximum-exceeded="false" />

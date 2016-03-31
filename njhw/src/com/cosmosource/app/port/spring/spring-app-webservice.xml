@@ -17,6 +17,11 @@
 		<property name="dataBinding" ref="aegisBean" />
 	</bean>
 
+	<bean id="testPhoneSite" class="com.cosmosource.app.port.serviceimpl.IPPhoneSiteServiceImpl">
+		<property name="iPPhoneManager" ref="iPPhoneManager"></property>
+		<property name="doorControlToAppService" ref="doorControlToAppService" />
+	</bean>
+	
 	<!-- 功能1：WS服务接口 ip电话 -->
 	<jaxws:server id="iPPhoneSiteServices"
 		serviceClass="com.cosmosource.app.port.service.IPPhoneSiteService"

@@ -28,16 +28,11 @@
 		</property>
 	</bean>
 			
-	 
-	<!-- 导入基础配置文件 -->
 	<import resource="classpath*:/com/cosmosource/base/spring/spring-base.xml" /><!-- 基础配置 -->
 	<import resource="classpath*:/com/cosmosource/base/spring/spring-ibatis.xml" /><!--ibatis配置 -->
-<!--	<import resource="classpath*:/com/cosmosource/base/spring/spring-base-sqlserver.xml" /> sqlserver的hibernate基础配置  -->
-<!--	<import resource="classpath*:/com/cosmosource/base/spring/spring-ibatis-sqlserver.xml" />sqlserver的ibatis配置  -->
 	<import resource="classpath*:/com/cosmosource/common/spring/spring-security.xml" /><!--登录及安全验证配置 -->
 	<import resource="classpath*:/com/cosmosource/common/spring/spring-common.xml" /><!--公共业务配置 -->
 	<import resource="classpath*:/com/cosmosource/common/spring/spring-import.xml" /><!--excel导入注入 -->
 	<import resource="classpath*:/com/cosmosource/app/*/spring/*.xml" />
-	<!-- 导入各项目的配置文件 -->
     
 </beans>

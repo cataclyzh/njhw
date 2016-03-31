@@ -218,6 +218,124 @@ public class PersonRegOutAction extends BaseAction {
 		return SUCCESS;
 	}
 	
+	private void processUserEdit(String userId, Users user, NjhwUsersExp exp, String cardId) {
+		
+		LeaderLevel ll = null;
+		TcIpTel tel1 = null;//ip电话
+		TcIpTel tel2 = null;//传真
+		TcIpTel tel3 = null;//网络传真
+		
+		
+		// 用户扩展信息
+//		List expList = personROManager.findByHQL(
+//				"select t from NjhwUsersExp t, Users u where u.userid = t.userid and u.userid = ?",
+//				Long.parseLong(userId));
+//		if (expList.size() > 0 && expList != null)
+//			exp = (NjhwUsersExp) expList.get(0);
+		getRequest().setAttribute("exp", exp);
+		List lll = personROManager.findByHQL("select ll from  LeaderLevel ll where ll.userid = ?",
+				Long.valueOf(userId));
+		if (lll.size() > 0 && lll != null) {
+			ll = (LeaderLevel) lll.get(0);
+			getRequest().setAttribute("stage", ll.getStage());
+		} else {
+			getRequest().setAttribute("stage", 0);
+		}
+
+		// 考勤审批员
+		Object aa = personROManager.findById(AttendanceApprovers.class, Long.valueOf(userId));
+		if (null != aa) {
+			List<String> apprNames = personROManager.findByHQL("select u.displayName from  Users u where u.userid in ("
+					+ ((AttendanceApprovers) aa).getApprovers() + ")");
+			if (null != apprNames && apprNames.size() > 0) {
+				StringBuffer apprNamesBu = new StringBuffer();
+				for (String appName : apprNames) {
+					apprNamesBu.append(appName.trim()).append(",");
+				}
+				getRequest().setAttribute("approvers", apprNamesBu.substring(0, apprNamesBu.length() - 1));
+			}
+		}
+
+		if (!personROManager.findByHQL("select oa from OrgAttendanceAdmin oa where oa.userid = ?", Long.valueOf(userId))
+				.isEmpty()) {
+			this.getRequest().setAttribute("isOrgAttAdmin", "1");
+		} else {
+			this.getRequest().setAttribute("isOrgAttAdmin", "0");
+		}
+
+		if (exp != null) {
+			if (exp.getTelNum() != null) {
+				List telList = personROManager.findByHQL("select tel from  TcIpTel tel where tel.telId = ?",
+						Long.valueOf(exp.getTelNum()));
+				if (telList != null && telList.size() > 0) {
+					tel1 = (TcIpTel) telList.get(0);
+				}
+			}
+			if (exp.getUepFax() != null) {
+				List telList = personROManager.findByHQL("select tel from TcIpTel tel where tel.telId = ?",
+						Long.valueOf(exp.getUepFax()));
+				if (telList != null && telList.size() > 0) {
+					tel2 = (TcIpTel) telList.get(0);
+				}
+			}
+			if (exp.getWebFax() != null) {
+				List telList = personROManager.findByHQL("select tel from TcIpTel tel where tel.telId = ?",
+						Long.valueOf(exp.getWebFax()));
+				if (telList != null && telList.size() > 0) {
+					tel3 = (TcIpTel) telList.get(0);
+				}
+			}
+			if (null == exp.getRoomId()) {
+				exp.setRoomInfo(null);
+
+			} else if (null != exp.getRoomId()) {
+				List<Objtank> ob = personROManager.findByHQL("select ob from Objtank ob where ob.nodeId = ?",
+						Long.valueOf(exp.getRoomId()));
+				if (ob != null && ob.size() > 0) {
+					exp.setRoomInfo(ob.get(0).getName());
+				}
+			}
+			getRequest().setAttribute("tel1", tel1);
+			getRequest().setAttribute("tel2", tel2);
+			getRequest().setAttribute("tel3", tel3);
+		}
+		// 用户基本信息
+//		user = (Users) personROManager.findById(Users.class, Long.parseLong(userId));
+//		getRequest().setAttribute("user", user);
+//		if (null != user.getOrgId()) {
+//			orgId = user.getOrgId().toString();
+//		}
+
+
+		StringBuffer strAcc = new StringBuffer();
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", userId);
+		// 门禁 2013年8月22日16:26:05
+		Long userid = Long.valueOf(userId);
+
+		List<NjhwUsersAccess> list = accessMgrManager.findByHQL(
+				"select t from NjhwUsersAccess t where t.userid = ? and (t.appStatus = '1' or t.appStatus = '5')",
+				userid);
+
+		if (list != null && list.size() > 0) {
+			NjhwUsersAccess entity = list.get(0);
+			getRequest().setAttribute("name", user.getDisplayName());
+			List<Map> l = accessMgrManager.getAccessGuardInfo(entity.getNuacId());
+			if (l != null && l.size() > 0) {
+				getRequest().setAttribute("strAcc", l.get(0).get("ACCESS_AUTH") == null ? "正在删除申请中..."
+						: l.get(0).get("ACCESS_AUTH").toString() + "    正在申请中...");
+				getRequest().setAttribute("strGate", l.get(0).get("GUARD_AUTH") == null ? "正在删除申请中..."
+						: l.get(0).get("GUARD_AUTH").toString() + "    正在申请中...");
+			}
+		} else {
+			Map<String, String> m = accessMgrManager.initUserAccessInfo(userid.toString());
+			if (!"true".equals(m.get("isNone"))) {
+				getRequest().setAttribute("strAcc", m.get("access"));
+				getRequest().setAttribute("strGate", m.get("gate"));
+			}
+		}
+	}
+	
 	/** 
 	* @title: inputRegister
 	* @description: 显示登记页面
@@ -227,142 +345,58 @@ public class PersonRegOutAction extends BaseAction {
 	public String inputRegister() {
 		String orgId = getParameter("orgId");
 		String userId = getParameter("userId");
+		
+		// 用户基本信息
+		Users user = (Users) personROManager.findById(Users.class, Long.parseLong(userId));
+		getRequest().setAttribute("user", user);
+		if (null != user.getOrgId()) {
+			orgId = user.getOrgId().toString();
+		}
+		
+		// 用户扩展信息
 		NjhwUsersExp exp = null;
-		LeaderLevel ll = null;
-		TcIpTel tel1 = null;//ip电话
-		TcIpTel tel2 = null;//传真
-		TcIpTel tel3 = null;//网络传真
-		Users user = null;
+		List expList = personROManager.findByHQL(
+				"select t from NjhwUsersExp t, Users u where u.userid = t.userid and u.userid = ?",
+				Long.parseLong(userId));
+		if (expList.size() > 0 && expList != null){
+			exp = (NjhwUsersExp) expList.get(0);
+		}
+		
 		String cardId = null;
-		if (StringUtil.isNotEmpty(userId)) {	// 编辑时加载用户各项信息
-			// 用户扩展信息 
-			List expList = personROManager.findByHQL("select t from NjhwUsersExp t, Users u where u.userid = t.userid and u.userid = ?", Long.parseLong(userId));
-			if (expList.size() > 0 && expList != null)  exp = (NjhwUsersExp) expList.get(0);
-			getRequest().setAttribute("exp", exp);
-			List lll = personROManager.findByHQL("select ll from  LeaderLevel ll where ll.userid = ?",  Long.valueOf(userId));
-			if (lll.size() > 0 && lll != null)  
-			{
-				ll  = (LeaderLevel) lll.get(0);
-				getRequest().setAttribute("stage", ll.getStage());
-			}
-			else{
-				getRequest().setAttribute("stage", 0);
-			}
-			
-			// 考勤审批员
-			Object  aa = personROManager.findById(AttendanceApprovers.class, Long.valueOf(userId));
-			if(null != aa){
-				List<String> apprNames = personROManager.findByHQL("select u.displayName from  Users u where u.userid in ("+((AttendanceApprovers)aa).getApprovers()+")");
-				if(null != apprNames && apprNames.size() > 0){
-					StringBuffer apprNamesBu = new StringBuffer();
-					for(String appName:apprNames){
-						apprNamesBu.append(appName.trim()).append(",");
-					}
-					getRequest().setAttribute("approvers", apprNamesBu.substring(0, apprNamesBu.length()-1));
+		if (exp != null) {
+			// 根据扩展信息中保存的用户所拥有的卡类型去查询市民卡表
+			if (exp.getCardType() != null && "1".equals(exp.getCardType())) { // 1.市民卡2.临时卡
+				List cardList = personROManager.findByHQL("select t from NjhwTscard t where t.userId = ?",
+						Long.parseLong(userId));
+				if (cardList.size() > 0 && cardList != null) {
+					getRequest().setAttribute("card", cardList.get(cardList.size() - 1));
+					cardId = ((NjhwTscard) cardList.get(cardList.size() - 1)).getCardId();
 				}
-			}
-			
-			if(!personROManager.findByHQL("select oa from OrgAttendanceAdmin oa where oa.userid = ?", Long.valueOf(userId)).isEmpty()){
-				this.getRequest().setAttribute("isOrgAttAdmin", "1");
-			}else{
-				this.getRequest().setAttribute("isOrgAttAdmin", "0");
-			}
 
-			if(exp!=null){
-				if(exp.getTelNum()!=null){
-					List telList = personROManager.findByHQL("select tel from  TcIpTel tel where tel.telId = ?", Long.valueOf(exp.getTelNum()));
-					if(telList!=null&&telList.size()>0){
-						tel1 = (TcIpTel)telList.get(0);
-					}
-				}
-				if(exp.getUepFax()!=null){
-					List telList = personROManager.findByHQL("select tel from TcIpTel tel where tel.telId = ?", Long.valueOf(exp.getUepFax()));
-					if(telList!=null&&telList.size()>0){
-						tel2 = (TcIpTel)telList.get(0);
-					}
-				}
-				if(exp.getWebFax()!=null){
-					List telList = personROManager.findByHQL("select tel from TcIpTel tel where tel.telId = ?", Long.valueOf(exp.getWebFax()));
-					if(telList!=null&&telList.size()>0){
-						tel3 = (TcIpTel)telList.get(0);
-					}
-				}
-			    if (null == exp.getRoomId())
-				{   
-					exp.setRoomInfo(null);
-					
-				}
-				else if (null != exp.getRoomId())
-				{
-					List<Objtank> ob = personROManager.findByHQL("select ob from Objtank ob where ob.nodeId = ?", Long.valueOf(exp.getRoomId()));
-					if(ob!=null&&ob.size()>0){
-						exp.setRoomInfo(ob.get(0).getName());
-					}
-				}
-				getRequest().setAttribute("tel1", tel1);
-				getRequest().setAttribute("tel2", tel2);
-				getRequest().setAttribute("tel3", tel3);
+			} else if (exp.getCardType() != null && "2".equals(exp.getCardType())) {
+				cardId = exp.getTmpCard();
 			}
-			// 用户基本信息 
-			user = (Users)personROManager.findById(Users.class, Long.parseLong(userId));
-			getRequest().setAttribute("user", user);
-			if (null != user.getOrgId())
-			{
-				orgId = user.getOrgId().toString();
-			}
-			
-			if (exp != null ) {
-				// 根据扩展信息中保存的用户所拥有的卡类型去查询市民卡表
-				if (exp.getCardType() != null && "1".equals(exp.getCardType())) {	// 1.市民卡2.临时卡
-					List cardList = personROManager.findByHQL("select t from NjhwTscard t where t.userId = ?", Long.parseLong(userId));
-					if (cardList.size() > 0 && cardList != null) {
-						getRequest().setAttribute("card", cardList.get(cardList.size()-1));
-						cardId = ((NjhwTscard)cardList.get(cardList.size()-1)).getCardId();
-					}
-				
-				}
-				else if (exp.getCardType() != null && "2".equals(exp.getCardType())) 
-				{
-					cardId= exp.getTmpCard();
-				}
-				// 读取用户上传照片
-				if (StringUtil.isNotEmpty(exp.getUepPhoto())) {
-					getRequest().setAttribute("imgSrc", showPic(exp.getUepPhoto().toString()));
-				}
-			}
-			StringBuffer strAcc = new StringBuffer();
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("userId", userId);
-			// 门禁 2013年8月22日16:26:05
-			Long userid = Long.valueOf(userId);
-			
-			List<NjhwUsersAccess> list = accessMgrManager.findByHQL("select t from NjhwUsersAccess t where t.userid = ? and (t.appStatus = '1' or t.appStatus = '5')",
-					userid);
-			
-			if (list != null && list.size() > 0) {
-				NjhwUsersAccess entity = list.get(0);
-				getRequest().setAttribute("name", user.getDisplayName());
-				List<Map> l = accessMgrManager.getAccessGuardInfo(entity.getNuacId());
-				if (l != null && l.size() > 0) {
-					getRequest().setAttribute("strAcc", l.get(0).get("ACCESS_AUTH") == null? "正在删除申请中..." : l.get(0).get("ACCESS_AUTH").toString() + "    正在申请中...");
-					getRequest().setAttribute("strGate", l.get(0).get("GUARD_AUTH") == null? "正在删除申请中..." : l.get(0).get("GUARD_AUTH").toString() + "    正在申请中...");
-				}
-			} else {
-				Map<String, String> m = accessMgrManager.initUserAccessInfo(userid.toString());
-				if (!"true".equals(m.get("isNone"))) {
-					getRequest().setAttribute("strAcc", m.get("access"));
-					getRequest().setAttribute("strGate", m.get("gate"));
-				}
+			// 读取用户上传照片
+			if (StringUtil.isNotEmpty(exp.getUepPhoto())) {
+				getRequest().setAttribute("imgSrc", showPic(exp.getUepPhoto().toString()));
 			}
 		}
-		long topOrgId = 0;
+		
+		
+		if (StringUtil.isNotEmpty(userId)) {	// 编辑时加载用户各项信息
+			processUserEdit(userId, user, exp, cardId);
+		}
+		
+		
+//		long topOrgId = 0;
 		// 当前选定的部门
 		Org org = (Org)this.personROManager.findById(Org.class, Long.parseLong(orgId));
 		getRequest().setAttribute("org", org);
 		
 		// 找到当前用户的顶级部门
-		List<HashMap> list = this.personROManager.getTopOrgId();
-		if (list.size() > 0) topOrgId = list.get(0).get("TOP_ORG_ID") != null ? Long.parseLong(list.get(0).get("TOP_ORG_ID").toString()) : 0;
+//		List<HashMap> list = this.personROManager.getTopOrgId();
+//		if (list.size() > 0) 
+//			topOrgId = list.get(0).get("TOP_ORG_ID") != null ? Long.parseLong(list.get(0).get("TOP_ORG_ID").toString()) : 0;
 		
 		// 判断是否弹出框编辑
 		getRequest().setAttribute("ispopup",getParameter("ispopup"));

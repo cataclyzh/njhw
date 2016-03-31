@@ -103,8 +103,13 @@ function loginEnter_hover(dom, num)
 	else
 		dom.style.background ="url("+_ctx+"/common/pages/security/multlogin/images/login_main_right_btn1.png) 0 0 no-repeat";
 }
-function loginEnter(dom)
-{
+
+function loginEnter(dom){
+	if($("#sid").val() == "2"){
+		window.location.href="http://itsm.njnet.gov.cn/";
+		return;
+	}
+	
 	// 	账号登录
 	if(attr(dom, "newtype") == 0)
 	{

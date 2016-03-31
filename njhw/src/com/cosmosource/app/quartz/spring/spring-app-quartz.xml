@@ -6,27 +6,35 @@
        default-lazy-init="true">
 	
 	<!-- 通过市民卡配置黑名单-->
+	<!-- 
 	<bean id="appQuartzService" class="com.cosmosource.app.quartz.service.AppQuartService" parent="manager">
 		<property name="personCardQueryToAppService" ref="personCardQueryToAppService"/>
 		<property name="personROManager" ref="personROManager"/>
 	</bean>
+	 -->
 	
+	<!--  
 	<bean id="quartzServericeTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="checkDoorAuthJobDetail" />
 		<property name="cronExpression" value="0 0 0/5 * * ?" />
 	</bean>
+	-->
 	
+	<!-- 
 	<bean id="checkDoorAuthJobDetail" class="org.springframework.scheduling.quartzx.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="appQuartzService" />
 		<property name="targetMethod" value="changeTsCardSystemLostStatus" />
 		<property name="concurrent" value="false"></property>
 	</bean>
+	 -->
 	
+	<!-- 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">  
         <property name="triggers">  
             <list>  
         		<ref local="quartzServericeTaskTrigger"/>  
             </list>  
         </property>  
-    </bean> 
+    </bean>
+     --> 
 </beans>

@@ -58,6 +58,7 @@
 	</bean>
 	
 	<!-- 定时任务 添加异常用户-->
+	<!-- 
 	<bean id="updateErrorVisitorJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">   
         <property name="targetObject" ref="visitorManager"/>  
         <property name="targetMethod" value="updateErrorVisitor"/>  
@@ -75,5 +76,5 @@
        </property>  
        <property name="autoStartup" value="true"/>  
    </bean>  
-   
+    -->
 </beans>

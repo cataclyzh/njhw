@@ -176,8 +176,8 @@ li {list-style-type:none;}
 			easyAlert('提示信息','请先选择后再操作！','warning');
 			return;
 		}	
-		openAdminConfirmWin(delRecordFn);
-		//delRecordFn()
+		//openAdminConfirmWin(delRecordFn);
+		delRecordFn()
     }
     
     function delRecordFn() {

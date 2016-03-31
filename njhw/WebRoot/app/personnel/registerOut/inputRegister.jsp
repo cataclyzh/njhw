@@ -1,11 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/common/include/taglibs.jsp"%>
-
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="d" %>
+<%@ taglib uri="http://www.holytax.com/taglib" prefix="h" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<%@ include file="/common/include/metaIframe.jsp" %>
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+		<meta http-equiv="Cache-Control" content="no-store"/>
+		<meta http-equiv="Pragma" content="no-cache"/>
+		<meta http-equiv="Expires" content="0"/>
+		<script type="text/javascript">var _ctx = '${ctx}';</script>
+		<link href="${ctx}/styles/default.all.css" rel="stylesheet" type="text/css"/>
+		<link href="${ctx}/app/portal/toolbar/css/toolbar.css" rel="stylesheet" type="text/css"/>
+		<script src="${ctx}/scripts/basic/jquery.js.gzip" type="text/javascript"></script>
+		<script src="${ctx}/scripts/widgets/easyui/easyloader.js" type="text/javascript"></script>
+		<script src="${ctx}/scripts/basic/common.js" type="text/javascript"></script>
+		<link href="${ctx}/app/integrateservice/css/fex_center.css" rel="stylesheet" type="text/css" />
+		<link href="${ctx}/app/integrateservice/css/css_body.css" rel="stylesheet" type="text/css" />
+		<link href="${ctx}/app/integrateservice/css/css_index.css" rel="stylesheet" type="text/css" />
 		<title>人员登记</title>
 		<OBJECT id="WebRiaReader" codeBase="WebRiaReader.cab" classid="clsid:13C57329-846A-4C82-AAB1-1AA0EC3CA0BB"></OBJECT>
 		<script src="${ctx}/scripts/validation/card.js" type="text/javascript"></script>
@@ -19,7 +36,7 @@
 			if('${org.levelNum}' == '2'){
 				document.getElementById("leaderLevel").options.remove(1);  
 			}
-			//if ("${user.loginUid}" != "") {
+
 				$("#name").val("${user.displayName}".replace(/(^\s*)|(\s*$)/g, ""));
 				$("#loginUid").val("${user.loginUid}");
 				$("#ucode").val("${user.UCode}".replace(/(^\s*)|(\s*$)/g, ""));
@@ -348,7 +365,7 @@
 				if (type=="lock"){
 					title = "门锁授权情况";
 				}
-				if (type != null &&　type != "") {
+				if (type != null && type != "") {
 					windowDialog(title,url,400,300,true);
 				}
 				

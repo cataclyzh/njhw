@@ -269,6 +269,9 @@
 								<d:col class="display_centeralign" title="回访结果" media="html">
 									${row.RES_BAK3} 
 								</d:col>
+								<d:col class="display_centeralign" title="回访结果" media="excel">
+									${row.RES_BAK3} 
+								</d:col>
 								<d:col class="display_centeralign" title="会议状态" media="excel">
 									<c:if test="${row.CONFERENCE_STATE == 0}">
 										申请中

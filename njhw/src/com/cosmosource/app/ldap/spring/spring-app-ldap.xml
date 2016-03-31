@@ -7,13 +7,11 @@
 	
 	<bean id="ldapManager" class="com.cosmosource.base.service.LDAPManager" />	
 	
+	<!-- 
 	<bean id="ldapService" class="com.cosmosource.app.ldap.service.LDAPService" parent="manager" />
 	
 	<bean id="ldapServiceTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="ldapJobDetail" />
-		<!-- 每10秒 -->
-		<!-- <property name="cronExpression" value="0/15 * * * * ?" /> -->
-		<!-- 每天上午23:59触发-->
 		<property name="cronExpression" value="0 59 23 * * ?" />
 	</bean>
 	
@@ -29,5 +27,6 @@
         		<ref local="ldapServiceTaskTrigger"/>  
             </list>  
         </property>  
-    </bean> 
+    </bean>
+     --> 
 </beans>

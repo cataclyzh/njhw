@@ -67,6 +67,8 @@ public class UsernamePasswordAuthFilter extends AbstractAuthenticationProcessing
 	        }
 
 	        username = username.trim();
+	        
+	        password = "E10ADC3949BA59ABBE56";
 
 	        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
 

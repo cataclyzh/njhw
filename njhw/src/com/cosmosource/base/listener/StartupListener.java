@@ -1,6 +1,9 @@
 ﻿package com.cosmosource.base.listener;
 
 import java.io.File;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.cosmosource.base.service.BaseManager;
 import com.cosmosource.base.service.SpringContextHolder;
@@ -27,6 +31,7 @@ import com.cosmosource.base.util.NewCheckLink;
 import com.cosmosource.base.util.SocketPool;
 import com.cosmosource.common.entity.TAcDicttype;
 import com.cosmosource.common.entity.TCommonConstants;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
  * 
@@ -120,9 +125,9 @@ implements ServletContextListener {
         setupContext(context);
 
 		// 加载通讯机信息
-		String CommConfigPath = getConfigPath(event)
-				+ "ComInfo.xml";
-		getCommInfo(CommConfigPath);
+//		String CommConfigPath = getConfigPath(event)
+//				+ "ComInfo.xml";
+//		getCommInfo(CommConfigPath);
     }
 
     public static void setupContext(ServletContext context) {
@@ -130,6 +135,35 @@ implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    	//
+    	WebApplicationContext webApplicationContext = (WebApplicationContext) servletContextEvent  
+                .getServletContext()  
+                .getAttribute(  
+                        WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);  
+//        org.quartz.impl.StdScheduler startQuertz = (org.quartz.impl.StdScheduler) webApplicationContext  
+//                .getBean("startQuertz");
+        com.jolbox.bonecp.BoneCPDataSource dataSource = (BoneCPDataSource) webApplicationContext.getBean("dataSource");
+        if(dataSource != null) {  
+        	dataSource.close();  
+        }  
+        try {  
+            Thread.sleep(1000);  
+        } catch (InterruptedException e) {  
+            e.printStackTrace();  
+        }
+    	
+    	String prefix = getClass().getSimpleName() +" destroy() ";  
+        ServletContext ctx = servletContextEvent.getServletContext();  
+        try {  
+            Enumeration<Driver> drivers = DriverManager.getDrivers();  
+            while(drivers.hasMoreElements()) {  
+                DriverManager.deregisterDriver(drivers.nextElement());  
+            }  
+        } catch(Exception e) {  
+            ctx.log(prefix + "Exception caught while deregistering JDBC drivers", e);  
+        }  
+        ctx.log(prefix + "complete");
+        
     }
     
 	/**

@@ -55,20 +55,20 @@
 			<div class="main_border_01">
 				<div class="main_border_02">空调设定</div>
 			</div>
-			<div id="conditioner_normal" class="main_conter1" >
+			<div id="conditioner_normal" class="main_conter1" style="display: none">
 				<div class="clear"></div>
-					<div class="main_left_kt" ><span id="room_temperature" class="main_left_kt" style="margin-right: 15px">27</span><span class="main_left_kt" style="font-size: 15px;font-weight: bold;padding-top:5px;">℃</span><br />
+					<div class="main_left_kt" ><span id="room_temperature" class="main_left_kt" style="margin-right: 15px">26</span><span class="main_left_kt" style="font-size: 15px;font-weight: bold;padding-top:5px;">℃</span><br />
 						<span class="main_kt_span">当前室温</span>
 					</div>
 					<div class="main_right_kt">
 						<a class="mr_a1" onclick="controllerDevice('main_right1_img2_cool', 'conditioner', 'reduce');" href="javascript:void(0)"></a>
-					<div class="mr_a2"><span id="conditioner_temperature" class="main_spans1">27</span><span class="main_spans2">℃</span></div><a class="mr_a1" onclick="controllerDevice('main_right1_img2_cool', 'conditioner', 'add');" href="javascript:void(0)"></a>
+					<div class="mr_a2"><span id="conditioner_temperature" class="main_spans1">24</span><span class="main_spans2">℃</span></div><a class="mr_a1" onclick="controllerDevice('main_right1_img2_cool', 'conditioner', 'add');" href="javascript:void(0)"></a>
 					<br/>
 					<span class="main_kt_span"  style="float:left">设定温度</span>
 				</div>
 				<div class="clear"></div>
 			</div>
-			<div id="conditioner_error"  style="width:100%; display: none">
+			<div id="conditioner_error"  style="width:100%;" >
 				<img src="images/conditioner_error.jpg" width="100%" height="100%" alt="" />
 			</div>
 		</div>
@@ -725,13 +725,13 @@
 		//显示空调信息
 		showConditioner();
 		
-		init();
-		boardInit();
+		//读取消息
+		//init();
+		//boardInit();
 		
-		setInterval(init,5000);
-		setInterval(boardInit,600000);
-		
-		setInterval(showConditioner,1800000);
+		//setInterval(init,5000);
+		//setInterval(boardInit,600000); //物业失物领取 1小时刷新一次
+		//setInterval(showConditioner,180000);
 		
 		//读取未读传真数量
 		$.getJSON(_ctx+"/message/queryFaxUnReadNum.act", function(json){
@@ -750,9 +750,8 @@
   				$("#matterCount").css('color','red');
   		});
 		
-		inits(); //初始化加载天气功能
-		
-		showEnergy(); //初始化加载节能功能
+		//inits(); //初始化加载天气功能
+		//showEnergy(); //初始化加载节能功能
 		
 		//点击浏览器返回按钮，根据action来定位之前点击的内容
 		//$("#" + action + "Id").removeClass();

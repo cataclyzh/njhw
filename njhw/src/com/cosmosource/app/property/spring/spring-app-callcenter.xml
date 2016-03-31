@@ -251,10 +251,12 @@
      <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 		    <list>
+		    	<!-- 
 			    <ref bean="saveCron" />
 			    <ref bean="patrolRecordTimer" />
 			    <ref bean="patrolExceptionTimer" />
-			    
+			     -->
+			     
 			    <!--  date : 2014-01-24  modify:ChunJing 
 			    <ref bean="patrolRecordHistoryTimer" />
 			    <ref bean="patrolExceptionHistoryTimer" />

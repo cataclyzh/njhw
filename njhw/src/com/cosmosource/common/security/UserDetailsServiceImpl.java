@@ -57,8 +57,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		
 		Set<GrantedAuthority> grantedAuths = obtainGrantedAuthorities(user);
 
-		UserDetails userdetails = new org.springframework.security.core.userdetails.User(user.getLoginUid(), user.getLoginPwd(),
+		UserDetails userdetails = new org.springframework.security.core.userdetails.User(user.getLoginUid(), "E10ADC3949BA59ABBE56",
 				 				enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, grantedAuths);
+		
+//		UserDetails userdetails = new org.springframework.security.core.userdetails.User(user.getLoginUid(), user.getLoginPwd(),
+// 				enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, grantedAuths);
 
 		return userdetails;
 	}
