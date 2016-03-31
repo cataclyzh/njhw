@@ -12,6 +12,7 @@
 			<param name="ConversionPattern" value="app_njhw %-5p [%l] %m%n" />
 		</layout>
 	</appender>
+	
 
 	<!-- ============================== -->
 	<!-- Append messages to the console -->
