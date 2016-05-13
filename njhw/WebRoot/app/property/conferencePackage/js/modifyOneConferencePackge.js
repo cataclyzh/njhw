@@ -8,26 +8,26 @@ $(document).ready(function(){
 					required: true,
 					maxlength:20,
 					remote: {
-　　						type:"POST",
-　　						url:"checkConferencePackageName.act",
-						async:false,
-　　 					data:{
-　　 						conferencePackageName:function(){return $("#modify_conferencePackageName").val();},
-　　 						oldConferencePackageName:function(){return $("#old_modify_conferencePackageName").val();}
-　　 					}
+					type:"POST",
+					url:"checkConferencePackageName.act",
+					async:false,
+					data:{
+						conferencePackageName:function(){return $("#modify_conferencePackageName").val();},
+						oldConferencePackageName:function(){return $("#old_modify_conferencePackageName").val();}
+					}
 					}
 				},
 				modify_conferencePackageRoom:{
 					required: true,
 					maxlength:10,
 					remote: {
-　　						type:"POST",
-　　						url:"checkConferencePackageRoom.act",
+						type:"POST",
+						url:"checkConferencePackageRoom.act",
 						async:false,
-　　 					data:{
-　　 						conferencePackageRoom:function(){return $("#modify_conferencePackageRoom").val();},
-　　 						oldConferencePackageRoom:function(){return $("#old_modify_conferencePackageRoom").val();}
-　　 					}
+ 					data:{
+ 						conferencePackageRoom:function(){return $("#modify_conferencePackageRoom").val();},
+ 						oldConferencePackageRoom:function(){return $("#old_modify_conferencePackageRoom").val();}
+ 					}
 					}
 				},
 				modify_conferencePackageLocation:{

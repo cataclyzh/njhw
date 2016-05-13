@@ -56,6 +56,10 @@ public class AccessAndGateService extends BaseManager{
 		String password = "";
 		String xml1 = parseToXml(userInfo, opt);
 		
+		//推送权限操作到地铁口闸机控制器
+		//opt: delete, add
+		
+		
 		String result = "";
 		try {
 			Call call = (Call) service.createCall();

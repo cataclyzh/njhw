@@ -40,10 +40,10 @@ public class ParkServlet extends HttpServlet {
 		String userId = req.getSession().getAttribute("_userid").toString();
 		// 将所有请求转发
 		String requestURI = req.getRequestURI();
-//		String newURL = "http://10.101.1.37:38080"
-//				+ requestURI.substring(requestURI.indexOf("/park"));
-		String newURL = "http://localhost:8087"
+		String newURL = "http://10.101.1.37:38080"
 				+ requestURI.substring(requestURI.indexOf("/park"));
+//		String newURL = "http://localhost:8087"
+//				+ requestURI.substring(requestURI.indexOf("/park"));
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpMethod = new HttpPost(newURL);
 		httpMethod.setHeader("userId", userId);

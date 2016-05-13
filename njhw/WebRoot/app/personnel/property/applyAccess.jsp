@@ -31,7 +31,7 @@
 				<div class="bgsgl_border_left">
 				 <!--此处写页面的标题 -->
 					<div class="bgsgl_border_right">
-						门禁闸机申请管理
+						门禁闸机申请管理1
 					</div>
 				</div>
 				<div class="bgsgl_conter" style="min-height: 620px">

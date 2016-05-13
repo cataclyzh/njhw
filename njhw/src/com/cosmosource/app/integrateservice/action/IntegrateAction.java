@@ -103,6 +103,10 @@ public class IntegrateAction extends BaseAction {
 		}catch(Exception e){
 		}
 		
+		if(uid == 15503){
+			return "video";
+		}
+		
 		//njhw_wy
 //		if(uid != 0){
 //			//"/app/pro/setParkings.act"
