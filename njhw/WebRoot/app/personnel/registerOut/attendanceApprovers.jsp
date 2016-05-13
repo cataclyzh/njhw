@@ -130,7 +130,8 @@
  	}
 
 	function saveData(){ 	
-		openAdminConfirmWin(saveDataFn);
+		//openAdminConfirmWin(saveDataFn);
+		saveDataFn();
 	}
 	
 	function saveDataFn(){

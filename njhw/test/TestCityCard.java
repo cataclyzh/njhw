@@ -23,22 +23,32 @@ public class TestCityCard {
 	private static final String OPERATORID ="11111"; //操作员号
 
 	public static void main(String[] args) throws Exception {
-		//0000997166732345
+//		list.add(makeVo("姚伯祥","zz025","0000997165323988"));
+//		String cardNo = "0000997166552179";
+		//
+		String[] cardNos = {
+				"0000997176564176",
+		};
 		
-//		String cardNo = "0000997166732345";//卡面号
-		String cardNo = "0000997163041423";
+		for(String s : cardNos){
+			execute(s);
+		}
+	}
+	
+	public static void execute(String cardNo) throws Exception{
 		Date time = new Date();
 		String now = new SimpleDateFormat("yyyyMMddHHmmss").format(time);
 		
 		//这里整理解析结果值放在数据库中或是返回给tcard对象
-//		NjhwTscard njhwTscard = null;
 		String paramCard = buildPersonCardParam(now);
 		paramCard = paramCard+",AliasCardNo="+cardNo+",QueryTime="+now;
 		String cardInfo = queryPersonCardInfo(paramCard);
 		System.out.println("cardInfo: " + cardInfo);
-//		njhwTscard = parseToEntity(parsePersonCardResult(cardInfo),orgId);
+		if(cardInfo == null){
+			System.out.println("error:"+cardNo);
+		}
 		Map m = parsePersonCardResult(cardInfo);
-		System.out.println(m);
+		System.out.print(cardNo + ":" + m.get("CustName")+"\t ");
 	}
 	
 	public static Map parsePersonCardResult(String resultXml){//这个地方有可能只返回几个数字

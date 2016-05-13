@@ -42,7 +42,7 @@ public class ParkServlet extends HttpServlet {
 		String requestURI = req.getRequestURI();
 		String newURL = "http://10.101.1.37:38080"
 				+ requestURI.substring(requestURI.indexOf("/park"));
-//		String newURL = "http://localhost:8081"
+//		String newURL = "http://localhost:8087"
 //				+ requestURI.substring(requestURI.indexOf("/park"));
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpMethod = new HttpPost(newURL);

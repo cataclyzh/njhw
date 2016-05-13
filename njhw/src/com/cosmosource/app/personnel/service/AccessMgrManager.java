@@ -505,136 +505,141 @@ public class AccessMgrManager extends BaseManager {
 		map.put("userid", userid);
 		List list = sqlDao.findList("PersonnelSQL.queryUserAccessInfo", map);
 		
-		if (list != null && list.size() > 0) {
-			Map m = (Map) list.get(0);
-			Map<String, String> userInfo = new HashMap<String, String>();
-			userInfo.put("ORGNAME", m.get("SHORT_NAME") == null ? "" : m.get("SHORT_NAME").toString());
-			userInfo.put("ACCESSID", m.get("ACCESS_ID") == null ? "" : m.get("ACCESS_ID").toString());
-			String loginId = "";
-			if (Struts2Util.getSession() != null && Struts2Util.getSession().getAttribute(Constants.USER_ID) != null) {
-				loginId = Struts2Util.getSession().getAttribute(Constants.USER_ID).toString();
-			}
-			userInfo.put("LOGINID", loginId);
-			userInfo.put("DISPLAYNAME", m.get("DISPLAY_NAME") == null ? "" : m.get("DISPLAY_NAME").toString().trim());
-			userInfo.put("SEX", m.get("UEP_SEX") == null ? "" : m.get("UEP_SEX").toString());
-			userInfo.put("CARDID", m.get("CARD_ID") == null ? "" : m.get("CARD_ID").toString());
-			userInfo.put("RESIDENTNO", m.get("RESIDENT_NO") == null ? "" : m.get("RESIDENT_NO").toString());
+		if(list == null || list.size() == 0){
+			return "";
+		}
+		
+		Map m = (Map) list.get(0);
+		Map<String, String> userInfo = new HashMap<String, String>();
+		userInfo.put("ORGNAME", m.get("SHORT_NAME") == null ? "" : m.get("SHORT_NAME").toString());
+		userInfo.put("ACCESSID", m.get("ACCESS_ID") == null ? "" : m.get("ACCESS_ID").toString());
+		String loginId = "";
+		if (Struts2Util.getSession() != null && Struts2Util.getSession().getAttribute(Constants.USER_ID) != null) {
+			loginId = Struts2Util.getSession().getAttribute(Constants.USER_ID).toString();
+		}
+		userInfo.put("LOGINID", loginId);
+		userInfo.put("DISPLAYNAME", m.get("DISPLAY_NAME") == null ? "" : m.get("DISPLAY_NAME").toString().trim());
+		userInfo.put("SEX", m.get("UEP_SEX") == null ? "" : m.get("UEP_SEX").toString());
+		userInfo.put("CARDID", m.get("CARD_ID") == null ? "" : m.get("CARD_ID").toString());
+		userInfo.put("RESIDENTNO", m.get("RESIDENT_NO") == null ? "" : m.get("RESIDENT_NO").toString());
 			
-			if (StringUtil.isBlank(accessIds) && StringUtil.isBlank(gateIds) || "0".equals(denyFlg)) {
-				failMsg = accessAndGateService.accessAndGateOperation(userInfo, "delete");
+		//删除闸机,门禁权限
+		if (StringUtil.isBlank(accessIds) && StringUtil.isBlank(gateIds) || "0".equals(denyFlg)) {
+			failMsg = accessAndGateService.accessAndGateOperation(userInfo, "delete");
 				
-				//补充注册身份证
-				String residentNo = userInfo.get("RESIDENTNO");
-				if(residentNo != null && residentNo.trim().length() > 0){
-					addResidentGateWay(userInfo, "delete");
-				}
+			//补充注册身份证
+			String residentNo = userInfo.get("RESIDENTNO");
+			if(residentNo != null && residentNo.trim().length() > 0){
+				addResidentGateWay(userInfo, "delete");
+			}
+			
+			if(!StringUtil.isBlank(failMsg)){
+				return failMsg;
+			}
 
-				if (StringUtil.isBlank(failMsg)) {
-					if ("0".equals(denyFlg) && m.get("ACCESS_ID") != null && StringUtil.isNotBlank(m.get("ACCESS_ID").toString())) {
-						// update access_perm_map
-						List<Map> l = new ArrayList();
-						Map c = new HashMap();
-						c.put("personId", m.get("ACCESS_ID").toString());
-						c.put("denyFlg", denyFlg);
-						l.add(c);
-						sqlDao.batchUpdate("PersonnelSQL.updateAccessPermMap", l);
-					} else {
-						// delete access_perm_map
-						try{
-							List<Map> l = new ArrayList();
-							Map c = new HashMap();
-							c.put("personId", m.get("ACCESS_ID").toString());
-							l.add(c);
-							sqlDao.batchDelete("PersonnelSQL.deleteAccessPermMap", l);
-							NjhwUsersExp uep = (NjhwUsersExp) super.dao.findByProperty(NjhwUsersExp.class, "userid", userid).get(0);
-							uep.setAccessId("");
-							super.dao.saveOrUpdate(uep);
-						}catch(Exception e){
-							logger.error("ERROR: delete access_perm_map", e);
-						}
-					}
-				}
-			} else if (StringUtil.isBlank(userInfo.get("ACCESSID")) || "1".equals(denyFlg)) {
-				if (!"1".equals(denyFlg)) {
-					userInfo.put("ACCESSID", "xc" + userid);
-				}
-				failMsg = addOrUpdateAccessAndGate(userInfo, accessIds, gateIds, "add");
-				
-				if (StringUtil.isBlank(failMsg)) {
-					NjhwUsersExp uep = (NjhwUsersExp) super.dao.findByProperty(NjhwUsersExp.class, "userid", userid).get(0);
-					uep.setAccessId(userInfo.get("ACCESSID").toString());
-					super.dao.saveOrUpdate(uep);
-					if ("1".equals(denyFlg)) {
-						// update access_perm_map
-						List<Map> l = new ArrayList();
-						Map c = new HashMap();
-						c.put("personId", m.get("ACCESS_ID").toString());
-						c.put("denyFlg", denyFlg);
-						l.add(c);
-						sqlDao.batchUpdate("PersonnelSQL.updateAccessPermMap", l);
-					} else {
-						// insert access_perm_map
-						List<Map> lm = new ArrayList();
-						if (StringUtil.isNotBlank(accessIds)) {
-							String[] sl = accessIds.split(",");
-							for (String ss : sl) {
-								Map mm = new HashMap();
-								mm.put("personId", "xc" + userid);
-								mm.put("nodeId", ss);
-								mm.put("permCode", "A");
-								mm.put("denyFlg", "1");
-								lm.add(mm);
-							}
-						}
-						if (StringUtil.isNotBlank(gateIds)) {
-							String[] sl = gateIds.split(",");
-							for (String ss : sl) {
-								Map mm = new HashMap();
-								mm.put("personId", "xc" + userid);
-								mm.put("nodeId", ss);
-								mm.put("permCode", "G");
-								mm.put("denyFlg", "1");
-								lm.add(mm);
-							}
-						}
-						sqlDao.batchInsert("PersonnelSQL.insertAccessPermMap", lm);
-					}
-				}
-			} else if (StringUtil.isNotBlank(userInfo.get("ACCESSID"))) {
-				failMsg = addOrUpdateAccessAndGate(userInfo, accessIds,
-						gateIds, "modify");
-				// delete access_perm_map
+			if ("0".equals(denyFlg) && m.get("ACCESS_ID") != null && StringUtil.isNotBlank(m.get("ACCESS_ID").toString())) {
+				// update access_perm_map
 				List<Map> l = new ArrayList();
 				Map c = new HashMap();
-				c.put("personId", userInfo.get("ACCESSID"));
+				c.put("personId", m.get("ACCESS_ID").toString());
+				c.put("denyFlg", denyFlg);
 				l.add(c);
-				sqlDao.batchDelete("PersonnelSQL.deleteAccessPermMap", l);
-				// insert access_perm_map
-				List<Map> lm = new ArrayList();
-				if (StringUtil.isNotBlank(accessIds)) {
-					String[] sl = accessIds.split(",");
-					for (String ss : sl) {
-						Map mm = new HashMap();
-						mm.put("personId", userInfo.get("ACCESSID"));
-						mm.put("nodeId", ss);
-						mm.put("permCode", "A");
-						mm.put("denyFlg", "1");
-						lm.add(mm);
-					}
+				sqlDao.batchUpdate("PersonnelSQL.updateAccessPermMap", l);
+			} else {
+				// delete access_perm_map
+				try{
+					List<Map> l = new ArrayList();
+					Map c = new HashMap();
+					c.put("personId", m.get("ACCESS_ID").toString());
+					l.add(c);
+					sqlDao.batchDelete("PersonnelSQL.deleteAccessPermMap", l);
+					NjhwUsersExp uep = (NjhwUsersExp) super.dao.findByProperty(NjhwUsersExp.class, "userid", userid).get(0);
+					uep.setAccessId("");
+					super.dao.saveOrUpdate(uep);
+				}catch(Exception e){
+					logger.error("ERROR: delete access_perm_map", e);
 				}
-				if (StringUtil.isNotBlank(gateIds)) {
-					String[] sl = gateIds.split(",");
-					for (String ss : sl) {
-						Map mm = new HashMap();
-						mm.put("personId", userInfo.get("ACCESSID"));
-						mm.put("nodeId", ss);
-						mm.put("permCode", "G");
-						mm.put("denyFlg", "1");
-						lm.add(mm);
-					}
-				}
-				sqlDao.batchInsert("PersonnelSQL.insertAccessPermMap", lm);
 			}
+		} else if (StringUtil.isBlank(userInfo.get("ACCESSID")) || "1".equals(denyFlg)) {
+			if (!"1".equals(denyFlg)) {
+				userInfo.put("ACCESSID", "xc" + userid);
+			}
+			failMsg = addOrUpdateAccessAndGate(userInfo, accessIds, gateIds, "add");
+			
+			if (StringUtil.isBlank(failMsg)) {
+				NjhwUsersExp uep = (NjhwUsersExp) super.dao.findByProperty(NjhwUsersExp.class, "userid", userid).get(0);
+				uep.setAccessId(userInfo.get("ACCESSID").toString());
+				super.dao.saveOrUpdate(uep);
+				if ("1".equals(denyFlg)) {
+					// update access_perm_map
+					List<Map> l = new ArrayList();
+					Map c = new HashMap();
+					c.put("personId", m.get("ACCESS_ID").toString());
+					c.put("denyFlg", denyFlg);
+					l.add(c);
+					sqlDao.batchUpdate("PersonnelSQL.updateAccessPermMap", l);
+				} else {
+					// insert access_perm_map
+					List<Map> lm = new ArrayList();
+					if (StringUtil.isNotBlank(accessIds)) {
+						String[] sl = accessIds.split(",");
+						for (String ss : sl) {
+							Map mm = new HashMap();
+							mm.put("personId", "xc" + userid);
+							mm.put("nodeId", ss);
+							mm.put("permCode", "A");
+							mm.put("denyFlg", "1");
+							lm.add(mm);
+						}
+					}
+					if (StringUtil.isNotBlank(gateIds)) {
+						String[] sl = gateIds.split(",");
+						for (String ss : sl) {
+							Map mm = new HashMap();
+							mm.put("personId", "xc" + userid);
+							mm.put("nodeId", ss);
+							mm.put("permCode", "G");
+							mm.put("denyFlg", "1");
+							lm.add(mm);
+						}
+					}
+					sqlDao.batchInsert("PersonnelSQL.insertAccessPermMap", lm);
+				}
+			}
+		} else if (StringUtil.isNotBlank(userInfo.get("ACCESSID"))) {
+			failMsg = addOrUpdateAccessAndGate(userInfo, accessIds,
+					gateIds, "modify");
+			// delete access_perm_map
+			List<Map> l = new ArrayList();
+			Map c = new HashMap();
+			c.put("personId", userInfo.get("ACCESSID"));
+			l.add(c);
+			sqlDao.batchDelete("PersonnelSQL.deleteAccessPermMap", l);
+			// insert access_perm_map
+			List<Map> lm = new ArrayList();
+			if (StringUtil.isNotBlank(accessIds)) {
+				String[] sl = accessIds.split(",");
+				for (String ss : sl) {
+					Map mm = new HashMap();
+					mm.put("personId", userInfo.get("ACCESSID"));
+					mm.put("nodeId", ss);
+					mm.put("permCode", "A");
+					mm.put("denyFlg", "1");
+					lm.add(mm);
+				}
+			}
+			if (StringUtil.isNotBlank(gateIds)) {
+				String[] sl = gateIds.split(",");
+				for (String ss : sl) {
+					Map mm = new HashMap();
+					mm.put("personId", userInfo.get("ACCESSID"));
+					mm.put("nodeId", ss);
+					mm.put("permCode", "G");
+					mm.put("denyFlg", "1");
+					lm.add(mm);
+				}
+			}
+			sqlDao.batchInsert("PersonnelSQL.insertAccessPermMap", lm);
 		}
 		
 		return failMsg;

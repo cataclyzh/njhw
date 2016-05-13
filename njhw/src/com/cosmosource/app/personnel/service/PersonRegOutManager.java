@@ -81,11 +81,7 @@ public class PersonRegOutManager extends BaseManager {
 	}
 
 	/**
-	 * @description:取得当前登陆用户所属的顶级单位
-	 * @author zh
-	 * @param HashMap
-	 *            map
-	 * @return
+	 * 取得当前登陆用户所属的顶级单位
 	 */
 	public List<HashMap> getTopOrgId() {
 		Map pMap = new HashMap();

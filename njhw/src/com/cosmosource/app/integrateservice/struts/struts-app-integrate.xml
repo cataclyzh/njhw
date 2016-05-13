@@ -11,6 +11,7 @@
 			<result name="adminPage">/app/per/objMenuManager.act</result>
 			<result name="success">/app/integrateservice/tmpIndex.jsp</result>		
 			<result name="operationManageIndex" type="redirect">/app/omc/newIndex.jsp</result>
+			<result name="video" type="redirect">/app/omc/newIndexV.jsp</result>
 			<result name="property1">/app/pro/propertyIndex1.act</result>
 			<result name="property2">/app/pro/propertyIndex2.act</result>
 			<result name="property3">/app/pro/propertyIndex3.act</result>

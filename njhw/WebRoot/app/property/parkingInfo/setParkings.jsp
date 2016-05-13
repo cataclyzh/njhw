@@ -519,13 +519,18 @@
 			  var jsonpReq = function(url, from){
 				  var emptyArr = [];
 				  var formData;
-			
 				  
 				  if(from === 'A_'){//添加
 					  /* if(!isLicenseNo($('#A_CAR_OWNER_NAME').val())){
 					  	alert("车牌号码不正确");
 					  	return false;
 					  } */
+					  
+					  if($('#A_CAR_NO').val().length != 7){
+						  alert('车牌录入有误');
+						  return;
+					  }
+					  
 					  $('#add_panel input.required').each(function(e){
 					      if($(this).val() === ''){
 					    	  emptyArr.push($(this).attr('title'));

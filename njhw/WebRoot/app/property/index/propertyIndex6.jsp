@@ -93,6 +93,11 @@
 	function toViewLostFound(lostFoundId){
 		showShelter('700','500','${ctx}/app/pro/viewLostFoundById.act?lostFoundId='+lostFoundId);
 	}
+	
+	function toViewEnergy(repairId) {
+		var url = "${ctx}/app/energyint/initEnergy.act";
+		window.location.href = url;
+	}
 
 	function initNavi(i){
 		//$("#navi" + selected).removeClass("selected");
@@ -478,6 +483,13 @@
 										src="${ctx}/app/integrateservice/images/navPics/list_fest38.jpg"
 										onmousemove="this.src='${ctx}/app/integrateservice/images/navPics/list_fest38_hover.jpg'"
 										onmouseout="this.src='${ctx}/app/integrateservice/images/navPics/list_fest38.jpg'"
+										width="168" height="86" border="0" /> </a>
+							</li>
+							<li class="main_nav">
+								<a href="javascript:void(0);" onclick="toViewEnergy(11)"><img
+										src="${ctx}/app/integrateservice/images/gljNavPics/nav_news_a4.jpg"
+										onmousemove="this.src='${ctx}/app/integrateservice/images/gljNavPics/nav_news_h4.jpg'"
+										onmouseout="this.src='${ctx}/app/integrateservice/images/gljNavPics/nav_news_a4.jpg'"
 										width="168" height="86" border="0" /> </a>
 							</li>
 							

