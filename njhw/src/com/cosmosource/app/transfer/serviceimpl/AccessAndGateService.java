@@ -16,6 +16,8 @@ import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -58,6 +60,20 @@ public class AccessAndGateService extends BaseManager{
 		
 		//推送权限操作到地铁口闸机控制器
 		//opt: delete, add
+		try{
+			String userName = String.valueOf(userInfo.get("DISPLAYNAME"));
+			String cardId = String.valueOf(userInfo.get("CARDID"));
+			String param = "userName="+userName+"&cardId="+cardId+"&ioFlag=ALL";
+			if(opt.equals("delete")){
+				String url = "http://59.201.7.176:9191/delete";				
+				MyPost.sendPost(url, param);
+			}else if(opt.equals("add")){
+				String url = "http://59.201.7.176:9191/insert";
+				MyPost.sendPost(url, param);
+			}
+		}catch(Exception e){
+			log.error("推送权限操作到地铁口闸机控制器", e);
+		}
 		
 		
 		String result = "";
