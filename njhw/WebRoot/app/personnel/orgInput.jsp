@@ -83,7 +83,8 @@
 	function saveData(){
 		if(!isRepate())
 		{
-			openAdminConfirmWin(saveDataFn);
+			//openAdminConfirmWin(saveDataFn);
+			saveDataFn();
 		}
 		
 	}
