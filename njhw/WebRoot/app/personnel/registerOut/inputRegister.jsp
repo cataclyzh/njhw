@@ -280,6 +280,7 @@
 		}
 		
 		// 刷新车位信息
+		/*
 		function refreshCarNum(){
 			$("#lessthan").hide();
 			$.ajax({
@@ -297,7 +298,10 @@
 	            	easyAlert("提示信息", "加载市民卡信息出错！","info");
 	            }
 	         });
-		}
+		}*/
+		$("#totleNum").text(0);
+   		$("#allotNum").text(0);
+   		$("#surplusNum").text(0);
 		
 		function closeWindow(type,Id,Num)
 		{	
@@ -1337,7 +1341,7 @@
 		
 		<div class="bgsgl_conter" style="border-top:#7f90b3 1px solid">
 	  	    <div class="bgsgl_right_list_border">
-			  <div class="bgsgl_right_list_left">登录基本信息</div>
+			  <div class="bgsgl_right_list_left">登录基本信息2</div>
 			</div>
 		<div class="infrom_ryjbxx">
 		
