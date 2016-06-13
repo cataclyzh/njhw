@@ -263,6 +263,7 @@
 		}
 		
 		// 刷新车位信息
+		/*
 		function refreshCarNum(){
 			$("#lessthan").hide();
 			$.ajax({
@@ -280,7 +281,10 @@
 	            	easyAlert("提示信息", "加载市民卡信息出错！","info");
 	            }
 	         });
-		}
+		}*/
+		$("#totleNum").text(0);
+   		$("#allotNum").text(0);
+   		$("#surplusNum").text(0);
 		
 		function closeWindow(type,Id,Num)
 		{	
@@ -348,7 +352,7 @@
 				if (type=="lock"){
 					title = "门锁授权情况";
 				}
-				if (type != null &&　type != "") {
+				if (type != null && type != "") {
 					windowDialog(title,url,400,300,true);
 				}
 				

@@ -13,7 +13,7 @@
 		<script type="text/javascript" src="${ctx}/app/portal/js/ajaxfileupload.js"></script>
 		<script src="${ctx}/app/portal/js/AjaxUtil.js" type="text/javascript"></script>
 		<link href="${ctx}/styles/personinfo/css/info.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript"><!--
+		<script type="text/javascript">
 		var surplusNum = 0;
 		$(document).ready(function() {
 				$("#name").val("${user.displayName}".replace(/(^\s*)|(\s*$)/g, ""));
@@ -147,6 +147,7 @@
 		}
 
 		// 刷新车位信息
+		/*
 		function refreshCarNum(){
 			$("#lessthan").hide();
 			$.ajax({
@@ -164,7 +165,10 @@
 	            	easyAlert("提示信息", "加载市民卡信息出错！","info");
 	            }
 	         });
-		}
+		}*/
+		$("#totleNum").text(0);
+   		$("#allotNum").text(0);
+   		$("#surplusNum").text(0);
 		
 		function disOrEnLosted() {
 				$.ajax({
@@ -753,7 +757,7 @@
 				openEasyWin("accessInput","新增门锁闸机授权申请",url,"420","440",false, null, 'aiFrame');
 		    }
 		}	
-	--></script>
+	</script>
 	</head>
 
 <body>
