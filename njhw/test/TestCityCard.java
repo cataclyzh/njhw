@@ -23,11 +23,8 @@ public class TestCityCard {
 	private static final String OPERATORID ="11111"; //操作员号
 
 	public static void main(String[] args) throws Exception {
-//		list.add(makeVo("姚伯祥","zz025","0000997165323988"));
-//		String cardNo = "0000997166552179";
-		//
 		String[] cardNos = {
-				"0000997176444099",
+				"0000997168466934",
 		};
 		
 		for(String s : cardNos){
