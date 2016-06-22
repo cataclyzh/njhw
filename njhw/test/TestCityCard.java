@@ -27,7 +27,7 @@ public class TestCityCard {
 //		String cardNo = "0000997166552179";
 		//
 		String[] cardNos = {
-				"0000997176444099",
+				"0000997168466934",
 		};
 		
 		for(String s : cardNos){

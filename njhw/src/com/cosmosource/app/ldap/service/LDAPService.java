@@ -374,7 +374,7 @@ public class LDAPService extends BaseManager {
 		return resultIP;
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main1(String[] args) throws Exception {
 		UserInfo UserInfo = new UserInfo();
 		UserInfo.setCn("commonName"); // 必须
 		UserInfo.setSn("surname"); // 必须
@@ -425,5 +425,14 @@ public class LDAPService extends BaseManager {
 		System.out.println("--------------删除用户---------------");
 		new LDAPService().deleteUserByLoginUid("testEntry");
 
+	}
+	
+	public static void main(String[] args){
+		List<UserInfo> userList = new LDAPService().findUser("(loginUid=zg_wut)");
+		System.out.println(userList.size());
+		for(UserInfo u : userList){
+			System.out.println(u.getDisplayName());
+			System.out.println(u.getLoginPwdMD5());
+		}
 	}
 }
